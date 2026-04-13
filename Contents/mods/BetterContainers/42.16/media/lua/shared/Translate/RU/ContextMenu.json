@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Настроить",
+    "ContextMenu_BC_Presets" : "Шаблоны",
+    "ContextMenu_BC_SavedPresets" : "Сохраненные шаблоны",
+    "ContextMenu_BC_NoSavedPresets" : "Нет сохраненных шаблонов",
+    "ContextMenu_BC_Copy" : "Копировать",
+    "ContextMenu_BC_Paste" : "Вставить",
+    "ContextMenu_BC_Reset" : "Сбросить",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Добавить категорию в избранное",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Убрать категорию из избранного"
+}
