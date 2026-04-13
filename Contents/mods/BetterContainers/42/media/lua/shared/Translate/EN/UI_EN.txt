@@ -1,0 +1,9 @@
+UI_EN = {
+    UI_BetterContainers_Tooltip             = "Sort Options",
+    UI_BetterContainers_Priority            = "Sorting Priority",
+    UI_BetterContainers_Priority_title      = "Sort Loot Window?",
+    UI_BetterContainers_Priority_tooltip    = "Sorting Priority",
+    UI_BetterContainers_SortValue_tooltip   = "Enter a number to sort by.",
+    UI_BetterContainers_Unlock_tooltip      = "Unlock Container Order",
+    UI_BetterContainers_Lock_tooltip        = "Lock Container Order",
+}

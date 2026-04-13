@@ -1,0 +1,11 @@
+local Reorder = require("BetterContainers/Reorder")
+local Proximity = require("BetterContainers/Proximity")
+local Customize = require("BetterContainers/Customize")
+local Categorize = require("BetterContainers/Categorize")
+local Upgrades = require("BetterContainers/Upgrades")
+
+Reorder.install()
+Proximity.install()
+Customize.install()
+Categorize.install()
+Upgrades.install()

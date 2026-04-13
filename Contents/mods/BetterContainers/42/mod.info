@@ -1,0 +1,6 @@
+name=Better Containers
+poster=poster.png
+icon=poster.png
+id=REORDER_CONTAINERS
+description=Allows you to click and drag on containers to reorder them in the inventory.
+author=Eurymachus (original idea by Notloc)

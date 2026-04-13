@@ -1,0 +1,13 @@
+ContextMenu_EN = {
+    ContextMenu_BC_Customize = "Customize",
+    ContextMenu_BC_Customize = "Open Customizer",
+    ContextMenu_BC_Presets = "Presets",
+    ContextMenu_BC_SavedPresets = "Saved Presets",
+    ContextMenu_BC_NoSavedPresets = "No saved presets",
+    ContextMenu_BC_Copy = "Copy",
+    ContextMenu_BC_Paste = "Paste",
+    ContextMenu_BC_Reset = "Reset",
+
+    ContextMenu_BetterContainers_AddCategoryFav = "Add Category Favourite",
+    ContextMenu_BetterContainers_RemoveCategoryFav = "Remove Category Favourite",
+}

@@ -1,0 +1,21 @@
+Sandbox_EN = {
+    Sandbox_BetterContainers = "Better Containers",
+
+    Sandbox_BetterContainers_ProximityEnabled = "Enable Proximity Inventory",
+    Sandbox_BetterContainers_ProximityEnabled_tooltip = "Enables the Proximity Inventory system for this server.",
+
+    Sandbox_BetterContainers_ForceCorpseOnly = "Force Corpse-Only Mode",
+    Sandbox_BetterContainers_ForceCorpseOnly_tooltip = "Forces Proximity Inventory to operate in corpse-only mode. Players cannot switch modes.",
+
+    Sandbox_BetterContainers_AllowToggleProximity = "Allow Players to Toggle Proximity",
+    Sandbox_BetterContainers_AllowToggleProximity_tooltip = "Allows players to enable or disable Proximity Inventory via keybind or mod options.",
+
+    Sandbox_BetterContainers_AllowSwitchMode = "Allow Players to Switch Mode",
+    Sandbox_BetterContainers_AllowSwitchMode_tooltip = "Allows players to switch between all-containers mode and corpse-only mode.",
+
+    Sandbox_BetterContainers_AutoLockEnabled = "Enable Auto-Lock",
+    Sandbox_BetterContainers_AutoLockEnabled_tooltip = "Enables the Auto-Lock feature. When active, Proximity Inventory will snap back to the selected container unless intentionally changed.",
+
+    Sandbox_BetterContainers_AllowToggleAutoLock = "Allow Players to Toggle Auto-Lock",
+    Sandbox_BetterContainers_AllowToggleAutoLock_tooltip = "Allows players to enable or disable Auto-Lock via mod options.",
+}

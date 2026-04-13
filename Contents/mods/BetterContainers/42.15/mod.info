@@ -1,0 +1,7 @@
+name=Better Containers
+poster=poster.png
+icon=poster.png
+id=EURY_CONTAINERS
+description=A selection of tools including reorder, customize, categorize and proximity
+author=Eurymachus
+incompatible=\ProximityInventory,\ProximityInventory4213,\twistonfireinventory,\SmarterStorage,\REORDER_CONTAINERS,\BetterSortCC,\BetterSortCC42,\BetterSort42-13Patch

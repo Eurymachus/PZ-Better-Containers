@@ -1,0 +1,8 @@
+UI_FR = {
+    UI_BetterContainers_Tooltip          = "Options de tri",
+    UI_BetterContainers_Priority         = "Priorité de tri",
+    UI_BetterContainers_Priority_title   = "Trier le butin de la fenêtre ?",
+    UI_BetterContainers_Priority_tooltip = "Priorité de tri",
+    UI_BetterContainers_Unlock_tooltip   = "Déverrouiller l'ordre des conteneurs",
+    UI_BetterContainers_Lock_tooltip     = "Verrouiller l'ordre des conteneurs",
+}
