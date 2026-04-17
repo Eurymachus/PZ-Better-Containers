@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Personalizar",
+    "ContextMenu_BC_Presets" : "Preajustes",
+    "ContextMenu_BC_SavedPresets" : "Preajustes guardados",
+    "ContextMenu_BC_NoSavedPresets" : "No hay preajustes guardados",
+    "ContextMenu_BC_Copy" : "Copiar",
+    "ContextMenu_BC_Paste" : "Pegar",
+    "ContextMenu_BC_Reset" : "Restablecer",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Agregar categoria favorita",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Quitar categoria favorita"
+}
