@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Aktiver naerhedsinventar",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Aktiverer naerhedsinventarsystemet for denne server.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Tving kun-lig-tilstand",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Tvinger naerhedsinventar til kun at virke for lig. Spillere kan ikke skifte tilstand.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Tillad spillere at skifte naerhed",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Tillader spillere at aktivere eller deaktivere naerhedsinventar via tastebinding eller modindstillinger.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Tillad spillere at skifte tilstand",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Tillader spillere at skifte mellem alle-beholdere-tilstand og kun-lig-tilstand.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Aktiver automatisk las",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Aktiverer automatisk las. Nar den er aktiv, springer naerhedsinventar tilbage til den valgte beholder, medmindre den med vilje er aendret.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Tillad spillere at skifte automatisk las",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Tillader spillere at aktivere eller deaktivere automatisk las via modindstillinger."
+}

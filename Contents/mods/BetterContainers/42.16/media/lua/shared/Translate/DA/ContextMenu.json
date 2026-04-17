@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Tilpas",
+    "ContextMenu_BC_Presets" : "Forudindstillinger",
+    "ContextMenu_BC_SavedPresets" : "Gemte forudindstillinger",
+    "ContextMenu_BC_NoSavedPresets" : "Ingen gemte forudindstillinger",
+    "ContextMenu_BC_Copy" : "Kopier",
+    "ContextMenu_BC_Paste" : "Indsaet",
+    "ContextMenu_BC_Reset" : "Nulstil",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Tilfoj favoritkategori",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Fjern favoritkategori"
+}
