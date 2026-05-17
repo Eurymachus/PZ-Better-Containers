@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Ativar inventario de proximidade",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Ativa o sistema de inventario de proximidade para este servidor.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Forcar modo apenas cadaveres",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Forca o inventario de proximidade a funcionar apenas com cadaveres. Os jogadores nao podem mudar de modo.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Permitir aos jogadores ativar proximidade",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Permite aos jogadores ativar ou desativar o inventario de proximidade atraves de tecla ou opcoes do mod.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Permitir aos jogadores mudar de modo",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Permite aos jogadores alternar entre o modo de todos os contentores e o modo apenas cadaveres.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Ativar bloqueio automatico",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Ativa a funcao de bloqueio automatico. Quando ativa, o inventario de proximidade volta ao contentor selecionado, salvo alteracao intencional.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Permitir aos jogadores ativar bloqueio automatico",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Permite aos jogadores ativar ou desativar o bloqueio automatico atraves das opcoes do mod."
+}
