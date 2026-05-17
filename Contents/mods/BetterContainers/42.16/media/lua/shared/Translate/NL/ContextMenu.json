@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Aanpassen",
+    "ContextMenu_BC_Presets" : "Voorinstellingen",
+    "ContextMenu_BC_SavedPresets" : "Opgeslagen voorinstellingen",
+    "ContextMenu_BC_NoSavedPresets" : "Geen opgeslagen voorinstellingen",
+    "ContextMenu_BC_Copy" : "Kopieren",
+    "ContextMenu_BC_Paste" : "Plakken",
+    "ContextMenu_BC_Reset" : "Resetten",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Categorie als favoriet toevoegen",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Categorie uit favorieten verwijderen"
+}

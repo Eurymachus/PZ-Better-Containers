@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Nabijheidsinventaris inschakelen",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Schakelt het nabijheidsinventarissysteem voor deze server in.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Alleen lijken-modus forceren",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Dwingt het nabijheidsinventaris om alleen in lijken-modus te werken. Spelers kunnen niet van modus wisselen.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Spelers toestaan nabijheid te schakelen",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Laat spelers het nabijheidsinventaris via sneltoets of modopties in- of uitschakelen.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Spelers toestaan van modus te wisselen",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Laat spelers schakelen tussen alle-containers-modus en alleen lijken-modus.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Automatische vergrendeling inschakelen",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Schakelt automatische vergrendeling in. Wanneer actief springt het nabijheidsinventaris terug naar de geselecteerde container, tenzij die bewust is gewijzigd.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Spelers toestaan automatische vergrendeling te schakelen",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Laat spelers automatische vergrendeling via modopties in- of uitschakelen."
+}
