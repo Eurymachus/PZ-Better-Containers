@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Nalashtuvaty",
+    "ContextMenu_BC_Presets" : "Shablony",
+    "ContextMenu_BC_SavedPresets" : "Zberezheni shablony",
+    "ContextMenu_BC_NoSavedPresets" : "Nemaie zberezhenykh shabloniv",
+    "ContextMenu_BC_Copy" : "Kopiiuvaty",
+    "ContextMenu_BC_Paste" : "Vstavyty",
+    "ContextMenu_BC_Reset" : "Skynuty",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Dodaty katehoriiu v obrane",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Prybraty katehoriiu z obranogo"
+}
