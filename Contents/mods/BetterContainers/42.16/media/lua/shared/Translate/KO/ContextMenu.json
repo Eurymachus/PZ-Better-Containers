@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "사용자 지정",
+    "ContextMenu_BC_Presets" : "프리셋",
+    "ContextMenu_BC_SavedPresets" : "저장된 프리셋",
+    "ContextMenu_BC_NoSavedPresets" : "저장된 프리셋 없음",
+    "ContextMenu_BC_Copy" : "복사",
+    "ContextMenu_BC_Paste" : "붙여넣기",
+    "ContextMenu_BC_Reset" : "초기화",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "카테고리 즐겨찾기 추가",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "카테고리 즐겨찾기 제거"
+}
