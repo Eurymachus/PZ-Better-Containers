@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "เปิดใช้งานคลังระยะใกล้",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "เปิดใช้งานระบบคลังระยะใกล้สำหรับเซิร์ฟเวอร์นี้",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "บังคับโหมดเฉพาะศพ",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "บังคับให้คลังระยะใกล้ทำงานเฉพาะกับศพ ผู้เล่นจะไม่สามารถสลับโหมดได้",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "อนุญาตให้ผู้เล่นสลับระยะใกล้",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "อนุญาตให้ผู้เล่นเปิดหรือปิดคลังระยะใกล้ผ่านปุ่มลัดหรือการตั้งค่าม็อด",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "อนุญาตให้ผู้เล่นสลับโหมด",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "อนุญาตให้ผู้เล่นสลับระหว่างโหมดทุกภาชนะและโหมดเฉพาะศพ",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "เปิดใช้งานการล็อกอัตโนมัติ",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "เปิดใช้งานฟังก์ชันล็อกอัตโนมัติ เมื่อเปิดอยู่ คลังระยะใกล้จะกลับไปยังภาชนะที่เลือก เว้นแต่จะมีการเปลี่ยนโดยตั้งใจ",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "อนุญาตให้ผู้เล่นสลับการล็อกอัตโนมัติ",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "อนุญาตให้ผู้เล่นเปิดหรือปิดการล็อกอัตโนมัติผ่านการตั้งค่าม็อด"
+}
