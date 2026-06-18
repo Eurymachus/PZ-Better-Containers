@@ -33,6 +33,40 @@ return {
         "farming.*WaterFull",
     },
 
+    -- Condiments
+    FoodC = {
+        "Base.CocoaPowder",
+        "Base.Coffee2",
+        "Base.Hotsauce",
+        "Base.Ketchup",
+        "Base.MapleSyrup",
+        "Base.Margarine",
+        "Base.Marinara",
+        "Base.Mustard",
+        "Base.OilOlive",
+        "Base.OilVegetable",
+        "Base.Pepper",
+        "Base.RiceVinegar",
+        "Base.Salt",
+        "Base.Soysauce",
+        "Base.Sugar",
+        "Base.SugarPacket",
+        "Base.Vinegar",
+    },
+
+    FoodI = {
+        "Base.BakingSoda",
+        "Base.CakeBatter",
+        "Base.Cornflour",
+        "Base.Cornmeal",
+        "Base.Flour",
+        "Base.GravyMix",
+        "Base.PancakeMix",
+        "Base.PieDough",
+        "Base.SugarBrown",
+        "Base.Yeast",
+    },
+
     -- Non-perishable food
     FoodN = {
         -- Canned (closed)

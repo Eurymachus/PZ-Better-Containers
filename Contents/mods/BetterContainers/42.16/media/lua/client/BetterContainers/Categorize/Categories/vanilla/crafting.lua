@@ -3,6 +3,7 @@ return {
     Craft = {
         "Base.Bellows",
         "Base.BucketPlasterFull",
+        "Base.Branch_Broken",
         "Base.Doorknob",
         "Base.DuctTape",
         "Base.Firewood",

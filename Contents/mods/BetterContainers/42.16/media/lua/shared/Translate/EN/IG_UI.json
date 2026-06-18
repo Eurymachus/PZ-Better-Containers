@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Farming - Seed",
     "IGUI_ItemCat_FoodA" : "Food - Alcohol",
     "IGUI_ItemCat_FoodB" : "Food - Beverage",
+    "IGUI_ItemCat_FoodC" : "Food - Condiment",
+    "IGUI_ItemCat_FoodI" : "Food - Ingredient",
     "IGUI_ItemCat_FoodP" : "Food - Perishable",
     "IGUI_ItemCat_FoodN" : "Food - Non-Perishable",
     "IGUI_ItemCat_Fuel" : "Fuel",

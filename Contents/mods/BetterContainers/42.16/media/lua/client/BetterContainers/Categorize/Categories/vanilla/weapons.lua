@@ -94,7 +94,6 @@ return {
         "Base.BoneClub_Spiked",
         "Base.BowlingPin",
         "Base.BowlingPin_Nails",
-        "Base.Branch_Broken",
         "Base.Branch_Broken_Nails",
         "Base.BrassNameplate",
         "Base.ChairLeg",
