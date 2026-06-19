@@ -495,6 +495,26 @@ local function _setTransferRunning(playerNum, isRunning)
     Proximity._LastBrowseMs[playerNum] = getTimestampMs()
 end
 
+local function _hasQueuedTransferAction(playerNum)
+    if not ISTimedActionQueue then return false end
+
+    local playerObj = getSpecificPlayer(playerNum)
+    if not playerObj then return false end
+
+    local queue = ISTimedActionQueue.getTimedActionQueue(playerObj)
+    local actions = queue and queue.queue
+    if not actions then return false end
+
+    for i = 1, #actions do
+        local action = actions[i]
+        if action and action.Type == "ISInventoryTransferAction" then
+            return true
+        end
+    end
+
+    return false
+end
+
 local old_ISInventoryTransferAction_start = ISInventoryTransferAction.start
 function ISInventoryTransferAction:start(...)
     local playerNum = self.character and self.character:getPlayerNum()
@@ -524,7 +544,7 @@ function ISInventoryTransferAction:perform(...)
     if old_ISInventoryTransferAction_perform then ret = old_ISInventoryTransferAction_perform(self, ...) end
 
     -- Vanilla sets started=false only when it really finishes (after ISBaseTimedAction.perform).
-    if playerNum ~= nil and self.started == false then
+    if playerNum ~= nil and (self.started == false or not self.queueList or #self.queueList == 0) then
         _setTransferRunning(playerNum, false)
 
         --[[
@@ -572,7 +592,16 @@ end
 
 function Proximity.isTransferActive(playerNum)
     local transferRunning = Proximity._TransferRunning and Proximity._TransferRunning[playerNum] or false
-    return transferRunning
+    if not transferRunning then
+        return false
+    end
+
+    if _hasQueuedTransferAction(playerNum) then
+        return true
+    end
+
+    _setTransferRunning(playerNum, false)
+    return false
 end
 
 --  TRANSFER AUTHORITY END

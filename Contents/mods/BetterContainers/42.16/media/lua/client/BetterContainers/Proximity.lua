@@ -381,8 +381,37 @@ function Proximity.setTransferRunning(playerNum, isRunning)
     Proximity._LastBrowseMs[playerNum] = getTimestampMs()
 end
 
+local function hasQueuedTransferAction(playerNum)
+    if not ISTimedActionQueue then return false end
+
+    local playerObj = getSpecificPlayer(playerNum)
+    if not playerObj then return false end
+
+    local queue = ISTimedActionQueue.getTimedActionQueue(playerObj)
+    local actions = queue and queue.queue
+    if not actions then return false end
+
+    for i = 1, #actions do
+        local action = actions[i]
+        if action and action.Type == "ISInventoryTransferAction" then
+            return true
+        end
+    end
+
+    return false
+end
+
 function Proximity.isTransferActive(playerNum)
-    return Proximity._TransferRunning and Proximity._TransferRunning[playerNum] or false
+    if not (Proximity._TransferRunning and Proximity._TransferRunning[playerNum]) then
+        return false
+    end
+
+    if hasQueuedTransferAction(playerNum) then
+        return true
+    end
+
+    Proximity.setTransferRunning(playerNum, false)
+    return false
 end
 
 function Proximity.DoAutoLock(playerNum, page, queue)
