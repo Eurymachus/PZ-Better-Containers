@@ -47,6 +47,18 @@ local function canUseProximityHighlight(page)
     return invType == Proximity.invName or invType == Proximity.invName_corpses
 end
 
+local function shouldIgnoreTransferContainerSwitch(page, container)
+    if not page or not container then return false end
+    if not Proximity.isTransferActive(page.player) then return false end
+
+    local current = page.inventoryPane and page.inventoryPane.inventory or page.inventory
+    local currentType = current and current:getType() or nil
+    if not Proximity.isProximityType(currentType) then return false end
+
+    local targetType = container:getType()
+    return not Proximity.isProximityType(targetType)
+end
+
 local function isCorpseOnlyHighlightMode()
     local eff = Options.getEffectivePermissions() or {}
     return eff.corpseOnly == true
@@ -126,6 +138,24 @@ function ProximityInventoryPage.install()
         end
 
         return old_selectContainer(self, button, ...)
+    end
+
+    local old_selectButtonForContainer = ISInventoryPage.selectButtonForContainer
+    function ISInventoryPage:selectButtonForContainer(container, ...)
+        if shouldIgnoreTransferContainerSwitch(self, container) then
+            return
+        end
+
+        return old_selectButtonForContainer(self, container, ...)
+    end
+
+    local old_setForceSelectedContainer = ISInventoryPage.setForceSelectedContainer
+    function ISInventoryPage:setForceSelectedContainer(container, ...)
+        if shouldIgnoreTransferContainerSwitch(self, container) then
+            return
+        end
+
+        return old_setForceSelectedContainer(self, container, ...)
     end
 
     local old_onMouseOutButton = ISInventoryPage.onMouseOutButton

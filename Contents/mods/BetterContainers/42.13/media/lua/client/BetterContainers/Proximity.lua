@@ -119,6 +119,37 @@ function ISInventoryPage:selectContainer(button, ...)
     return old_selectContainer(self, button, ...)
 end
 
+local function shouldIgnoreTransferContainerSwitch(page, container)
+    if not page or not container then return false end
+    if type(Proximity.isTransferActive) ~= "function" then return false end
+    if not Proximity.isTransferActive(page.player) then return false end
+
+    local current = page.inventoryPane and page.inventoryPane.inventory or page.inventory
+    local currentType = current and current:getType() or nil
+    if not _isProximityType(currentType) then return false end
+
+    local targetType = container:getType()
+    return not _isProximityType(targetType)
+end
+
+local old_selectButtonForContainer = ISInventoryPage.selectButtonForContainer
+function ISInventoryPage:selectButtonForContainer(container, ...)
+    if shouldIgnoreTransferContainerSwitch(self, container) then
+        return
+    end
+
+    return old_selectButtonForContainer(self, container, ...)
+end
+
+local old_setForceSelectedContainer = ISInventoryPage.setForceSelectedContainer
+function ISInventoryPage:setForceSelectedContainer(container, ...)
+    if shouldIgnoreTransferContainerSwitch(self, container) then
+        return
+    end
+
+    return old_setForceSelectedContainer(self, container, ...)
+end
+
 function Proximity.GetCorpseContainer(playerNum)
     if Proximity.corpseContainer[playerNum] then
         return Proximity.corpseContainer[playerNum]
