@@ -299,6 +299,13 @@ ModData.getDefaultSortPriority = function(inventory, inventoryPage)
         return 1000
     end
 
+    local invType = inventory:getType()
+    if invType == "proximityInv" then
+        return -20
+    elseif invType == "twistInv_corpses" then
+        return -10
+    end
+
     local isFake = not inventory:getContainingItem() and not inventory:getParent()
 
     local base = isFake and 0 or 10

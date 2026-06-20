@@ -145,11 +145,7 @@ ISInventoryPage.applyBackpackOrder = function(self)
     local buttonsAndSort = {}
     for index, button in ipairs(self.backpacks) do
         if isButtonValid(self, button) then
-            local sort = 1000 + index
-            local rd = Reorder.getData(playerObj, button.inventory)
-            if rd then
-                sort = rd:getSortNumber() or (1000 + index)
-            end
+            local sort = Reorder.getSortPriority(playerObj, button.inventory, self) or (1000 + index)
             table.insert(buttonsAndSort, {
                 button = button,
                 sort = sort

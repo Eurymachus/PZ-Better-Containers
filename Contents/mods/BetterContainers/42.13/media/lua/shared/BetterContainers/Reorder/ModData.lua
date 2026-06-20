@@ -377,6 +377,17 @@ ModData.isLockedForPlayer = function(playerObj, onCharacter)
 end
 
 ModData.getDefaultSortPriority = function(inventory, inventoryPage)
+    if not inventory or not inventoryPage then
+        return 1000
+    end
+
+    local invType = inventory:getType()
+    if invType == "proximityInv" then
+        return -20
+    elseif invType == "twistInv_corpses" then
+        return -10
+    end
+
     local index = 0
     for i, backpack in ipairs(inventoryPage.backpacks) do
         if backpack.inventory == inventory then
