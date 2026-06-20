@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Agriculture - Graine",
     "IGUI_ItemCat_FoodA" : "Nourriture - Alcool",
     "IGUI_ItemCat_FoodB" : "Nourriture - Boisson",
+    "IGUI_ItemCat_FoodC" : "Nourriture - Condiment",
+    "IGUI_ItemCat_FoodI" : "Nourriture - Ingredient",
     "IGUI_ItemCat_FoodP" : "Nourriture - Perissable",
     "IGUI_ItemCat_FoodN" : "Nourriture - Non perissable",
     "IGUI_ItemCat_Fuel" : "Carburant",

@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Viljely - Siemen",
     "IGUI_ItemCat_FoodA" : "Ruoka - Alkoholi",
     "IGUI_ItemCat_FoodB" : "Ruoka - Juoma",
+    "IGUI_ItemCat_FoodC" : "Ruoka - Mauste",
+    "IGUI_ItemCat_FoodI" : "Ruoka - Ainesosa",
     "IGUI_ItemCat_FoodP" : "Ruoka - Pilaantuva",
     "IGUI_ItemCat_FoodN" : "Ruoka - Sailuva",
     "IGUI_ItemCat_Fuel" : "Polttoaine",

@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Farmarstvi - Semena",
     "IGUI_ItemCat_FoodA" : "Jidlo - Alkohol",
     "IGUI_ItemCat_FoodB" : "Jidlo - Napoje",
+    "IGUI_ItemCat_FoodC" : "Jidlo - Dochucovadlo",
+    "IGUI_ItemCat_FoodI" : "Jidlo - Surovina",
     "IGUI_ItemCat_FoodP" : "Jidlo - Kratkodobe",
     "IGUI_ItemCat_FoodN" : "Jidlo - Trvanlive",
     "IGUI_ItemCat_Fuel" : "Palivo",

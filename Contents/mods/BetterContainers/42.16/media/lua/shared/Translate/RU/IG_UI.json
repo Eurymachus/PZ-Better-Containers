@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Фермерство - Семена",
     "IGUI_ItemCat_FoodA" : "Еда - Алкоголь",
     "IGUI_ItemCat_FoodB" : "Еда - Напитки",
+    "IGUI_ItemCat_FoodC" : "Еда - Приправа",
+    "IGUI_ItemCat_FoodI" : "Еда - Ингредиент",
     "IGUI_ItemCat_FoodP" : "Еда - Скоропортящееся",
     "IGUI_ItemCat_FoodN" : "Еда - Непортящееся",
     "IGUI_ItemCat_Fuel" : "Топливо",

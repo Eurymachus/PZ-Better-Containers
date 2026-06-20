@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Rolnictwo - Nasiona",
     "IGUI_ItemCat_FoodA" : "Jedzenie - Alkohol",
     "IGUI_ItemCat_FoodB" : "Jedzenie - Napoj",
+    "IGUI_ItemCat_FoodC" : "Jedzenie - Przyprawa",
+    "IGUI_ItemCat_FoodI" : "Jedzenie - Skladnik",
     "IGUI_ItemCat_FoodP" : "Jedzenie - Latwo psujace sie",
     "IGUI_ItemCat_FoodN" : "Jedzenie - Niepsujace sie",
     "IGUI_ItemCat_Fuel" : "Paliwo",

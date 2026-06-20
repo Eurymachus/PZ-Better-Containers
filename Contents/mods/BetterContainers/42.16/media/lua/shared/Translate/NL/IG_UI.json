@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Landbouw - Zaad",
     "IGUI_ItemCat_FoodA" : "Voedsel - Alcohol",
     "IGUI_ItemCat_FoodB" : "Voedsel - Drank",
+    "IGUI_ItemCat_FoodC" : "Voedsel - Smaakmaker",
+    "IGUI_ItemCat_FoodI" : "Voedsel - Ingredient",
     "IGUI_ItemCat_FoodP" : "Voedsel - Bederfelijk",
     "IGUI_ItemCat_FoodN" : "Voedsel - Niet-bederfelijk",
     "IGUI_ItemCat_Fuel" : "Brandstof",

@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "농업 - 씨앗",
     "IGUI_ItemCat_FoodA" : "음식 - 술",
     "IGUI_ItemCat_FoodB" : "음식 - 음료",
+    "IGUI_ItemCat_FoodC" : "음식 - 조미료",
+    "IGUI_ItemCat_FoodI" : "음식 - 재료",
     "IGUI_ItemCat_FoodP" : "음식 - 부패성",
     "IGUI_ItemCat_FoodN" : "음식 - 비부패성",
     "IGUI_ItemCat_Fuel" : "연료",

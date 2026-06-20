@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Jordbruk - Fro",
     "IGUI_ItemCat_FoodA" : "Mat - Alkohol",
     "IGUI_ItemCat_FoodB" : "Mat - Drikke",
+    "IGUI_ItemCat_FoodC" : "Mat - Krydder",
+    "IGUI_ItemCat_FoodI" : "Mat - Ingrediens",
     "IGUI_ItemCat_FoodP" : "Mat - Bedervelig",
     "IGUI_ItemCat_FoodN" : "Mat - Ikke-bedervelig",
     "IGUI_ItemCat_Fuel" : "Drivstoff",

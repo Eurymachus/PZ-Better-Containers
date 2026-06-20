@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Landwirtschaft - Samen",
     "IGUI_ItemCat_FoodA" : "Nahrung - Alkohol",
     "IGUI_ItemCat_FoodB" : "Nahrung - Getranke",
+    "IGUI_ItemCat_FoodC" : "Nahrung - Wurzmittel",
+    "IGUI_ItemCat_FoodI" : "Nahrung - Zutat",
     "IGUI_ItemCat_FoodP" : "Nahrung - Verderblich",
     "IGUI_ItemCat_FoodN" : "Nahrung - Nicht verderblich",
     "IGUI_ItemCat_Fuel" : "Treibstoff",

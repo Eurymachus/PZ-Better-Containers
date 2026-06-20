@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Landbrug - Fro",
     "IGUI_ItemCat_FoodA" : "Mad - Alkohol",
     "IGUI_ItemCat_FoodB" : "Mad - Drikkevare",
+    "IGUI_ItemCat_FoodC" : "Mad - Krydderi",
+    "IGUI_ItemCat_FoodI" : "Mad - Ingrediens",
     "IGUI_ItemCat_FoodP" : "Mad - Letfordaervelig",
     "IGUI_ItemCat_FoodN" : "Mad - Ikke-letfordaervelig",
     "IGUI_ItemCat_Fuel" : "Braendstof",

@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "農業 - 種",
     "IGUI_ItemCat_FoodA" : "食料 - 酒類",
     "IGUI_ItemCat_FoodB" : "食料 - 飲料",
+    "IGUI_ItemCat_FoodC" : "食料 - 調味料",
+    "IGUI_ItemCat_FoodI" : "食料 - 食材",
     "IGUI_ItemCat_FoodP" : "食料 - 生鮮",
     "IGUI_ItemCat_FoodN" : "食料 - 保存食",
     "IGUI_ItemCat_Fuel" : "燃料",

@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "การทำฟาร์ม - เมล็ด",
     "IGUI_ItemCat_FoodA" : "อาหาร - แอลกอฮอล์",
     "IGUI_ItemCat_FoodB" : "อาหาร - เครื่องดื่ม",
+    "IGUI_ItemCat_FoodC" : "อาหาร - เครื่องปรุง",
+    "IGUI_ItemCat_FoodI" : "อาหาร - วัตถุดิบ",
     "IGUI_ItemCat_FoodP" : "อาหาร - เน่าเสียง่าย",
     "IGUI_ItemCat_FoodN" : "อาหาร - ไม่เน่าเสียง่าย",
     "IGUI_ItemCat_Fuel" : "เชื้อเพลิง",

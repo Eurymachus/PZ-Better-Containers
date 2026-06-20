@@ -29,6 +29,8 @@
     "IGUI_ItemCat_FarmSeed" : "Tarim - Tohum",
     "IGUI_ItemCat_FoodA" : "Yiyecek - Alkol",
     "IGUI_ItemCat_FoodB" : "Yiyecek - Icecek",
+    "IGUI_ItemCat_FoodC" : "Yiyecek - Cesni",
+    "IGUI_ItemCat_FoodI" : "Yiyecek - Malzeme",
     "IGUI_ItemCat_FoodP" : "Yiyecek - Bozulabilir",
     "IGUI_ItemCat_FoodN" : "Yiyecek - Bozulmaz",
     "IGUI_ItemCat_Fuel" : "Yakit",
