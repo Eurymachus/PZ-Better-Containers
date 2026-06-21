@@ -17,6 +17,9 @@ local Options = {
     enableCustomizer = true,
     enableCustomizerSubMenu = true,
 
+    -- NESTED
+    enableNestedContainers = false,
+
     -- PROXIMITY
     enableProximity = true,
     enableProximityKeybind = Keyboard.KEY_NUMPAD1,
@@ -46,6 +49,9 @@ local config = {
     -- CUSTOMIZE
     enableCustomizer = nil,
     enableCustomizerSubMenu = nil,
+
+    -- NESTED
+    enableNestedContainers = nil,
 
     -- PROXIMITY
     enableProximity = nil,
@@ -146,6 +152,9 @@ local function applyOptions()
     -- CUSTOMIZE
     Options.enableCustomizer  = opts:getOption("enableCustomizer"):getValue()
     Options.enableCustomizerSubMenu  = opts:getOption("enableCustomizerSubMenu"):getValue()
+
+    -- NESTED
+    Options.enableNestedContainers = opts:getOption("enableNestedContainers"):getValue()
 
     -- PROXIMITY
     Options.enableProximity = opts:getOption("enableProximity"):getValue()
@@ -252,6 +261,23 @@ local function initConfig()
         enableCustomizerSubMenuTitle,
         Options.enableCustomizerSubMenu,
         enableCustomizerSubMenuTooltip
+    )
+
+    panel:addSeparator()
+
+    -- NESTED
+    panel:addDescription(
+        getTextOrNull("UI_BetterContainers_Options_NestedTitle")
+            or "Nested Containers"
+    )
+
+    config.enableNestedContainers = panel:addTickBox(
+        "enableNestedContainers",
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers")
+            or "Enable Nested Containers",
+        Options.enableNestedContainers,
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_tooltip")
+            or "When enabled, containers inside visible inventories are shown as additional container buttons."
     )
 
     panel:addSeparator()
