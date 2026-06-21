@@ -10,8 +10,26 @@ Nested._ignoredInventoryTypes = {}
 Nested._ignoredInventoryPredicates = {}
 Nested.maxDepth = 10
 
-local function isEnabled()
-    return Options.enableNestedContainers == true
+local PLAYER_FILTER_EVERYTHING = 1
+local PLAYER_FILTER_ONLY_POCKETS = 2
+local PLAYER_FILTER_ONLY_EQUIPPED = 3
+
+local function isEnabled(inventoryPage)
+    if not inventoryPage then return false end
+
+    if inventoryPage.onCharacter then
+        return Options.enableNestedContainers_Player == true
+    end
+
+    return Options.enableNestedContainers_Loot == true
+end
+
+local function getMaxDepth()
+    local depth = tonumber(Options.nestedContainersDepth) or Nested.maxDepth
+    if depth < 1 then return 1 end
+    if depth > Nested.maxDepth then return Nested.maxDepth end
+
+    return depth
 end
 
 local function isProximityInventory(inventory)
@@ -31,6 +49,27 @@ local function isBlockedLootVehicleContainer(inventory)
     return string.find(invType, "TruckBed", 1, true) ~= nil
         or string.find(invType, "Trailer", 1, true) ~= nil
         or string.find(invType, "Trunk", 1, true) ~= nil
+end
+
+local function isFilteredPlayerInventory(inventoryPage, inventory)
+    if not inventoryPage or not inventoryPage.onCharacter then return false end
+
+    local playerObj = getSpecificPlayer(inventoryPage.player)
+    if not playerObj then return false end
+
+    local filter = Options.nestedContainersPlayerFilter or PLAYER_FILTER_EVERYTHING
+    if filter == PLAYER_FILTER_EVERYTHING then return false end
+
+    if filter == PLAYER_FILTER_ONLY_POCKETS then
+        local item = inventory:getContainingItem()
+        return item and playerObj:isEquipped(item)
+    end
+
+    if filter == PLAYER_FILTER_ONLY_EQUIPPED then
+        return inventory == playerObj:getInventory()
+    end
+
+    return false
 end
 
 -- Public API: ignore every inventory matching this exact inventory type.
@@ -133,6 +172,34 @@ local function shouldAddItemContainer(inventoryPage, item)
     return true
 end
 
+local function applyParentIcon(button, item)
+    if not Options.showNestedContainerParentIcon then return end
+    if not button or not item then return end
+
+    local parentContainer = item:getContainer()
+    if not parentContainer then return end
+
+    local parentItem = parentContainer:getContainingItem()
+    if not parentItem then return end
+
+    local parentTex = parentItem:getTex()
+    if not parentTex then return end
+
+    if not button._bcNestedRender then
+        button._bcNestedRender = button.render
+    end
+
+    button.render = function(self)
+        if self._bcNestedRender then
+            self._bcNestedRender(self)
+        end
+
+        local margin = 1
+        local iconSize = self.height / 2
+        self:drawTextureScaled(parentTex, self.width - iconSize - margin, self.height - iconSize - margin, iconSize, iconSize, 1)
+    end
+end
+
 local function addNestedButton(inventoryPage, item)
     local button = inventoryPage:addContainerButton(
         item:getInventory(),
@@ -148,12 +215,15 @@ local function addNestedButton(inventoryPage, item)
         end
     end
 
+    applyParentIcon(button, item)
+
     return button
 end
 
 local function scanInventory(inventoryPage, inventory, depth, visited)
-    if depth > Nested.maxDepth then return end
+    if depth > getMaxDepth() then return end
     if Nested.isIgnoredInventory(inventoryPage, inventory) then return end
+    if isFilteredPlayerInventory(inventoryPage, inventory) then return end
     if visited[inventory] then return end
 
     visited[inventory] = true
@@ -175,7 +245,7 @@ local function scanInventory(inventoryPage, inventory, depth, visited)
 end
 
 function Nested.OnButtonsAdded(inventoryPage)
-    if not isEnabled() then return end
+    if not isEnabled(inventoryPage) then return end
     if not inventoryPage or not inventoryPage.backpacks then return end
 
     local visited = {}

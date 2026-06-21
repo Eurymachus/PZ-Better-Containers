@@ -18,7 +18,11 @@ local Options = {
     enableCustomizerSubMenu = true,
 
     -- NESTED
-    enableNestedContainers = false,
+    enableNestedContainers_Player = false,
+    enableNestedContainers_Loot = false,
+    nestedContainersDepth = 2,
+    nestedContainersPlayerFilter = 1,
+    showNestedContainerParentIcon = true,
 
     -- PROXIMITY
     enableProximity = true,
@@ -51,7 +55,11 @@ local config = {
     enableCustomizerSubMenu = nil,
 
     -- NESTED
-    enableNestedContainers = nil,
+    enableNestedContainers_Player = nil,
+    enableNestedContainers_Loot = nil,
+    nestedContainersDepth = nil,
+    nestedContainersPlayerFilter = nil,
+    showNestedContainerParentIcon = nil,
 
     -- PROXIMITY
     enableProximity = nil,
@@ -154,7 +162,11 @@ local function applyOptions()
     Options.enableCustomizerSubMenu  = opts:getOption("enableCustomizerSubMenu"):getValue()
 
     -- NESTED
-    Options.enableNestedContainers = opts:getOption("enableNestedContainers"):getValue()
+    Options.enableNestedContainers_Player = opts:getOption("enableNestedContainers_Player"):getValue()
+    Options.enableNestedContainers_Loot = opts:getOption("enableNestedContainers_Loot"):getValue()
+    Options.nestedContainersDepth = opts:getOption("nestedContainersDepth"):getValue()
+    Options.nestedContainersPlayerFilter = opts:getOption("nestedContainersPlayerFilter"):getValue()
+    Options.showNestedContainerParentIcon = opts:getOption("showNestedContainerParentIcon"):getValue()
 
     -- PROXIMITY
     Options.enableProximity = opts:getOption("enableProximity"):getValue()
@@ -271,13 +283,62 @@ local function initConfig()
             or "Nested Containers"
     )
 
-    config.enableNestedContainers = panel:addTickBox(
-        "enableNestedContainers",
-        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers")
-            or "Enable Nested Containers",
-        Options.enableNestedContainers,
-        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_tooltip")
-            or "When enabled, containers inside visible inventories are shown as additional container buttons."
+    config.enableNestedContainers_Player = panel:addTickBox(
+        "enableNestedContainers_Player",
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_Player")
+            or "Enable Player Nested Containers",
+        Options.enableNestedContainers_Player,
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_Player_tooltip")
+            or "When enabled, containers inside the player inventory are shown as additional container buttons."
+    )
+
+    config.enableNestedContainers_Loot = panel:addTickBox(
+        "enableNestedContainers_Loot",
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_Loot")
+            or "Enable Loot Nested Containers",
+        Options.enableNestedContainers_Loot,
+        getTextOrNull("UI_BetterContainers_Options_enableNestedContainers_Loot_tooltip")
+            or "When enabled, containers inside loot inventories are shown as additional container buttons."
+    )
+
+    config.nestedContainersDepth = panel:addSlider(
+        "nestedContainersDepth",
+        getTextOrNull("UI_BetterContainers_Options_nestedContainersDepth")
+            or "Nested Container Depth",
+        1,
+        10,
+        1,
+        Options.nestedContainersDepth
+    )
+
+    config.showNestedContainerParentIcon = panel:addTickBox(
+        "showNestedContainerParentIcon",
+        getTextOrNull("UI_BetterContainers_Options_showNestedContainerParentIcon")
+            or "Show Parent Container Icon",
+        Options.showNestedContainerParentIcon,
+        getTextOrNull("UI_BetterContainers_Options_showNestedContainerParentIcon_tooltip")
+            or "When enabled, nested container buttons show the icon of the container they are inside."
+    )
+
+    config.nestedContainersPlayerFilter = panel:addComboBox(
+        "nestedContainersPlayerFilter",
+        getTextOrNull("UI_BetterContainers_Options_nestedContainersPlayerFilter")
+            or "Player Inventory Filter"
+    )
+    config.nestedContainersPlayerFilter:addItem(
+        getTextOrNull("UI_BetterContainers_Options_nestedContainersPlayerFilter_Everything")
+            or "Everything",
+        Options.nestedContainersPlayerFilter == 1
+    )
+    config.nestedContainersPlayerFilter:addItem(
+        getTextOrNull("UI_BetterContainers_Options_nestedContainersPlayerFilter_OnlyPockets")
+            or "Inventory Only",
+        Options.nestedContainersPlayerFilter == 2
+    )
+    config.nestedContainersPlayerFilter:addItem(
+        getTextOrNull("UI_BetterContainers_Options_nestedContainersPlayerFilter_OnlyEquipped")
+            or "Equipped Containers Only",
+        Options.nestedContainersPlayerFilter == 3
     )
 
     panel:addSeparator()
