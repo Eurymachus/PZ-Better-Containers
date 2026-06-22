@@ -574,8 +574,8 @@ function ISInventoryTransferAction:perform(...)
     local ret
     if old_ISInventoryTransferAction_perform then ret = old_ISInventoryTransferAction_perform(self, ...) end
 
-    -- Vanilla sets started=false only when it really finishes (after ISBaseTimedAction.perform).
-    if playerNum ~= nil and (self.started == false or not self.queueList or #self.queueList == 0) then
+    -- Keep the proximity lock alive until the whole queued transfer batch drains.
+    if playerNum ~= nil and not _hasQueuedTransferAction(playerNum) then
         _setTransferRunning(playerNum, false)
 
         --[[

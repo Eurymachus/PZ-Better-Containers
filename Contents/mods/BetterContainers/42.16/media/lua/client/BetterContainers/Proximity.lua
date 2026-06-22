@@ -381,7 +381,7 @@ function Proximity.setTransferRunning(playerNum, isRunning)
     Proximity._LastBrowseMs[playerNum] = getTimestampMs()
 end
 
-local function hasQueuedTransferAction(playerNum)
+function Proximity.hasQueuedTransferAction(playerNum)
     if not ISTimedActionQueue then return false end
 
     local playerObj = getSpecificPlayer(playerNum)
@@ -406,7 +406,7 @@ function Proximity.isTransferActive(playerNum)
         return false
     end
 
-    if hasQueuedTransferAction(playerNum) then
+    if Proximity.hasQueuedTransferAction(playerNum) then
         return true
     end
 
