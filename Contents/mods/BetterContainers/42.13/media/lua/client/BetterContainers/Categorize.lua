@@ -65,6 +65,42 @@ local function _bcRestoreOriginalDisplayCategory(fullType)
     return true
 end
 
+local function _bcTrim(s)
+    if type(s) ~= "string" then return "" end
+    return (s:gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+local function _bcBuildCategoryBlacklist(value)
+    value = _bcTrim(tostring(value or ""))
+    local disabled = string.lower(value)
+    if value == "" or disabled == "none" or disabled == "off" or disabled == "false" or disabled == "-" then
+        return nil
+    end
+
+    local out = {}
+    local count = 0
+    for token in string.gmatch(value, "([^,]+)") do
+        local category = _bcTrim(token)
+        if category ~= "" then
+            local key = string.lower(category)
+            if not out[key] then
+                out[key] = true
+                count = count + 1
+            end
+        end
+    end
+
+    if count == 0 then return nil end
+    return out
+end
+
+local function _bcIsDisplayCategoryBlacklisted(scriptItem, blacklist)
+    if not (scriptItem and blacklist) then return false end
+    local ok, category = pcall(function() return scriptItem:getDisplayCategory() end)
+    if not (ok and category and category ~= "") then return false end
+    return blacklist[string.lower(_bcTrim(tostring(category)))] == true
+end
+
 local function loadCategories()
     dlog("showAdvancedDisplayCategories = " .. tostring(isEnabled))
     if not isEnabled then return end
@@ -129,6 +165,8 @@ local function loadCategories()
     end
 
     local ALL_FULLTYPES, SCRIPTITEM_BY_FULLTYPE = buildScriptItemIndex()
+    local CATEGORY_BLACKLIST = _bcBuildCategoryBlacklist(OPTS.categoryBlacklist)
+    local skippedBlacklisted = 0
 
     -- ===== WILDCARDS =====
     local function isWildcard(s)
@@ -192,6 +230,11 @@ local function loadCategories()
     local best = {}   -- fullType -> { category, spec, wildcardScore }
 
     local function setBest(fullType, category, spec, wildcardScore)
+        if _bcIsDisplayCategoryBlacklisted(SCRIPTITEM_BY_FULLTYPE[fullType], CATEGORY_BLACKLIST) then
+            skippedBlacklisted = skippedBlacklisted + 1
+            return
+        end
+
         local prev = best[fullType]
         if not prev then
             best[fullType] = { category = category, spec = spec, wildcardScore = wildcardScore or 0 }
@@ -355,6 +398,9 @@ local function loadCategories()
 
     ItemTweaker.tweakItems()
     dlog("Applied DisplayCategory tweaks " .. tostring(applied))
+    if skippedBlacklisted > 0 then
+        dlog("Skipped blacklisted DisplayCategory tweaks " .. tostring(skippedBlacklisted))
+    end
 
     -- DisplayCategory universe has changed; rebuild on next request.
     _BC_AllDisplayCategories = nil
@@ -604,6 +650,7 @@ local function recategorizeAllLoadedItemsNow(load)
     local stats = { items = 0 }
 
     if load then
+        unloadCategories()
         loadCategories()
     else
         unloadCategories()
@@ -627,9 +674,12 @@ local function recategorizeAllLoadedItemsNow(load)
     dlog("Re-categorised loaded items = " .. tostring(stats.items))
 end
 
+local categoryBlacklist = OPTS.categoryBlacklist
+
 local function updateCategories()
-    if isEnabled ~= OPTS.showAdvancedDisplayCategories then
+    if isEnabled ~= OPTS.showAdvancedDisplayCategories or categoryBlacklist ~= OPTS.categoryBlacklist then
         isEnabled = OPTS.showAdvancedDisplayCategories
+        categoryBlacklist = OPTS.categoryBlacklist
         recategorizeAllLoadedItemsNow(isEnabled)
     end
 end

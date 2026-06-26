@@ -12,6 +12,7 @@ local Options = {
     -- CATEGORIZE
     showAdvancedDisplayCategories = true,
     showFavouritesOnPlayerInventories = false,
+    categoryBlacklist = "Lore",
 
     -- CUSTOMIZE
     enableCustomizer = true,
@@ -49,6 +50,7 @@ local config = {
     -- CATEGORIZE
     showAdvancedDisplayCategories = nil,
     showFavouritesOnPlayerInventories = nil,
+    categoryBlacklist = nil,
 
     -- CUSTOMIZE
     enableCustomizer = nil,
@@ -156,6 +158,7 @@ local function applyOptions()
     -- CATEGORIZE
     Options.showAdvancedDisplayCategories  = opts:getOption("showAdvancedDisplayCategories"):getValue()
     Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
+    Options.categoryBlacklist = opts:getOption("categoryBlacklist"):getValue()
 
     -- CUSTOMIZE
     Options.enableCustomizer  = opts:getOption("enableCustomizer"):getValue()
@@ -232,6 +235,15 @@ local function initConfig()
         showCatTitle,
         Options.showAdvancedDisplayCategories,
         showCatTooltip
+    )
+
+    config.categoryBlacklist = panel:addTextEntry(
+        "categoryBlacklist",
+        getTextOrNull("UI_BetterContainers_Options_categoryBlacklist")
+            or "Category Blacklist",
+        Options.categoryBlacklist,
+        getTextOrNull("UI_BetterContainers_Options_categoryBlacklist_Tooltip")
+            or "Better Containers will not recategorize items already using these script DisplayCategory names. Separate categories with commas. Enter none to disable."
     )
 
     local showFavTitle  = getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories")

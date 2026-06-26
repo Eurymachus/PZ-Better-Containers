@@ -6,6 +6,8 @@ UI_EN = {
     UI_BetterContainers_Options_allowReorderingContainers_Tooltip       = "When enabled will allow the reordering of inventory container buttons, including player buttons",
     UI_BetterContainers_Options_showAdvancedDisplayCategories           = "Show Advanced Display Categories",
     UI_BetterContainers_Options_showAdvancedDisplayCategories_Tooltip   = "When enabled will improve the display categories of items in the inventory panels (Small lag when enabling)",
+    UI_BetterContainers_Options_categoryBlacklist                       = "Category Blacklist",
+    UI_BetterContainers_Options_categoryBlacklist_Tooltip               = "Better Containers will not recategorize items already using these script DisplayCategory names. Separate categories with commas. Enter none to disable.",
     UI_BetterContainers_Options_enableCustomizer                        = "Enable Container Button Customizer",
     UI_BetterContainers_Options_enableCustomizer_Tooltip                = "When enabled will allow the customizing of inventory container buttons",
 
