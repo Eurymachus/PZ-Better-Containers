@@ -139,6 +139,12 @@ BetterContainers.getSortPriority = function(player, inventory, inventoryPage)
 end
 
 BetterContainers.getDefaultSortPriority = function(inventory, inventoryPage)
+    local invType = inventory:getType()
+    local isFake = not inventory:getContainingItem() and not inventory:getParent()
+    if isFake and invType ~= "floor" then
+        return -5
+    end
+
     local index = 0
     for i, backpack in ipairs(inventoryPage.backpacks) do
         if backpack.inventory == inventory then

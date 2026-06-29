@@ -307,6 +307,9 @@ ModData.getDefaultSortPriority = function(inventory, inventoryPage)
     end
 
     local isFake = not inventory:getContainingItem() and not inventory:getParent()
+    if isFake and invType ~= "floor" then
+        return -5
+    end
 
     local base = isFake and 0 or 10
     local index = 0
