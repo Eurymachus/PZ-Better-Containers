@@ -20,6 +20,15 @@ Use these local paths when tracing Lua behavior, mod dependencies, or Project Zo
 - Latest decompiled Java reference: `C:\Games\Steam\steamapps\common\ProjectZomboid\zombie_decompiled`
 - Legacy decompiled Java reference: `C:\Games\Steam\steamapps\common\PZJava`
 
+## Runtime Logs
+
+Use these local logs when debugging live game behavior, Lua errors, load order, or mod interactions:
+
+- Main Project Zomboid console log: `E:\LocalProfiles\Eurymachus\GameData\Zomboid\console.txt`
+- Project Zomboid logs folder: `E:\LocalProfiles\Eurymachus\GameData\Zomboid\Logs`
+
+Treat runtime logs as read-only diagnostic references unless the user explicitly asks to clean, archive, or modify them.
+
 ## Working Rules
 
 - Prefer `rg` for searches across Lua, Java references, `mod.info`, media scripts, recipes, translations, and workshop dependencies.

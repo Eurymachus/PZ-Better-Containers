@@ -247,9 +247,9 @@ local function initConfig()
     )
 
     local showFavTitle  = getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories")
-                                    or "Show Favourited Category Items on Player Inventory"
+                                    or "Show Pinned Item Types on Player Inventory"
     local showFavTooltip  = getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories_Tooltip")
-                                    or "When enabled will also show favourited category items on player inventory"
+                                    or "When enabled, pinned item types are also shown on the player inventory."
 
     config.showFavouritesOnPlayerInventories = panel:addTickBox(
         "showFavouritesOnPlayerInventories",

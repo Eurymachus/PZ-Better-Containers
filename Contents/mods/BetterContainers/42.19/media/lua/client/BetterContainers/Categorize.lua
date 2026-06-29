@@ -723,10 +723,8 @@ Categorize.install = function()
     Events.OnMainMenuEnter.Add(function() loadCategories() end)
     Events[Helpers.OPTIONS_APPLIED].Add(updateCategories)
 
-    local CategoryFavourites = require("BetterContainers/Categorize/CategoryFavourites")
     local CategoryFilters = require("BetterContainers/Categorize/CategoryFilters")
 
-    CategoryFavourites.install()
     CategoryFilters.install()
 end
 

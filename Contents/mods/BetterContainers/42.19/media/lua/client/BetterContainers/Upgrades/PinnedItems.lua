@@ -1,18 +1,18 @@
-local CategoryFavourites = {}
+local PinnedItems = {}
 
 local Helpers = require("BetterContainers/Helpers")
 local IniWriter = require("BetterContainers/_IO/IniWriter")
 local Options = require("BetterContainers/_Options")
 
 local function dlog(msg)
-    Helpers.dlog("CategoryFavourites " .. tostring(msg))
+    Helpers.dlog("PinnedItems " .. tostring(msg))
 end
 
 local FEATURE = IniWriter.makeFeature("FavouritedItems", false)
 local SECTION = "Favourites"
 
 -- fullType -> true
-CategoryFavourites.FavouritedItems = CategoryFavourites.FavouritedItems or {}
+PinnedItems.FavouritedItems = PinnedItems.FavouritedItems or {}
 
 local _dirty = false
 local _loaded = false
@@ -45,23 +45,23 @@ local function _sortedKeys(t)
     return keys
 end
 
-CategoryFavourites.isLoaded = function()
+PinnedItems.isLoaded = function()
     return _loaded
 end
 
-CategoryFavourites.isDirty = function()
+PinnedItems.isDirty = function()
     return _dirty
 end
 
-CategoryFavourites.isFavourite = function(fullType)
+PinnedItems.isFavourite = function(fullType)
     if not fullType then return false end
-    return CategoryFavourites.FavouritedItems[fullType] == true
+    return PinnedItems.FavouritedItems[fullType] == true
 end
 
-CategoryFavourites.setFavourite = function(fullType, isFav)
+PinnedItems.setFavourite = function(fullType, isFav)
     if not fullType or fullType == "" then return false end
 
-    local cur = CategoryFavourites.FavouritedItems[fullType] == true
+    local cur = PinnedItems.FavouritedItems[fullType] == true
     isFav = isFav == true
 
     if cur == isFav then
@@ -69,10 +69,10 @@ CategoryFavourites.setFavourite = function(fullType, isFav)
     end
 
     if isFav then
-        CategoryFavourites.FavouritedItems[fullType] = true
+        PinnedItems.FavouritedItems[fullType] = true
         dlog("favourite add " .. tostring(fullType))
     else
-        CategoryFavourites.FavouritedItems[fullType] = nil
+        PinnedItems.FavouritedItems[fullType] = nil
         dlog("favourite remove " .. tostring(fullType))
     end
 
@@ -84,38 +84,38 @@ CategoryFavourites.setFavourite = function(fullType, isFav)
     return true
 end
 
-CategoryFavourites.toggleFavourite = function(fullType)
-    return CategoryFavourites.setFavourite(fullType, not CategoryFavourites.isFavourite(fullType))
+PinnedItems.toggleFavourite = function(fullType)
+    return PinnedItems.setFavourite(fullType, not PinnedItems.isFavourite(fullType))
 end
 
-CategoryFavourites.load = function()
+PinnedItems.load = function()
     if _loaded then return true end
 
     local row = FEATURE.get(SECTION) or {}
-    CategoryFavourites.FavouritedItems = {}
+    PinnedItems.FavouritedItems = {}
 
     for k, v in pairs(row) do
         if v ~= nil and tostring(v) ~= "0" and tostring(v) ~= "false" then
-            CategoryFavourites.FavouritedItems[tostring(k)] = true
+            PinnedItems.FavouritedItems[tostring(k)] = true
         end
     end
 
     _dirty = false
     _loaded = true
 
-    dlog("loaded " .. tostring(#_sortedKeys(CategoryFavourites.FavouritedItems)) .. " favourites")
+    dlog("loaded " .. tostring(#_sortedKeys(PinnedItems.FavouritedItems)) .. " favourites")
     return true
 end
 
-CategoryFavourites.saveIfDirty = function()
+PinnedItems.saveIfDirty = function()
     if not _dirty then return false end
 
     local outRow = {}
-    for fullType, _ in pairs(CategoryFavourites.FavouritedItems) do
+    for fullType, _ in pairs(PinnedItems.FavouritedItems) do
         outRow[fullType] = "1"
     end
 
-    local order = _sortedKeys(CategoryFavourites.FavouritedItems)
+    local order = _sortedKeys(PinnedItems.FavouritedItems)
 
     -- If empty, delete the section to keep file tidy.
     if #order == 0 then
@@ -129,29 +129,29 @@ CategoryFavourites.saveIfDirty = function()
     return true
 end
 
-CategoryFavourites.onFillInventoryContext = function(player, context, items, test)
+PinnedItems.onFillInventoryContext = function(player, context, items, test)
     if test then return end
     if not _loaded then
-        CategoryFavourites.load()
+        PinnedItems.load()
     end
 
     local fullType = _getFullTypeFromContextItems(items)
     if not fullType then return end
 
-    local isFav = CategoryFavourites.isFavourite(fullType)
-    local label = isFav and (getTextOrNull("ContextMenu_BetterContainers_RemoveCategoryFav") or "Remove Category Favourite")
-                        or (getTextOrNull("ContextMenu_BetterContainers_AddCategoryFav") or "Add Category Favourite")
+    local isFav = PinnedItems.isFavourite(fullType)
+    local label = isFav and (getTextOrNull("ContextMenu_BetterContainers_UnpinItemType") or "Unpin Item Type")
+                        or (getTextOrNull("ContextMenu_BetterContainers_PinItemType") or "Pin Item Type")
 
     context:addOption(label, nil, function()
-        CategoryFavourites.setFavourite(fullType, not isFav)
+        PinnedItems.setFavourite(fullType, not isFav)
     end)
 end
 
-CategoryFavourites.onSave = function()
-    CategoryFavourites.saveIfDirty()
+PinnedItems.onSave = function()
+    PinnedItems.saveIfDirty()
 end
 
-CategoryFavourites.displayFavouritedCategory = function(inventoryPage)
+PinnedItems.displayPinnedItem = function(inventoryPage)
     if not inventoryPage then return false end
 
     local onCharacter = inventoryPage.onCharacter
@@ -161,9 +161,9 @@ CategoryFavourites.displayFavouritedCategory = function(inventoryPage)
         or (onCharacter == false)
 end
 
-CategoryFavourites.installInventoryPanePatch = function()
-    if CategoryFavourites._panePatched then return end
-    CategoryFavourites._panePatched = true
+PinnedItems.installInventoryPanePatch = function()
+    if PinnedItems._panePatched then return end
+    PinnedItems._panePatched = true
 
     require("ISUI/ISInventoryPane")
 
@@ -178,7 +178,7 @@ CategoryFavourites.installInventoryPanePatch = function()
     local function _isRowFav(v)
         local it = v and v.items and v.items[1]
         if not (it and it.getFullType) then return false end
-        return CategoryFavourites.isFavourite(it:getFullType())
+        return PinnedItems.isFavourite(it:getFullType())
     end
 
     local function _ensureFavComparators(pane)
@@ -187,7 +187,7 @@ CategoryFavourites.installInventoryPanePatch = function()
 
         -- Per-pane wrappers so we can see pane.inventoryPage / onCharacter.
         pane._cfCatInc = function(a, b)
-            if not CategoryFavourites.displayFavouritedCategory(pane.inventoryPage) then
+            if not PinnedItems.displayPinnedItem(pane.inventoryPage) then
                 return _origCatInc(a, b)
             end
 
@@ -205,7 +205,7 @@ CategoryFavourites.installInventoryPanePatch = function()
         end
 
         pane._cfCatDesc = function(a, b)
-            if not CategoryFavourites.displayFavouritedCategory(pane.inventoryPage) then
+            if not PinnedItems.displayPinnedItem(pane.inventoryPage) then
                 return _origCatDesc(a, b)
             end
 
@@ -231,7 +231,7 @@ CategoryFavourites.installInventoryPanePatch = function()
     local function _applyCatSorterForPane(pane, wantDesc)
         if not pane then return end
 
-        local allow = CategoryFavourites.displayFavouritedCategory(pane.inventoryPage)
+        local allow = PinnedItems.displayPinnedItem(pane.inventoryPage)
 
         if allow then
             _ensureFavComparators(pane)
@@ -241,7 +241,7 @@ CategoryFavourites.installInventoryPanePatch = function()
         end
     end
 
-    -- Toggle category sort direction, but choose vanilla vs wrappers based on displayFavouritedCategory().
+    -- Toggle category sort direction, but choose vanilla vs wrappers based on displayPinnedItem().
     ISInventoryPane.sortByType = function(self, button)
         local wantDesc = _isCatIncFunc(self.itemSortFunc, self) -- if currently inc, toggle to desc
         _applyCatSorterForPane(self, wantDesc)
@@ -259,7 +259,7 @@ CategoryFavourites.installInventoryPanePatch = function()
         if self.itemSortFunc == self._cfCatDesc then layout.sortBy = "catDesc" end
     end
 
-    -- Restore: if layout asks for cat sort, pick vanilla vs wrapper based on displayFavouritedCategory().
+    -- Restore: if layout asks for cat sort, pick vanilla vs wrapper based on displayPinnedItem().
     ISInventoryPane.RestoreLayout = function(self, name, layout)
         if _origRestoreLayout then _origRestoreLayout(self, name, layout) end
         if not layout then return end
@@ -275,14 +275,14 @@ CategoryFavourites.installInventoryPanePatch = function()
 
     dlog("installed ISInventoryPane favourites category sort patch")
 
-    CategoryFavourites._origSortByType     = _origSortByType
-    CategoryFavourites._origSaveLayout     = _origSaveLayout
-    CategoryFavourites._origRestoreLayout  = _origRestoreLayout
+    PinnedItems._origSortByType     = _origSortByType
+    PinnedItems._origSaveLayout     = _origSaveLayout
+    PinnedItems._origRestoreLayout  = _origRestoreLayout
 end
 
-CategoryFavourites.installInventoryPaneVisualPatch = function()
-    if CategoryFavourites._paneVisualPatched then return end
-    CategoryFavourites._paneVisualPatched = true
+PinnedItems.installInventoryPaneVisualPatch = function()
+    if PinnedItems._paneVisualPatched then return end
+    PinnedItems._paneVisualPatched = true
 
     require("ISUI/ISInventoryPane")
 
@@ -295,13 +295,13 @@ CategoryFavourites.installInventoryPaneVisualPatch = function()
     local function _rowIsFav(v)
         local it = v and v.items and v.items[1]
         if not (it and it.getFullType) then return false end
-        return CategoryFavourites.isFavourite(it:getFullType())
+        return PinnedItems.isFavourite(it:getFullType())
     end
 
     ISInventoryPane.renderdetails = function(self, doDragged)
         _origRenderDetails(self, doDragged)
 
-        if not CategoryFavourites.displayFavouritedCategory(self.inventoryPage) then
+        if not PinnedItems.displayPinnedItem(self.inventoryPage) then
             return
         end
 
@@ -352,17 +352,17 @@ CategoryFavourites.installInventoryPaneVisualPatch = function()
     dlog("installed ISInventoryPane favourites visual marker (category icon)")
 end
 
-CategoryFavourites.install = function()
-    if not CategoryFavourites._installed then
-        CategoryFavourites._installed = true
+PinnedItems.install = function()
+    if not PinnedItems._installed then
+        PinnedItems._installed = true
         -- Install
-        Events.OnGameBoot.Add(CategoryFavourites.load)
-        Events.OnGameBoot.Add(CategoryFavourites.installInventoryPanePatch)
-        Events.OnGameBoot.Add(CategoryFavourites.installInventoryPaneVisualPatch)
+        Events.OnGameBoot.Add(PinnedItems.load)
+        Events.OnGameBoot.Add(PinnedItems.installInventoryPanePatch)
+        Events.OnGameBoot.Add(PinnedItems.installInventoryPaneVisualPatch)
 
-        Events.OnFillInventoryObjectContextMenu.Add(CategoryFavourites.onFillInventoryContext)
-        Events.OnSave.Add(CategoryFavourites.onSave)
+        Events.OnFillInventoryObjectContextMenu.Add(PinnedItems.onFillInventoryContext)
+        Events.OnSave.Add(PinnedItems.onSave)
     end
 end
 
-return CategoryFavourites
+return PinnedItems

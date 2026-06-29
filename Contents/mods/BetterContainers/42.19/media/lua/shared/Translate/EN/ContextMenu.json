@@ -7,5 +7,7 @@
     "ContextMenu_BC_Paste" : "Paste",
     "ContextMenu_BC_Reset" : "Reset",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Add Category Favourite",
-    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Remove Category Favourite"
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Remove Category Favourite",
+    "ContextMenu_BetterContainers_PinItemType" : "Pin Item Type",
+    "ContextMenu_BetterContainers_UnpinItemType" : "Unpin Item Type"
 }
