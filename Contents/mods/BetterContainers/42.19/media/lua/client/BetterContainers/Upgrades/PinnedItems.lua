@@ -10,6 +10,9 @@ end
 
 local FEATURE = IniWriter.makeFeature("FavouritedItems", false)
 local SECTION = "Favourites"
+local PIN_MARKER_TEXTURE = "media/ui/BetterContainers/PinnedItemMarker.png"
+local UNPIN_MARKER_TEXTURE = "media/ui/BetterContainers/UnpinnedItemMarker.png"
+local PIN_MARKER_DISPLAY_SIZE = 11
 
 -- fullType -> true
 PinnedItems.FavouritedItems = PinnedItems.FavouritedItems or {}
@@ -45,6 +48,29 @@ local function _sortedKeys(t)
     return keys
 end
 
+local function _refreshInventoryPanes()
+    if not (getNumActivePlayers and getPlayerInventory and getPlayerLoot) then return end
+
+    for playerNum = 0, getNumActivePlayers() - 1 do
+        local inventoryPage = getPlayerInventory(playerNum)
+        if inventoryPage and inventoryPage.inventoryPane then
+            inventoryPage.inventoryPane:refreshContainer()
+        end
+
+        local lootPage = getPlayerLoot(playerNum)
+        if lootPage and lootPage.inventoryPane then
+            lootPage.inventoryPane:refreshContainer()
+        end
+    end
+
+    if ISInventoryPage then
+        ISInventoryPage.renderDirty = true
+        if ISInventoryPage.dirtyUI then
+            ISInventoryPage.dirtyUI()
+        end
+    end
+end
+
 PinnedItems.isLoaded = function()
     return _loaded
 end
@@ -78,8 +104,7 @@ PinnedItems.setFavourite = function(fullType, isFav)
 
     _dirty = true
 
-    -- Light-touch UI hint (safe even if panes don't use it yet).
-    ISInventoryPage.renderDirty = true
+    _refreshInventoryPanes()
 
     return true
 end
@@ -142,9 +167,12 @@ PinnedItems.onFillInventoryContext = function(player, context, items, test)
     local label = isFav and (getTextOrNull("ContextMenu_BetterContainers_UnpinItemType") or "Unpin Item Type")
                         or (getTextOrNull("ContextMenu_BetterContainers_PinItemType") or "Pin Item Type")
 
-    context:addOption(label, nil, function()
+    local option = context:addOption(label, nil, function()
         PinnedItems.setFavourite(fullType, not isFav)
     end)
+    if option then
+        option.iconTexture = getTexture(isFav and UNPIN_MARKER_TEXTURE or PIN_MARKER_TEXTURE)
+    end
 end
 
 PinnedItems.onSave = function()
@@ -161,19 +189,13 @@ PinnedItems.displayPinnedItem = function(inventoryPage)
         or (onCharacter == false)
 end
 
-PinnedItems.installInventoryPanePatch = function()
+PinnedItems.installInventoryPaneSortPatch = function()
     if PinnedItems._panePatched then return end
     PinnedItems._panePatched = true
 
     require("ISUI/ISInventoryPane")
 
-    local _origSortByType     = ISInventoryPane.sortByType
-    local _origSaveLayout     = ISInventoryPane.SaveLayout
-    local _origRestoreLayout  = ISInventoryPane.RestoreLayout
-
-    -- Vanilla comparators (static a,b; no self)
-    local _origCatInc  = ISInventoryPane.itemSortByCatInc
-    local _origCatDesc = ISInventoryPane.itemSortByCatDesc
+    local _origRefreshContainer = ISInventoryPane.refreshContainer
 
     local function _isRowFav(v)
         local it = v and v.items and v.items[1]
@@ -181,103 +203,28 @@ PinnedItems.installInventoryPanePatch = function()
         return PinnedItems.isFavourite(it:getFullType())
     end
 
-    local function _ensureFavComparators(pane)
-        if not pane then return end
-        if pane._cfCatInc and pane._cfCatDesc then return end
+    ISInventoryPane.refreshContainer = function(self, ...)
+        local baseSortFunc = self.itemSortFunc
 
-        -- Per-pane wrappers so we can see pane.inventoryPage / onCharacter.
-        pane._cfCatInc = function(a, b)
-            if not PinnedItems.displayPinnedItem(pane.inventoryPage) then
-                return _origCatInc(a, b)
+        if baseSortFunc and PinnedItems.displayPinnedItem(self.inventoryPage) then
+            self.itemSortFunc = function(a, b)
+                local aFav = _isRowFav(a)
+                local bFav = _isRowFav(b)
+                if aFav ~= bFav then
+                    return aFav
+                end
+
+                return baseSortFunc(a, b)
             end
-
-            -- Keep vanilla equipped ordering.
-            if a.equipped and not b.equipped then return false end
-            if b.equipped and not a.equipped then return true end
-
-            local aFav = _isRowFav(a)
-            local bFav = _isRowFav(b)
-            if aFav ~= bFav then
-                return aFav -- favourites first
-            end
-
-            return _origCatInc(a, b)
         end
 
-        pane._cfCatDesc = function(a, b)
-            if not PinnedItems.displayPinnedItem(pane.inventoryPage) then
-                return _origCatDesc(a, b)
-            end
-
-            -- Keep vanilla equipped ordering.
-            if a.equipped and not b.equipped then return false end
-            if b.equipped and not a.equipped then return true end
-
-            local aFav = _isRowFav(a)
-            local bFav = _isRowFav(b)
-            if aFav ~= bFav then
-                return aFav -- favourites first (still first even on Z->A)
-            end
-
-            return _origCatDesc(a, b)
-        end
+        _origRefreshContainer(self, ...)
+        self.itemSortFunc = baseSortFunc
     end
 
-    local function _isCatIncFunc(func, pane)
-        return func == ISInventoryPane.itemSortByCatInc
-            or (pane and func == pane._cfCatInc)
-    end
+    dlog("installed ISInventoryPane pinned item sort overlay")
 
-    local function _applyCatSorterForPane(pane, wantDesc)
-        if not pane then return end
-
-        local allow = PinnedItems.displayPinnedItem(pane.inventoryPage)
-
-        if allow then
-            _ensureFavComparators(pane)
-            pane.itemSortFunc = wantDesc and pane._cfCatDesc or pane._cfCatInc
-        else
-            pane.itemSortFunc = wantDesc and ISInventoryPane.itemSortByCatDesc or ISInventoryPane.itemSortByCatInc
-        end
-    end
-
-    -- Toggle category sort direction, but choose vanilla vs wrappers based on displayPinnedItem().
-    ISInventoryPane.sortByType = function(self, button)
-        local wantDesc = _isCatIncFunc(self.itemSortFunc, self) -- if currently inc, toggle to desc
-        _applyCatSorterForPane(self, wantDesc)
-        self:refreshContainer()
-    end
-
-    -- Preserve vanilla layout save strings even when our wrappers are active.
-    ISInventoryPane.SaveLayout = function(self, name, layout)
-        if _origSaveLayout then _origSaveLayout(self, name, layout) end
-        if not layout then return end
-
-        _ensureFavComparators(self)
-
-        if self.itemSortFunc == self._cfCatInc then layout.sortBy = "catInc" end
-        if self.itemSortFunc == self._cfCatDesc then layout.sortBy = "catDesc" end
-    end
-
-    -- Restore: if layout asks for cat sort, pick vanilla vs wrapper based on displayPinnedItem().
-    ISInventoryPane.RestoreLayout = function(self, name, layout)
-        if _origRestoreLayout then _origRestoreLayout(self, name, layout) end
-        if not layout then return end
-
-        if layout.sortBy == "catInc" then
-            _applyCatSorterForPane(self, false)
-            self:refreshContainer()
-        elseif layout.sortBy == "catDesc" then
-            _applyCatSorterForPane(self, true)
-            self:refreshContainer()
-        end
-    end
-
-    dlog("installed ISInventoryPane favourites category sort patch")
-
-    PinnedItems._origSortByType     = _origSortByType
-    PinnedItems._origSaveLayout     = _origSaveLayout
-    PinnedItems._origRestoreLayout  = _origRestoreLayout
+    PinnedItems._origRefreshContainer = _origRefreshContainer
 end
 
 PinnedItems.installInventoryPaneVisualPatch = function()
@@ -310,16 +257,14 @@ PinnedItems.installInventoryPaneVisualPatch = function()
 
         if not (self and self.itemslist) then return end
 
-        -- Prefer an already-provided star texture on the pane; fallback to a shared one if you set it elsewhere.
-        local tex = self.favoriteStar
+        local tex = getTexture(PIN_MARKER_TEXTURE)
         if not tex then return end
 
-        local texW = tex:getWidth()
-        local texH = tex:getHeight()
-        local pad  = 2
+        local iconSize = math.min(PIN_MARKER_DISPLAY_SIZE, self.itemHgt)
+        if iconSize < 8 then return end
 
-        -- Vanilla draws category at column3 + 8; we place the icon immediately before it.
-        local texX = (self.column3 + 8) - texW - pad
+        local itemIconSize = math.min(self.itemHgt - 2, 32)
+        local texX = self.column2 - itemIconSize - ((self.itemHgt - itemIconSize) / 2) + 1
 
         local y = 0
         for _, v in ipairs(self.itemslist) do
@@ -328,9 +273,8 @@ PinnedItems.installInventoryPaneVisualPatch = function()
                     and self.selected and (self.selected[y+1] ~= nil)
 
                 if not isDraggingRow then
-                    -- Draw the icon at the bottom of the row.
-                    local texY = (y * self.itemHgt) + self.headerHgt + self.itemHgt - texH - 2
-                    self:drawTexture(tex, texX, texY, 1, 1, 1, 1)
+                    local texY = (y * self.itemHgt) + self.headerHgt
+                    self:drawTextureScaled(tex, texX, texY, iconSize, iconSize, 1, 1, 1, 1)
                 end
             end
 
@@ -357,7 +301,7 @@ PinnedItems.install = function()
         PinnedItems._installed = true
         -- Install
         Events.OnGameBoot.Add(PinnedItems.load)
-        Events.OnGameBoot.Add(PinnedItems.installInventoryPanePatch)
+        Events.OnGameBoot.Add(PinnedItems.installInventoryPaneSortPatch)
         Events.OnGameBoot.Add(PinnedItems.installInventoryPaneVisualPatch)
 
         Events.OnFillInventoryObjectContextMenu.Add(PinnedItems.onFillInventoryContext)

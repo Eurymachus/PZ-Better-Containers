@@ -11,7 +11,6 @@ local Options = {
 
     -- CATEGORIZE
     showAdvancedDisplayCategories = true,
-    showFavouritesOnPlayerInventories = false,
     categoryBlacklist = "Lore",
 
     -- CUSTOMIZE
@@ -40,6 +39,7 @@ local Options = {
     inventoryLeft_Player = false,
     inventoryLeft_Loot = true,
     enableLockInventory = true,
+    showFavouritesOnPlayerInventories = false,
 }
 
 local config = {
@@ -49,7 +49,6 @@ local config = {
 
     -- CATEGORIZE
     showAdvancedDisplayCategories = nil,
-    showFavouritesOnPlayerInventories = nil,
     categoryBlacklist = nil,
 
     -- CUSTOMIZE
@@ -78,6 +77,7 @@ local config = {
     inventoryLeft_Player = nil,
     inventoryLeft_Loot = nil,
     enableLockInventory = nil,
+    showFavouritesOnPlayerInventories = nil,
 }
 
 function Options.getEffectivePermissions()
@@ -157,7 +157,6 @@ local function applyOptions()
 
     -- CATEGORIZE
     Options.showAdvancedDisplayCategories  = opts:getOption("showAdvancedDisplayCategories"):getValue()
-    Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
     Options.categoryBlacklist = opts:getOption("categoryBlacklist"):getValue()
 
     -- CUSTOMIZE
@@ -185,6 +184,7 @@ local function applyOptions()
     Options.inventoryLeft_Player = opts:getOption("inventoryLeft_Player"):getValue()
     Options.inventoryLeft_Loot = opts:getOption("inventoryLeft_Loot"):getValue()
     Options.enableLockInventory = opts:getOption("enableLockInventory"):getValue()
+    Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
 
     triggerEvent(Helpers.OPTIONS_APPLIED)
 end
@@ -244,18 +244,6 @@ local function initConfig()
         Options.categoryBlacklist,
         getTextOrNull("UI_BetterContainers_Options_categoryBlacklist_Tooltip")
             or "Better Containers will not recategorize items already using these script DisplayCategory names. Separate categories with commas. Enter none to disable."
-    )
-
-    local showFavTitle  = getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories")
-                                    or "Show Pinned Item Types on Player Inventory"
-    local showFavTooltip  = getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories_Tooltip")
-                                    or "When enabled, pinned item types are also shown on the player inventory."
-
-    config.showFavouritesOnPlayerInventories = panel:addTickBox(
-        "showFavouritesOnPlayerInventories",
-        showFavTitle,
-        Options.showFavouritesOnPlayerInventories,
-        showFavTooltip
     )
 
     panel:addSeparator()
@@ -472,6 +460,15 @@ local function initConfig()
         Options.enableLockInventory,
         getTextOrNull("UI_BetterContainers_Options_enableLockInventory_tooltip")
             or "Lock button also prevents Moving/Resizing the inventory window"
+    )
+
+    config.showFavouritesOnPlayerInventories = panel:addTickBox(
+        "showFavouritesOnPlayerInventories",
+        getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories")
+            or "Show Pinned Item Types on Player Inventory",
+        Options.showFavouritesOnPlayerInventories,
+        getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories_Tooltip")
+            or "When enabled, pinned item types are also shown on the player inventory."
     )
 
     -- Apply handler (BGI pattern)
