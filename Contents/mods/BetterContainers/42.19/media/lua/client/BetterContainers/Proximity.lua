@@ -523,6 +523,7 @@ Proximity.install = function()
     local ProximityInventoryPage = require("BetterContainers/Proximity/Proximity_ISInventoryPage")
     local ProximityLootWindowControls = require("BetterContainers/Proximity/Proximity_ISLootWindowContainerControls")
     local ProximityTransferAction = require("BetterContainers/Proximity/Proximity_ISInventoryTransferAction")
+    local ProximitySmartDeposit = require("BetterContainers/Proximity/Proximity_SmartDeposit")
 
     -- Install Proximity hooks explicitly after all files have loaded.
     -- Reorder already patches ISInventoryPage during file load, so installing
@@ -531,6 +532,7 @@ Proximity.install = function()
     ProximityInventoryPage.install()
     ProximityLootWindowControls.install()
     ProximityTransferAction.install()
+    ProximitySmartDeposit.install()
 
     if not Proximity._eventsInstalled then
         Proximity._eventsInstalled = true
