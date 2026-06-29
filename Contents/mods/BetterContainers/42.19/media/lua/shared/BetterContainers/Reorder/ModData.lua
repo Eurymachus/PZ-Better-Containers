@@ -77,6 +77,7 @@ local function ensurePlayerReorderData(playerModDataTable)
 end
 
 -- Owner reorder node: root.reorder[username] scalar table (priority/manual)
+-- Additional containers on the same owner use root.reorder[username].containers[index].
 -- Also migrates legacy flat keys using legacyPriorityKey.
 local function ensureOwnerReorderData(ownerModDataTable, username, legacyPriorityKey)
     if not ownerModDataTable then return nil end
@@ -104,6 +105,88 @@ local function ensureOwnerReorderData(ownerModDataTable, username, legacyPriorit
     end
 
     return ownerUser, rootTable
+end
+
+local function normalizeContainerIndex(containerIndex)
+    if containerIndex == nil then return 0 end
+    local n = tonumber(containerIndex)
+    if n then
+        n = math.floor(n)
+        if n < 0 then n = 0 end
+        return n
+    end
+
+    if type(containerIndex) == "string" and containerIndex ~= "" then
+        return containerIndex
+    end
+
+    return 0
+end
+
+local function getContainerIndex(inventory, ownerObject)
+    if not inventory then return 0 end
+
+    if ownerObject and instanceof(ownerObject, "IsoObject") and ownerObject.getContainerCount and ownerObject.getContainerByIndex then
+        local count = ownerObject:getContainerCount() or 0
+        for i = 0, count - 1 do
+            local container = ownerObject:getContainerByIndex(i)
+            if container == inventory then
+                return i
+            end
+        end
+    end
+
+    local vehiclePart = inventory.getVehiclePart and inventory:getVehiclePart() or nil
+    if vehiclePart then
+        if vehiclePart.getId then
+            local id = vehiclePart:getId()
+            if id and id ~= "" then
+                return "vehiclePart:" .. tostring(id)
+            end
+        end
+
+        if vehiclePart.getIndex then
+            local idx = vehiclePart:getIndex()
+            if idx ~= nil then
+                return "vehiclePartIndex:" .. tostring(idx)
+            end
+        end
+    end
+
+    return 0
+end
+
+local function ensureOwnerContainerNode(ownerUser, containerIndex, create)
+    local idx = normalizeContainerIndex(containerIndex)
+    if idx == 0 then
+        return ownerUser
+    end
+
+    if type(ownerUser) ~= "table" then return nil end
+
+    local containers = ownerUser.containers
+    if containers == nil then
+        if not create then return nil end
+        containers = {}
+        ownerUser.containers = containers
+    elseif type(containers) ~= "table" then
+        if not create then return nil end
+        containers = {}
+        ownerUser.containers = containers
+    end
+
+    local containerNode = containers[idx]
+    if containerNode == nil then
+        if not create then return nil end
+        containerNode = {}
+        containers[idx] = containerNode
+    elseif type(containerNode) ~= "table" then
+        if not create then return nil end
+        containerNode = {}
+        containers[idx] = containerNode
+    end
+
+    return containerNode
 end
 
 -- Ensures reorder node exists for resolved target and migrates legacy once.
@@ -143,9 +226,11 @@ local function ensureTargetReorderNode(playerObj, inventory)
         return ownerObject, resolvedSortKey, playerReorder
     end
 
-    -- Owner (item/iso): scalar per-user storage; resolvedSortKey is legacy migration lookup only
+    -- Owner (item/iso/vehicle): scalar per-user storage for root container, indexed storage for linked containers.
     local ownerUser = ensureOwnerReorderData(targetModDataTable, username, resolvedSortKey)
-    return ownerObject, nil, ownerUser
+    local containerIndex = getContainerIndex(inventory, ownerObject)
+    local ownerContainer = ensureOwnerContainerNode(ownerUser, containerIndex, true)
+    return ownerObject, nil, ownerContainer
 end
 
 -- ------------------------------------------------------------

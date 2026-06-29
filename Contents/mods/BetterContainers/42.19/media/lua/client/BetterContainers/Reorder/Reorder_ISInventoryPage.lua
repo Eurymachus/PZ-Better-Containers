@@ -127,46 +127,36 @@ Reorder_ISInventoryPage.install = function()
             return a.y < b.y
         end)
 
-        local seenObjs = {}
         local lastSort = 0
         for index, data in ipairs(inventoriesAndY) do
             local rd = Reorder.getData(playerObj, data.inventory)
-            local parent = rd and rd.owner
             local isManual = rd and rd:isManual()
             local isDraggedButton = draggedButton and data.inventory == draggedButton.inventory
 
-            if not isDraggedButton and parent ~= playerObj and seenObjs[parent] then
-                -- Skip this button, some IsoObjects have multiple inventories
-            else
-                if parent then
-                    seenObjs[parent] = true
+            local savedSort = rd and rd:getSortNumber() or nil
+            if not isManual or isDraggedButton or savedSort == nil then
+                lastSort = getNextAutoSort(lastSort)
+                if rd and rd.setSort then
+                    rd:setSort(lastSort, nil)
                 end
+            else
+                if index > 1 then
+                    local prevInventory = inventoriesAndY[index - 1].inventory
+                    local prevSort = Reorder.getSortPriority(playerObj, prevInventory)
 
-                local savedSort = rd and rd:getSortNumber() or nil
-                if not isManual or isDraggedButton or savedSort == nil then
-                    lastSort = getNextAutoSort(lastSort)
-                    if rd and rd.setSort then
-                        rd:setSort(lastSort, nil)
-                    end
-               else
-                    if index > 1 then
-                        local prevInventory = inventoriesAndY[index - 1].inventory
-                        local prevSort = Reorder.getSortPriority(playerObj, prevInventory)
-
-                        if prevSort >= savedSort then
-                            if savedSort <= 0 then
-                                -- No valid non-negative slot exists above this anchor.
-                                -- Promote this anchor just enough to make room.
-                                savedSort = prevSort + 10
-                                Reorder.setSortPriority(playerObj, data.inventory, savedSort, true)
-                            else
-                                Reorder.setSortPriority(playerObj, prevInventory, savedSort - 1, false)
-                            end
+                    if prevSort >= savedSort then
+                        if savedSort <= 0 then
+                            -- No valid non-negative slot exists above this anchor.
+                            -- Promote this anchor just enough to make room.
+                            savedSort = prevSort + 10
+                            Reorder.setSortPriority(playerObj, data.inventory, savedSort, true)
+                        else
+                            Reorder.setSortPriority(playerObj, prevInventory, savedSort - 1, false)
                         end
                     end
-
-                    lastSort = savedSort
                 end
+
+                lastSort = savedSort
             end
         end
     end
