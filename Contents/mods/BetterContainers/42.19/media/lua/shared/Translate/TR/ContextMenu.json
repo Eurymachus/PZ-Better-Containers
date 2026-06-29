@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Ozellestir",
+    "ContextMenu_BC_Presets" : "Hazir ayarlar",
+    "ContextMenu_BC_SavedPresets" : "Kaydedilmis hazir ayarlar",
+    "ContextMenu_BC_NoSavedPresets" : "Kaydedilmis hazir ayar yok",
+    "ContextMenu_BC_Copy" : "Kopyala",
+    "ContextMenu_BC_Paste" : "Yapistir",
+    "ContextMenu_BC_Reset" : "Sifirla",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Favori kategori ekle",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Favori kategoriyi kaldir"
+}

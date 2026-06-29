@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "근접 인벤토리 활성화",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "이 서버에서 근접 인벤토리 시스템을 활성화합니다.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "시체 전용 모드 강제",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "근접 인벤토리를 시체 전용 모드로 강제합니다. 플레이어는 모드를 전환할 수 없습니다.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "플레이어의 근접 기능 전환 허용",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "키 바인드나 모드 옵션으로 근접 인벤토리를 켜거나 끌 수 있게 합니다.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "플레이어의 모드 전환 허용",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "모든 컨테이너 모드와 시체 전용 모드 사이 전환을 허용합니다.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "자동 잠금 활성화",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "자동 잠금 기능을 활성화합니다. 활성 상태에서는 의도적으로 바꾸지 않는 한 근접 인벤토리가 선택한 컨테이너로 돌아갑니다.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "플레이어의 자동 잠금 전환 허용",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "모드 옵션에서 자동 잠금을 켜거나 끌 수 있게 합니다."
+}

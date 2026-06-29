@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "ปรับแต่ง",
+    "ContextMenu_BC_Presets" : "ค่าที่ตั้งไว้",
+    "ContextMenu_BC_SavedPresets" : "ค่าที่ตั้งไว้ที่บันทึก",
+    "ContextMenu_BC_NoSavedPresets" : "ไม่มีค่าที่ตั้งไว้ที่บันทึก",
+    "ContextMenu_BC_Copy" : "คัดลอก",
+    "ContextMenu_BC_Paste" : "วาง",
+    "ContextMenu_BC_Reset" : "รีเซ็ต",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "เพิ่มหมวดหมู่โปรด",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "ลบหมวดหมู่โปรด"
+}

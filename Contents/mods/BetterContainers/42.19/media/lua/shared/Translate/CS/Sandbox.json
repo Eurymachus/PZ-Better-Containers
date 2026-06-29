@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Povolit inventar blizkosti",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Povoli system inventare blizkosti pro tento server.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Vynutit rezim pouze mrtvoly",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Vynuti, aby inventar blizkosti fungoval pouze pro mrtvoly. Hraci nebudou moci prepinat rezimy.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Povolit hracum prepinat blizkost",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Umoznuje hracum zapinat nebo vypinat inventar blizkosti pomoci klavesy nebo nastaveni modu.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Povolit hracum prepinat rezim",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Umoznuje hracum prepinat mezi rezimem vsech kontejneru a rezimem pouze mrtvol.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Povolit automaticke zamykani",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Zapne funkci automatickeho zamykani. Kdyz je aktivni, inventar blizkosti se vrati k vybranemu kontejneru, pokud jej umyslne nezmenite.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Povolit hracum prepinat automaticke zamykani",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Umoznuje hracum zapinat nebo vypinat automaticke zamykani v nastaveni modu."
+}

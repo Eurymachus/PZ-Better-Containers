@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Mukauta",
+    "ContextMenu_BC_Presets" : "Esiasetukset",
+    "ContextMenu_BC_SavedPresets" : "Tallennetut esiasetukset",
+    "ContextMenu_BC_NoSavedPresets" : "Ei tallennettuja esiasetuksia",
+    "ContextMenu_BC_Copy" : "Kopioi",
+    "ContextMenu_BC_Paste" : "Liita",
+    "ContextMenu_BC_Reset" : "Palauta",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Lisaa luokkasuosikki",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Poista luokkasuosikki"
+}

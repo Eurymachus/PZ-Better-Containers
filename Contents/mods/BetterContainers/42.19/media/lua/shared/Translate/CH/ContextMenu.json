@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "自訂",
+    "ContextMenu_BC_Presets" : "預設",
+    "ContextMenu_BC_SavedPresets" : "已儲存預設",
+    "ContextMenu_BC_NoSavedPresets" : "沒有已儲存的預設",
+    "ContextMenu_BC_Copy" : "複製",
+    "ContextMenu_BC_Paste" : "貼上",
+    "ContextMenu_BC_Reset" : "重設",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "加入分類最愛",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "移除分類最愛"
+}

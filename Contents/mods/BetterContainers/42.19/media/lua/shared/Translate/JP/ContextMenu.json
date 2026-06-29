@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "カスタマイズ",
+    "ContextMenu_BC_Presets" : "プリセット",
+    "ContextMenu_BC_SavedPresets" : "保存済みプリセット",
+    "ContextMenu_BC_NoSavedPresets" : "保存済みプリセットなし",
+    "ContextMenu_BC_Copy" : "コピー",
+    "ContextMenu_BC_Paste" : "貼り付け",
+    "ContextMenu_BC_Reset" : "リセット",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "カテゴリをお気に入りに追加",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "カテゴリをお気に入りから削除"
+}

@@ -1,0 +1,11 @@
+{
+    "ContextMenu_BC_Customize" : "Prizpusobit",
+    "ContextMenu_BC_Presets" : "Predvolby",
+    "ContextMenu_BC_SavedPresets" : "Ulozene predvolby",
+    "ContextMenu_BC_NoSavedPresets" : "Zadne ulozene predvolby",
+    "ContextMenu_BC_Copy" : "Kopirovat",
+    "ContextMenu_BC_Paste" : "Vlozit",
+    "ContextMenu_BC_Reset" : "Obnovit",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Pridat oblibenou kategorii",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Odebrat oblibenou kategorii"
+}
