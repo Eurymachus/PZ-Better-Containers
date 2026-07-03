@@ -1,4 +1,5 @@
 local Helpers = require("BetterContainers/Helpers")
+local Options = require("BetterContainers/_Options")
 local Proximity = require("BetterContainers/Proximity")
 
 require("TimedActions/ISInventoryTransferUtil")
@@ -16,8 +17,6 @@ local SKIP_CONTAINER_TYPES = {
     localContainer = true,
     localInventory = true,
 
-    inventorymale = true,
-    inventoryfemale = true,
 
     stove = true,
     microwave = true,
@@ -40,8 +39,20 @@ local function getContainerType(container)
     return nil
 end
 
+local function isCorpseContainerType(containerType)
+    return containerType == "inventorymale"
+        or containerType == "inventoryfemale"
+end
+
+local function isCorpseMode()
+    local eff = Options.getEffectivePermissions() or {}
+    return eff.corpseOnly == true
+end
+
 local function isSmartDepositTarget(container)
-    return getContainerType(container) == Proximity.invName
+    local containerType = getContainerType(container)
+    return containerType == Proximity.invName
+        or (containerType == Proximity.invName_corpses and isCorpseMode())
 end
 
 local function getItemFullType(item)
@@ -121,6 +132,7 @@ local function isRealStorage(container, playerObj)
     local containerType = getContainerType(container)
     if not containerType then return false end
     if SKIP_CONTAINER_TYPES[containerType] then return false end
+    if isCorpseContainerType(containerType) and not isCorpseMode() then return false end
     if isLockedForPlayer(container, playerObj) then return false end
     return true
 end
