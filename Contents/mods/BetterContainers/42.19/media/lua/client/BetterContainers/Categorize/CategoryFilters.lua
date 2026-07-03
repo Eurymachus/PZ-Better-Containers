@@ -182,6 +182,13 @@ function CategoryFilters.openPopup(pane, button)
             local newEntries = _buildCategoryEntries(pane, showAll == true)
             _syncChecksFromStaged(newEntries, _staged)
             return newEntries
+        end,
+        function(isAscending)
+            pane:sortByWeight(isAscending == true)
+            ISInventoryPage.dirtyUI()
+        end,
+        function()
+            return pane.itemSortFunc
         end
     )
 
