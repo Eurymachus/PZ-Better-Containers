@@ -40,6 +40,7 @@ local Options = {
     inventoryLeft_Loot = true,
     enableLockInventory = true,
     showFavouritesOnPlayerInventories = false,
+    showEquippedAttachedSection = false,
 }
 
 local config = {
@@ -78,7 +79,35 @@ local config = {
     inventoryLeft_Loot = nil,
     enableLockInventory = nil,
     showFavouritesOnPlayerInventories = nil,
+    showEquippedAttachedSection = nil,
 }
+
+local OPTION_KEYS = {
+    "showAdvancedDisplayCategories",
+    "categoryBlacklist",
+    "enableCustomizer",
+    "enableCustomizerSubMenu",
+    "enableNestedContainers_Player",
+    "enableNestedContainers_Loot",
+    "nestedContainersDepth",
+    "nestedContainersPlayerFilter",
+    "showNestedContainerParentIcon",
+    "enableProximity",
+    "enableProximityKeybind",
+    "forceProximityLockKeybind",
+    "enableProximityHighlight",
+    "enableCorpseOnly",
+    "corpseOnlyModeKeybind",
+    "enableAutoLock",
+    "enableSearchBar",
+    "inventoryLeft_Player",
+    "inventoryLeft_Loot",
+    "enableLockInventory",
+    "showFavouritesOnPlayerInventories",
+    "showEquippedAttachedSection",
+}
+
+local hasAppliedOptions = false
 
 function Options.getEffectivePermissions()
     return Permissions.compute(Options)
@@ -152,6 +181,11 @@ local function applyOptions()
         return
     end
 
+    local previous = {}
+    for _, key in ipairs(OPTION_KEYS) do
+        previous[key] = Options[key]
+    end
+
     --Options.allowReorderingContainers  = opts:getOption("allowReorderingContainers"):getValue()
     --Options.enableUtilityPanelFooter  = opts:getOption("enableUtilityPanelFooter"):getValue()
 
@@ -185,8 +219,21 @@ local function applyOptions()
     Options.inventoryLeft_Loot = opts:getOption("inventoryLeft_Loot"):getValue()
     Options.enableLockInventory = opts:getOption("enableLockInventory"):getValue()
     Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
+    Options.showEquippedAttachedSection = opts:getOption("showEquippedAttachedSection"):getValue()
 
-    triggerEvent(Helpers.OPTIONS_APPLIED)
+    local changed = not hasAppliedOptions
+    for _, key in ipairs(OPTION_KEYS) do
+        if Options[key] ~= previous[key] then
+            changed = true
+            break
+        end
+    end
+
+    hasAppliedOptions = true
+
+    if changed then
+        triggerEvent(Helpers.OPTIONS_APPLIED)
+    end
 end
 
 local function initConfig()
@@ -469,6 +516,15 @@ local function initConfig()
         Options.showFavouritesOnPlayerInventories,
         getTextOrNull("UI_BetterContainers_Options_showFavouritesOnPlayerInventories_Tooltip")
             or "When enabled, pinned item types are also shown on the player inventory."
+    )
+
+    config.showEquippedAttachedSection = panel:addTickBox(
+        "showEquippedAttachedSection",
+        getTextOrNull("UI_BetterContainers_Options_showEquippedAttachedSection")
+            or "Show Equipped / Attached Section",
+        Options.showEquippedAttachedSection,
+        getTextOrNull("UI_BetterContainers_Options_showEquippedAttachedSection_Tooltip")
+            or "When enabled, worn, held, and attached hotbar items are grouped into one collapsible section in the player inventory."
     )
 
     -- Apply handler (BGI pattern)
