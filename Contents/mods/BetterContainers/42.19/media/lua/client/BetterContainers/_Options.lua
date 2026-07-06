@@ -82,33 +82,6 @@ local config = {
     showEquippedAttachedSection = nil,
 }
 
-local OPTION_KEYS = {
-    "showAdvancedDisplayCategories",
-    "categoryBlacklist",
-    "enableCustomizer",
-    "enableCustomizerSubMenu",
-    "enableNestedContainers_Player",
-    "enableNestedContainers_Loot",
-    "nestedContainersDepth",
-    "nestedContainersPlayerFilter",
-    "showNestedContainerParentIcon",
-    "enableProximity",
-    "enableProximityKeybind",
-    "forceProximityLockKeybind",
-    "enableProximityHighlight",
-    "enableCorpseOnly",
-    "corpseOnlyModeKeybind",
-    "enableAutoLock",
-    "enableSearchBar",
-    "inventoryLeft_Player",
-    "inventoryLeft_Loot",
-    "enableLockInventory",
-    "showFavouritesOnPlayerInventories",
-    "showEquippedAttachedSection",
-}
-
-local hasAppliedOptions = false
-
 function Options.getEffectivePermissions()
     return Permissions.compute(Options)
 end
@@ -181,11 +154,6 @@ local function applyOptions()
         return
     end
 
-    local previous = {}
-    for _, key in ipairs(OPTION_KEYS) do
-        previous[key] = Options[key]
-    end
-
     --Options.allowReorderingContainers  = opts:getOption("allowReorderingContainers"):getValue()
     --Options.enableUtilityPanelFooter  = opts:getOption("enableUtilityPanelFooter"):getValue()
 
@@ -221,19 +189,7 @@ local function applyOptions()
     Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
     Options.showEquippedAttachedSection = opts:getOption("showEquippedAttachedSection"):getValue()
 
-    local changed = not hasAppliedOptions
-    for _, key in ipairs(OPTION_KEYS) do
-        if Options[key] ~= previous[key] then
-            changed = true
-            break
-        end
-    end
-
-    hasAppliedOptions = true
-
-    if changed then
-        triggerEvent(Helpers.OPTIONS_APPLIED)
-    end
+    triggerEvent(Helpers.OPTIONS_APPLIED)
 end
 
 local function initConfig()

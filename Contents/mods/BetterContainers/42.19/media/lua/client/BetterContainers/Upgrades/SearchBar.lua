@@ -236,16 +236,14 @@ local function _stackMatchesQuery(pane, stack, query)
     local playerObj = getSpecificPlayer(pane.player)
     local item = stack.items[1]
 
-    if stack._bcEquippedAttachedSection then
-        local sectionName = _normalizeSearch(getTextOrNull("UI_BetterContainers_EquippedAttachedSection") or "Equipped / Attached")
-        local sectionCat = _normalizeSearch(getTextOrNull("UI_BetterContainers_EquippedAttachedSection_Category") or "Gear")
+    if stack._bcEquippedAttachedSeparator then
+        local sectionName = _normalizeSearch(getTextOrNull("UI_BetterContainers_EquippedAttachedSection") or "Equipped Items")
 
-        if _tokenPrefixMatch(sectionName, query) or _tokenPrefixMatch(sectionCat, query) then
+        if _tokenPrefixMatch(sectionName, query) then
             return true
         end
 
-        for i = 2, #stack.items do
-            local sectionItem = stack.items[i]
+        for _, sectionItem in ipairs(stack._bcEquippedAttachedItems or {}) do
             if sectionItem then
                 local sectionItemName = _normalizeSearch(sectionItem:getName(playerObj))
                 local sectionItemCat = _normalizeSearch(sectionItem:getDisplayCategory() or sectionItem:getCategory())
