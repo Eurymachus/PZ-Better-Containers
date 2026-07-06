@@ -44,6 +44,7 @@ return {
         "Base.Marinara",
         "Base.Mustard",
         "Base.OilOlive",
+        "Base.SesameOil",
         "Base.OilVegetable",
         "Base.Pepper",
         "Base.RiceVinegar",
