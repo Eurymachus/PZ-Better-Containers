@@ -5,6 +5,7 @@ require("ISUI/ISScrollingListBox")
 require("ISUI/ISTickBox")
 require("ISUI/ISInventoryPane")
 
+local Constants = require("BetterContainers/Constants")
 local IniWriter = require("BetterContainers/_IO/IniWriter")
 
 local MOD = "BetterContainers"
@@ -346,17 +347,18 @@ function FiltersFooter:createChildren()
     local btnW = math.floor((self.width - pad * 4 - iconBtnW) / 2)
     local btnY = math.floor((self.height - btnH) / 2)
 
-    ui.btnApply = ISButton:new(pad, btnY, btnW, btnH, "Apply", ui, FiltersUI.onApply)
+    ui.btnApply = ISButton:new(pad, btnY, btnW, btnH, getTextOrNull("UI_Apply") or "Apply", ui, FiltersUI.onApply)
     ui.btnApply:initialise()
     self:addChild(ui.btnApply)
 
-    ui.btnClear = ISButton:new(pad * 2 + btnW, btnY, btnW, btnH, "Clear", ui, FiltersUI.onClear)
+    ui.btnClear = ISButton:new(pad * 2 + btnW, btnY, btnW, btnH, getTextOrNull("UI_BetterContainers_Clear") or "Clear", ui, FiltersUI.onClear)
     ui.btnClear:initialise()
     self:addChild(ui.btnClear)
 
     ui.btnWeightSort = ISButton:new(pad * 3 + btnW * 2, btnY, iconBtnW, btnH, "", ui, FiltersUI.onSortWeight)
     ui.btnWeightSort:initialise()
-    ui.btnWeightSort:setImage(getTexture("media/ui/Moodles/32/Status_HeavyLoad.png"))
+    ui.btnWeightSort:setImage(Constants.Icons.Loaded.Encumbrance)
+    ui.btnWeightSort:forceImageSize(btnH + 6, btnH + 6)
     ui.btnWeightSort.borderColor.a = 0.2
     self:addChild(ui.btnWeightSort)
     ui:updateWeightSortTooltip()

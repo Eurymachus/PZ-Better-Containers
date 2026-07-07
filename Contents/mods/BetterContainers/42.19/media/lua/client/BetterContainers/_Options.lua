@@ -483,7 +483,7 @@ local function initConfig()
             or "Show Equipped / Attached Section",
         Options.showEquippedAttachedSection,
         getTextOrNull("UI_BetterContainers_Options_showEquippedAttachedSection_Tooltip")
-            or "When enabled, worn, held, and attached hotbar items are grouped into one collapsible section in the player inventory."
+            or "When enabled, worn, held, attached hotbar items, and keyrings are grouped into one collapsible section in the player inventory."
     )
 
     config.preserveInventoryWindowsAfterPause = panel:addTickBox(

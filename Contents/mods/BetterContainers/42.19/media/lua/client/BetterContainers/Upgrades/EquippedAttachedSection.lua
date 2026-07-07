@@ -2,11 +2,54 @@ require "ISUI/ISInventoryPane"
 require "ISUI/ISInventoryItem"
 
 local Options = require("BetterContainers/_Options")
+local IniWriter = require("BetterContainers/_IO/IniWriter")
 
 local EquippedAttachedSection = {}
 
 local SECTION_KEY = "BetterContainers:EquippedAttachedSection"
 local SEPARATOR_KEY = SECTION_KEY .. ":Separator"
+local STATE_INI = IniWriter.makeFeature("EquippedAttachedSection", false)
+local STATE_SECTION = "state"
+
+local _stateLoaded = false
+local _stateRow = {
+    collapsed = false,
+}
+
+local function normalizeStateRow(row)
+    row = type(row) == "table" and row or {}
+
+    return {
+        collapsed = row.collapsed == true,
+    }
+end
+
+local function ensureStateLoaded()
+    if _stateLoaded then
+        return _stateRow
+    end
+
+    _stateRow = normalizeStateRow(STATE_INI.get(STATE_SECTION))
+    _stateLoaded = true
+    return _stateRow
+end
+
+local function getSavedSectionCollapsed()
+    return ensureStateLoaded().collapsed == true
+end
+
+local function setSavedSectionCollapsed(value)
+    local row = ensureStateLoaded()
+    local nextValue = value == true
+
+    if row.collapsed == nextValue then
+        return nextValue
+    end
+
+    row.collapsed = nextValue
+    STATE_INI.set(STATE_SECTION, row)
+    return nextValue
+end
 
 local function addUnique(items, seen, item)
     if not item or seen[item] then return end
@@ -14,6 +57,14 @@ local function addUnique(items, seen, item)
 
     seen[item] = true
     items[#items + 1] = item
+end
+
+local function isKeyRingItem(item)
+    if not item then return false end
+    if item.isKeyRing and item:isKeyRing() then return true end
+    if item.isItemType and item:isItemType(ItemType.KEY_RING) then return true end
+    if item.hasTag and item:hasTag(ItemTag.KEY_RING) then return true end
+    return false
 end
 
 local function collectEquippedAttachedItems(playerObj)
@@ -38,6 +89,17 @@ local function collectEquippedAttachedItems(playerObj)
         for i = 0, attachedItems:size() - 1 do
             local attachedItem = attachedItems:get(i)
             addUnique(items, seen, attachedItem and attachedItem:getItem())
+        end
+    end
+
+    local inventory = playerObj:getInventory()
+    local inventoryItems = inventory and inventory:getItems()
+    if inventoryItems then
+        for i = 0, inventoryItems:size() - 1 do
+            local item = inventoryItems:get(i)
+            if isKeyRingItem(item) then
+                addUnique(items, seen, item)
+            end
         end
     end
 
@@ -181,6 +243,8 @@ local function applySection(pane)
     if not Options.showEquippedAttachedSection then return end
     if not pane or not pane.parent or not pane.parent.onCharacter then return end
     if not pane.itemslist or not pane.collapsed then return end
+
+    pane.bcEquippedAttachedCollapsed = getSavedSectionCollapsed()
 
     local playerObj = getSpecificPlayer(pane.player)
     if not playerObj or pane.inventory ~= playerObj:getInventory() then return end
@@ -410,7 +474,7 @@ end
 local function toggleSection(pane)
     if not pane then return end
 
-    pane.bcEquippedAttachedCollapsed = not isSectionCollapsed(pane)
+    pane.bcEquippedAttachedCollapsed = setSavedSectionCollapsed(not isSectionCollapsed(pane))
     pane.selected = {}
     pane.dragging = nil
     pane.selectedItems = nil

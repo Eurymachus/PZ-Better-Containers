@@ -169,20 +169,49 @@ local function shouldAddItemContainer(inventoryPage, item)
         return false
     end
 
+    -- True nested containers are item-owned inventories. Some multi-tile IsoObjects
+    -- expose sibling object containers while scanning another tile/container; those
+    -- should remain top-level world containers, not nested child buttons.
+    if inventory:getContainingItem() ~= item then
+        return false
+    end
+
     return true
 end
 
-local function applyParentIcon(button, item)
+local function getParentIconTexture(parentInventory, inventoryPage)
+    if not parentInventory then return nil end
+
+    local parentItem = parentInventory:getContainingItem()
+    if parentItem then
+        return parentItem:getTex()
+    end
+
+    local hasWorldParent = parentInventory:getParent() ~= nil
+    local hasVehicleParent = parentInventory:getVehiclePart() ~= nil
+    if not hasWorldParent and not hasVehicleParent then
+        return nil
+    end
+
+    local invType = parentInventory:getType()
+    return (invType and ContainerButtonIcons[invType])
+        or (inventoryPage and inventoryPage.conDefault)
+end
+
+local function clearParentIcon(button)
+    if not button or not button._bcNestedRender then return end
+
+    button.render = button._bcNestedRender
+    button._bcNestedRender = nil
+end
+
+local function applyParentIcon(button, parentInventory, inventoryPage)
+    clearParentIcon(button)
+
     if not Options.showNestedContainerParentIcon then return end
-    if not button or not item then return end
+    if not button or not parentInventory then return end
 
-    local parentContainer = item:getContainer()
-    if not parentContainer then return end
-
-    local parentItem = parentContainer:getContainingItem()
-    if not parentItem then return end
-
-    local parentTex = parentItem:getTex()
+    local parentTex = getParentIconTexture(parentInventory, inventoryPage)
     if not parentTex then return end
 
     if not button._bcNestedRender then
@@ -200,13 +229,15 @@ local function applyParentIcon(button, item)
     end
 end
 
-local function addNestedButton(inventoryPage, item)
+local function addNestedButton(inventoryPage, item, parentInventory)
     local button = inventoryPage:addContainerButton(
         item:getInventory(),
         item:getTex(),
         item:getName(),
         item:getName()
     )
+
+    clearParentIcon(button)
 
     if button and item:getVisual() and item:getClothingItem() then
         local tint = item:getVisual():getTint(item:getClothingItem())
@@ -215,12 +246,12 @@ local function addNestedButton(inventoryPage, item)
         end
     end
 
-    applyParentIcon(button, item)
+    applyParentIcon(button, parentInventory, inventoryPage)
 
     return button
 end
 
-local function scanInventory(inventoryPage, inventory, depth, visited)
+local function scanInventory(inventoryPage, inventory, depth, visited, existingButtons)
     if depth > getMaxDepth() then return end
     if Nested.isIgnoredInventory(inventoryPage, inventory) then return end
     if isFilteredPlayerInventory(inventoryPage, inventory) then return end
@@ -237,25 +268,38 @@ local function scanInventory(inventoryPage, inventory, depth, visited)
         if shouldAddItemContainer(inventoryPage, item) then
             local itemInventory = item:getInventory()
             if not visited[itemInventory] then
-                addNestedButton(inventoryPage, item)
-                scanInventory(inventoryPage, itemInventory, depth + 1, visited)
+                if not (existingButtons and existingButtons[itemInventory]) then
+                    addNestedButton(inventoryPage, item, inventory)
+                end
+                scanInventory(inventoryPage, itemInventory, depth + 1, visited, existingButtons)
             end
         end
     end
 end
 
 function Nested.OnButtonsAdded(inventoryPage)
-    if not isEnabled(inventoryPage) then return end
     if not inventoryPage or not inventoryPage.backpacks then return end
 
     local visited = {}
+    local existingButtons = {}
     -- Only scan the buttons that existed before we started adding nested buttons.
     local originalButtonCount = #inventoryPage.backpacks
 
     for i = 1, originalButtonCount do
         local button = inventoryPage.backpacks[i]
         local inventory = button and button.inventory or nil
-        scanInventory(inventoryPage, inventory, 1, visited)
+        clearParentIcon(button)
+        if inventory then
+            existingButtons[inventory] = true
+        end
+    end
+
+    if not isEnabled(inventoryPage) then return end
+
+    for i = 1, originalButtonCount do
+        local button = inventoryPage.backpacks[i]
+        local inventory = button and button.inventory or nil
+        scanInventory(inventoryPage, inventory, 1, visited, existingButtons)
     end
 end
 
