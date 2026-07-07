@@ -41,6 +41,7 @@ local Options = {
     enableLockInventory = true,
     showFavouritesOnPlayerInventories = false,
     showEquippedAttachedSection = false,
+    preserveInventoryWindowsAfterPause = true,
 }
 
 local config = {
@@ -80,6 +81,7 @@ local config = {
     enableLockInventory = nil,
     showFavouritesOnPlayerInventories = nil,
     showEquippedAttachedSection = nil,
+    preserveInventoryWindowsAfterPause = nil,
 }
 
 function Options.getEffectivePermissions()
@@ -188,6 +190,7 @@ local function applyOptions()
     Options.enableLockInventory = opts:getOption("enableLockInventory"):getValue()
     Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
     Options.showEquippedAttachedSection = opts:getOption("showEquippedAttachedSection"):getValue()
+    Options.preserveInventoryWindowsAfterPause = opts:getOption("preserveInventoryWindowsAfterPause"):getValue()
 
     triggerEvent(Helpers.OPTIONS_APPLIED)
 end
@@ -481,6 +484,15 @@ local function initConfig()
         Options.showEquippedAttachedSection,
         getTextOrNull("UI_BetterContainers_Options_showEquippedAttachedSection_Tooltip")
             or "When enabled, worn, held, and attached hotbar items are grouped into one collapsible section in the player inventory."
+    )
+
+    config.preserveInventoryWindowsAfterPause = panel:addTickBox(
+        "preserveInventoryWindowsAfterPause",
+        getTextOrNull("UI_BetterContainers_Options_preserveInventoryWindowsAfterPause")
+            or "Preserve Inventory Windows After Pause",
+        Options.preserveInventoryWindowsAfterPause,
+        getTextOrNull("UI_BetterContainers_Options_preserveInventoryWindowsAfterPause_Tooltip")
+            or "When enabled, inventory windows that were open before entering the pause menu are restored after returning to the game."
     )
 
     -- Apply handler (BGI pattern)
