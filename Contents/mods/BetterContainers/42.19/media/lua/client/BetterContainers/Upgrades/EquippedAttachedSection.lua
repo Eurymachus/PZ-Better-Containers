@@ -346,6 +346,63 @@ local function isSeparatorRowAtPointer(pane, sectionRow)
     return isSeparatorRow(row) and rowIndex == sectionRow + 1
 end
 
+local function isAlarmSetItem(item)
+    return item and item.isAlarmSet and item:isAlarmSet()
+end
+
+local function getPlainItemTexture(item)
+    local scriptItem = item and item.getScriptItem and item:getScriptItem() or nil
+    if scriptItem and scriptItem:getNormalTexture() then
+        local texture = scriptItem:getNormalTexture()
+        local icons = scriptItem.getIconsForTexture and scriptItem:getIconsForTexture() or nil
+        if icons and not icons:isEmpty() then
+            texture = icons:get(0)
+        end
+        return texture
+    end
+
+    return item and item:getTex() or nil
+end
+
+local function renderPlainItemTexture(drawTarget, item, x, y, alpha, width, height)
+    local texture = getPlainItemTexture(item)
+    if not texture then return false end
+
+    drawTarget._bcEquippedAttachedDrawingPreview = true
+    drawTarget:drawTextureScaled(texture, x, y, width, height, alpha, 1, 1, 1)
+    drawTarget._bcEquippedAttachedDrawingPreview = nil
+    return true
+end
+
+local function getHeaderPreviewItems(sectionItems, fallbackItem)
+    local firstItem = nil
+    local secondItem = nil
+
+    for _, candidate in ipairs(sectionItems or {}) do
+        if not isAlarmSetItem(candidate) then
+            if not firstItem then
+                firstItem = candidate
+            elseif candidate ~= firstItem then
+                secondItem = candidate
+                break
+            end
+        end
+    end
+
+    firstItem = firstItem or fallbackItem
+
+    if not secondItem then
+        for _, candidate in ipairs(sectionItems or {}) do
+            if candidate ~= firstItem then
+                secondItem = candidate
+                break
+            end
+        end
+    end
+
+    return firstItem, secondItem
+end
+
 local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     local headerText, categoryText, headerItem, sectionStack = findSectionHeaderDrawTargets(pane)
     if not headerText then
@@ -354,10 +411,24 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
 
     local label = getSectionLabels() .. " (" .. tostring(sectionStack._bcEquippedAttachedCount or 0) .. ")"
     local oldDrawText = pane.drawText
+    local oldDrawTexture = pane.drawTexture
+    local oldDrawTextureScaled = pane.drawTextureScaled
     local oldRenderItemIcon = ISInventoryItem.renderItemIcon
     local replacedHeader = false
     local replacedCategory = false
     local renderedHeaderIcon = false
+    local sectionRow = getSectionHeaderRow(pane)
+
+    local function isHeaderIconDecorationDraw(self, x, y)
+        if self._bcEquippedAttachedDrawingPreview then return false end
+        if not sectionRow or not x or not y then return false end
+
+        local rowTop = (sectionRow * self.itemHgt) + self.headerHgt
+        local rowBottom = rowTop + self.itemHgt
+        if y < rowTop or y > rowBottom then return false end
+
+        return x <= (self.column2 + self.itemHgt)
+    end
 
     pane.drawText = function(self, text, x, y, r, g, b, a, font, ...)
         if not replacedHeader and text == headerText and x < self.column3 then
@@ -371,6 +442,22 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
         return oldDrawText(self, text, x, y, r, g, b, a, font, ...)
     end
 
+    pane.drawTexture = function(self, texture, x, y, ...)
+        if isHeaderIconDecorationDraw(self, x, y) then
+            return
+        end
+
+        return oldDrawTexture(self, texture, x, y, ...)
+    end
+
+    pane.drawTextureScaled = function(self, texture, x, y, ...)
+        if isHeaderIconDecorationDraw(self, x, y) then
+            return
+        end
+
+        return oldDrawTextureScaled(self, texture, x, y, ...)
+    end
+
     ISInventoryItem.renderItemIcon = function(self, item, ...)
         if not renderedHeaderIcon and item == headerItem then
             renderedHeaderIcon = true
@@ -382,19 +469,22 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
             local height = args[5] or width
 
             local sectionItems = sectionStack and sectionStack._bcEquippedAttachedItems or nil
-            local firstItem = sectionItems and sectionItems[1] or item
-            local secondItem = sectionItems and sectionItems[2] or nil
+            local firstItem, secondItem = getHeaderPreviewItems(sectionItems, item)
 
             local firstSize = math.min(width, height) * (secondItem and 0.78 or 0.86)
             local firstX = x + ((width - firstSize) / 2) - (secondItem and 2 or 0)
             local firstY = y + ((height - firstSize) / 2) - (secondItem and 2 or 0)
-            oldRenderItemIcon(self, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize)
+            if not renderPlainItemTexture(self, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize) then
+                oldRenderItemIcon(self, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize)
+            end
 
             if secondItem then
                 local secondSize = math.min(width, height) * 0.58
                 local secondX = x + width - secondSize - 1
                 local secondY = y + height - secondSize - 1
-                oldRenderItemIcon(self, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize)
+                if not renderPlainItemTexture(self, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize) then
+                    oldRenderItemIcon(self, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize)
+                end
             end
             return
         end
@@ -402,7 +492,6 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
         return oldRenderItemIcon(self, item, ...)
     end
 
-    local sectionRow = getSectionHeaderRow(pane)
     local separatorHovered = not doDragged and sectionRow and isSeparatorRowAtPointer(pane, sectionRow)
     local oldMouseOverOption = pane.mouseOverOption
     if separatorHovered then
@@ -411,8 +500,11 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
 
     local ok, ret = pcall(oldRenderDetails, pane, doDragged)
     pane.drawText = oldDrawText
+    pane.drawTexture = oldDrawTexture
+    pane.drawTextureScaled = oldDrawTextureScaled
     ISInventoryItem.renderItemIcon = oldRenderItemIcon
     pane.mouseOverOption = oldMouseOverOption
+    pane._bcEquippedAttachedDrawingPreview = nil
 
     if not ok then error(ret) end
 
