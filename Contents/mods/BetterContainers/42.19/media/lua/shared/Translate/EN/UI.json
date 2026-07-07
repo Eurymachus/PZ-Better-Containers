@@ -33,6 +33,7 @@
     "UI_BetterContainers_Priority_title" : "Sort Loot Window?",
     "UI_BetterContainers_Priority_tooltip" : "Sorting Priority",
     "UI_BetterContainers_SortValue_tooltip" : "Enter a number to sort by.",
+    "UI_BetterContainers_SortByEncumbrance_tooltip" : "Sort By: Encumbrance (%1)",
     "UI_BetterContainers_Unlock_tooltip" : "Unlock Inventory Window",
     "UI_BetterContainers_Lock_tooltip" : "Lock Inventory Window",
     "UI_BetterContainers_Customize_Title" : "Customize",

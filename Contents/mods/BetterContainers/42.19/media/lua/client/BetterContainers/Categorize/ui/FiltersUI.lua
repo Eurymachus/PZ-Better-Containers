@@ -609,12 +609,15 @@ end
 function FiltersUI:updateWeightSortTooltip()
     if not self.btnWeightSort then return end
 
-    local weightLabel = getTextOrNull("IGUI_invpanel_weight") or "Weight"
     local ascLabel = getTextOrNull("IGUI_invpanel_ascending") or "Ascending"
     local descLabel = getTextOrNull("IGUI_invpanel_descending") or "Descending"
     local directionLabel = self:getNextWeightSortAscending() and ascLabel or descLabel
 
-    self.btnWeightSort.tooltip = weightLabel .. " " .. directionLabel
+    if getTextOrNull("UI_BetterContainers_SortByEncumbrance_tooltip") then
+        self.btnWeightSort.tooltip = getText("UI_BetterContainers_SortByEncumbrance_tooltip", directionLabel)
+    else
+        self.btnWeightSort.tooltip = "Sort By: Encumbrance (" .. directionLabel .. ")"
+    end
 end
 
 function FiltersUI:onSortWeight()
