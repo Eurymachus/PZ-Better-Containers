@@ -367,6 +367,10 @@ end
 local function renderPlainItemTexture(drawTarget, item, x, y, alpha, width, height)
     local texture = getPlainItemTexture(item)
     if not texture then return false end
+    if type(texture) == "string" then
+        texture = getTexture(texture)
+        if not texture then return false end
+    end
 
     drawTarget._bcEquippedAttachedDrawingPreview = true
     drawTarget:drawTextureScaled(texture, x, y, width, height, alpha, 1, 1, 1)
