@@ -113,18 +113,6 @@ return {
         "Base.Thyme",
         "Base.Oregano",
 
-        -- Bugs (non-perishable)
-        "Base.*Caterpillar",
-        "Base.*Centipede*",
-        "Base.*Millipede*",
-        "Base.Pillbug",
-        "Base.Termites",
-        "Base.Snail",
-        "Base.Slug*",
-        "Base.Worm",
-        "Base.Cockroach",
-        "Base.Cricket",
-        "Base.Grasshopper",
     },
 
     -- Perishable food

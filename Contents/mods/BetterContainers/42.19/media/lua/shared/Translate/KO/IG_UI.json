@@ -52,6 +52,7 @@
     "IGUI_ItemCat_SurCamp" : "생존 - 캠핑",
     "IGUI_ItemCat_SurFarm" : "생존 - 농업",
     "IGUI_ItemCat_SurFish" : "생존 - 낚시",
+    "IGUI_ItemCat_SurBait" : "생존 - 낚시 미끼",
     "IGUI_ItemCat_SurTrap" : "생존 - 덫",
     "IGUI_ItemCat_Tool" : "도구",
     "IGUI_ItemCat_ToolPart" : "도구 - 부품",

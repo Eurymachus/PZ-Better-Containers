@@ -170,7 +170,6 @@ return {
     },
 
     FoodN = {
-        "Base.Maggots",
         "Base.Maggots2",
     },
 

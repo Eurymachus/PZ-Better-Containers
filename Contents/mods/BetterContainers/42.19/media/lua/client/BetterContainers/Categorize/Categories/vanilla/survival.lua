@@ -25,7 +25,6 @@ return {
     },
 
     SurFish = {
-        "Base.BaitFish",
         "Base.BrokenFishingNet",
         "Base.CraftedFishingRod",
         "Base.CraftedFishingRodTwineLine",
@@ -36,6 +35,28 @@ return {
         "Base.FishingRodTwineLine",
         "Base.FishingTackle",
         "Base.FishingTackle2",
+    },
+
+    -- Dedicated bait and small creatures primarily stored for fishing
+    SurBait = {
+        "Base.*Caterpillar",
+        "Base.*Centipede*",
+        "Base.*Millipede*",
+        "Base.BaitFish",
+        "Base.Cockroach",
+        "Base.Cricket",
+        "Base.Grasshopper",
+        "Base.JigLure",
+        "Base.Leech",
+        "Base.Maggots",
+        "Base.MinnowLure",
+        "Base.Pillbug",
+        "Base.SawflyLarva",
+        "Base.Slug*",
+        "Base.Snail",
+        "Base.Tadpole",
+        "Base.Termites",
+        "Base.Worm",
     },
 
     SurTrap = {

@@ -52,6 +52,7 @@
     "IGUI_ItemCat_SurCamp" : "Survival - Camping",
     "IGUI_ItemCat_SurFarm" : "Survival - Farming",
     "IGUI_ItemCat_SurFish" : "Survival - Fishing",
+    "IGUI_ItemCat_SurBait" : "Survival - Fishing Bait",
     "IGUI_ItemCat_SurTrap" : "Survival - Trapping",
     "IGUI_ItemCat_Tool" : "Tool",
     "IGUI_ItemCat_ToolPart" : "Tool - Part",
