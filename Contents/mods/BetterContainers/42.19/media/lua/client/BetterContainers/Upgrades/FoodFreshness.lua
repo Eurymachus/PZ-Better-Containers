@@ -6,6 +6,9 @@ local INFINITE_AGE = 1000000000
 local BAR_HEIGHT = 3
 local BAR_PAD = 8
 local MIN_BAR_WIDTH = 48
+local PERCENT_PAD = 5
+local PERCENT_GAP = 6
+local STALE_MARKER_WIDTH = 2
 
 local function clamp01(value)
     return math.max(0, math.min(1, value))
@@ -42,42 +45,53 @@ local function drawIndicator(pane, item, row)
     local freshness, stalePoint = getFreshness(item)
     if freshness == nil then return end
 
-    local x = pane.column2 + BAR_PAD
-    local width = pane.column3 - x - BAR_PAD
-
     local rowTop = pane.headerHgt + row * pane.itemHgt
     local visibleTop = rowTop + pane:getYScroll()
     if visibleTop + pane.itemHgt < pane.headerHgt or visibleTop > pane.height then return end
 
+    local font = UIFont.Small
+    local percentSlotWidth = 0
+    if Options.showFoodFreshnessPercentage then
+        percentSlotWidth = getTextManager():MeasureStringX(font, "100%") + PERCENT_PAD * 2
+    end
+
+    local x = pane.column2 + BAR_PAD
+    local right = pane.column3 - BAR_PAD - percentSlotWidth
+    if percentSlotWidth > 0 then
+        right = right - PERCENT_GAP
+    end
+    local width = right - x
+
     if Options.showFoodFreshnessBar and width >= MIN_BAR_WIDTH then
         local y = rowTop + pane.itemHgt - BAR_HEIGHT - 1
         local fillWidth = math.floor(width * freshness + 0.5)
-        local staleX = x + math.floor(width * stalePoint + 0.5)
+        local staleX = x + math.floor(width * stalePoint + 0.5) - math.floor(STALE_MARKER_WIDTH / 2)
 
-        pane:drawRect(x, y, width, BAR_HEIGHT, 0.70, 0.10, 0.10, 0.10)
+        pane:drawRect(x, y, width, BAR_HEIGHT, 0.62, 0.08, 0.08, 0.08)
 
         if fillWidth > 0 then
             local fresh = freshness > stalePoint
-            local r, g, b = 0.25, 0.75, 0.30
+            local r, g, b = 0.30, 0.62, 0.34
             if not fresh then
-                r, g, b = 0.90, 0.55, 0.12
+                r, g, b = 0.72, 0.48, 0.18
             end
-            pane:drawRect(x, y, fillWidth, BAR_HEIGHT, 0.90, r, g, b)
+            pane:drawRect(x, y, fillWidth, BAR_HEIGHT, 0.88, r, g, b)
         end
 
-        pane:drawRect(staleX, y - 1, 1, BAR_HEIGHT + 2, 0.95, 0.95, 0.85, 0.45)
+        pane:drawRect(staleX - 1, y - 2, STALE_MARKER_WIDTH + 2, BAR_HEIGHT + 4, 0.80, 0.08, 0.08, 0.08)
+        pane:drawRect(staleX, y - 1, STALE_MARKER_WIDTH, BAR_HEIGHT + 2, 0.92, 0.88, 0.66, 0.38)
     end
 
     if Options.showFoodFreshnessPercentage then
         local text = tostring(math.floor(freshness * 100 + 0.5)) .. "%"
-        local font = UIFont.Small
         local textWidth = getTextManager():MeasureStringX(font, text)
-        local textX = pane.column3 - BAR_PAD - textWidth
+        local slotX = pane.column3 - BAR_PAD - percentSlotWidth
+        local textX = slotX + percentSlotWidth - PERCENT_PAD - textWidth
         local textY = rowTop + math.max(0, (pane.itemHgt - getTextManager():getFontHeight(font)) / 2 - 1)
 
         local reservedBarHeight = Options.showFoodFreshnessBar and BAR_HEIGHT or 0
-        pane:drawRect(textX - 3, rowTop + 1, textWidth + 6, pane.itemHgt - reservedBarHeight - 3, 0.72, 0.04, 0.04, 0.04)
-        pane:drawText(text, textX, textY, 0.82, 0.88, 0.82, 1.0, font)
+        pane:drawRect(slotX, rowTop + 1, percentSlotWidth, pane.itemHgt - reservedBarHeight - 3, 0.88, 0.035, 0.035, 0.035)
+        pane:drawText(text, textX, textY, 0.74, 0.80, 0.74, 1.0, font)
     end
 end
 
