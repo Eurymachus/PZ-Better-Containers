@@ -74,6 +74,10 @@ return {
         "Base.MetalworkMag2",
         "Base.MetalworkMag3",
         "Base.MetalworkMag4",
+        "Base.SmithingMag1",
+        "Base.SmithingMag2",
+        "Base.SmithingMag3",
+        "Base.SmithingMag4",
     },
 
     LitS = {
@@ -132,10 +136,6 @@ return {
         "Base.BookTrapping3",
         "Base.BookTrapping4",
         "Base.BookTrapping5",
-        "Base.SmithingMag1",
-        "Base.SmithingMag2",
-        "Base.SmithingMag3",
-        "Base.SmithingMag4",
         "Base.BookBlacksmith1",
         "Base.BookBlacksmith2",
         "Base.BookBlacksmith3",
