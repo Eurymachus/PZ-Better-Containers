@@ -10,6 +10,7 @@ Upgrades.install = function()
     local PinnedItems = require("BetterContainers/Upgrades/PinnedItems")
     local EquippedAttachedSection = require("BetterContainers/Upgrades/EquippedAttachedSection")
     local PreserveInventoryWindows = require("BetterContainers/Upgrades/PreserveInventoryWindows")
+    local FoodFreshness = require("BetterContainers/Upgrades/FoodFreshness")
 
     EquippedAttachedSection.install()
     PreserveInventoryWindows.install()
@@ -18,6 +19,7 @@ Upgrades.install = function()
     UtilityPanel.install()
     LockInventory.install()
     PinnedItems.install()
+    FoodFreshness.install()
 end
 
 return Upgrades

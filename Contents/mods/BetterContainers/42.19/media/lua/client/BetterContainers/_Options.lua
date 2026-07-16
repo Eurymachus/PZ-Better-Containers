@@ -42,6 +42,8 @@ local Options = {
     showFavouritesOnPlayerInventories = false,
     showEquippedAttachedSection = false,
     preserveInventoryWindowsAfterPause = true,
+    showFoodFreshnessBar = true,
+    showFoodFreshnessPercentage = true,
 }
 
 local config = {
@@ -82,6 +84,8 @@ local config = {
     showFavouritesOnPlayerInventories = nil,
     showEquippedAttachedSection = nil,
     preserveInventoryWindowsAfterPause = nil,
+    showFoodFreshnessBar = nil,
+    showFoodFreshnessPercentage = nil,
 }
 
 function Options.getEffectivePermissions()
@@ -191,6 +195,8 @@ local function applyOptions()
     Options.showFavouritesOnPlayerInventories  = opts:getOption("showFavouritesOnPlayerInventories"):getValue()
     Options.showEquippedAttachedSection = opts:getOption("showEquippedAttachedSection"):getValue()
     Options.preserveInventoryWindowsAfterPause = opts:getOption("preserveInventoryWindowsAfterPause"):getValue()
+    Options.showFoodFreshnessBar = opts:getOption("showFoodFreshnessBar"):getValue()
+    Options.showFoodFreshnessPercentage = opts:getOption("showFoodFreshnessPercentage"):getValue()
 
     triggerEvent(Helpers.OPTIONS_APPLIED)
 end
@@ -493,6 +499,24 @@ local function initConfig()
         Options.preserveInventoryWindowsAfterPause,
         getTextOrNull("UI_BetterContainers_Options_preserveInventoryWindowsAfterPause_Tooltip")
             or "When enabled, inventory windows that were open before entering the pause menu are restored after returning to the game."
+    )
+
+    config.showFoodFreshnessBar = panel:addTickBox(
+        "showFoodFreshnessBar",
+        getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessBar")
+            or "Show Freshness Bar for Spoilable Food",
+        Options.showFoodFreshnessBar,
+        getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessBar_Tooltip")
+            or "Shows remaining freshness from 100% fresh to 0% rotten, with a marker at the stale threshold."
+    )
+
+    config.showFoodFreshnessPercentage = panel:addTickBox(
+        "showFoodFreshnessPercentage",
+        getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessPercentage")
+            or "Show Freshness Percentage for Spoilable Food",
+        Options.showFoodFreshnessPercentage,
+        getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessPercentage_Tooltip")
+            or "Shows the remaining freshness percentage beside the item name."
     )
 
     -- Apply handler (BGI pattern)
