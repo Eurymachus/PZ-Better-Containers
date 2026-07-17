@@ -87,7 +87,7 @@ local function drawIndicator(pane, item, row)
         local text = tostring(math.floor(freshness * 100 + 0.5)) .. "%"
         local textWidth = getTextManager():MeasureStringX(font, text)
         local slotX = pane.column3 - PERCENT_RIGHT_MARGIN - percentSlotWidth
-        local textX = slotX + percentSlotWidth - PERCENT_PAD - textWidth
+        local textX = slotX + math.floor((percentSlotWidth - textWidth) / 2)
         local textY = rowTop + math.max(0, (pane.itemHgt - getTextManager():getFontHeight(font)) / 2 - 1)
 
         local reservedBarHeight = Options.showFoodFreshnessBar and BAR_HEIGHT or 0
