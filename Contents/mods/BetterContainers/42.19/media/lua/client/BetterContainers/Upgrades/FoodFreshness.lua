@@ -50,7 +50,7 @@ local function drawIndicator(pane, item, row)
     local visibleTop = rowTop + pane:getYScroll()
     if visibleTop + pane.itemHgt < pane.headerHgt or visibleTop > pane.height then return end
 
-    local font = UIFont.Small
+    local font = pane.font or UIFont.Medium
     local percentSlotWidth = 0
     if Options.showFoodFreshnessPercentage then
         percentSlotWidth = getTextManager():MeasureStringX(font, "100%") + PERCENT_PAD * 2
@@ -88,11 +88,12 @@ local function drawIndicator(pane, item, row)
         local textWidth = getTextManager():MeasureStringX(font, text)
         local slotX = pane.column3 - PERCENT_RIGHT_MARGIN - percentSlotWidth
         local textX = slotX + math.floor((percentSlotWidth - textWidth) / 2)
-        local textY = rowTop + math.max(0, (pane.itemHgt - getTextManager():getFontHeight(font)) / 2 - 1)
+        local fontHeight = pane.fontHgt or getTextManager():getFontHeight(font)
+        local textY = rowTop + math.max(0, (pane.itemHgt - fontHeight) / 2)
 
         local reservedBarHeight = Options.showFoodFreshnessBar and BAR_HEIGHT or 0
         pane:drawRect(slotX, rowTop, percentSlotWidth, pane.itemHgt - reservedBarHeight - 1, 1.0, 0.0, 0.0, 0.0)
-        pane:drawText(text, textX, textY, 0.74, 0.80, 0.74, 1.0, font)
+        pane:drawText(text, textX, textY, 0.7, 0.7, 0.7, 1.0, font)
     end
 end
 
