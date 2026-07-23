@@ -91,8 +91,7 @@ local function drawIndicator(pane, item, row)
         local fontHeight = pane.fontHgt or getTextManager():getFontHeight(font)
         local textY = rowTop + math.max(0, (pane.itemHgt - fontHeight) / 2)
 
-        local reservedBarHeight = Options.showFoodFreshnessBar and BAR_HEIGHT or 0
-        pane:drawRect(slotX, rowTop, percentSlotWidth, pane.itemHgt - reservedBarHeight - 1, 1.0, 0.0, 0.0, 0.0)
+        pane:drawRect(slotX, rowTop, percentSlotWidth, pane.itemHgt, 1.0, 0.0, 0.0, 0.0)
         pane:drawText(text, textX, textY, 0.7, 0.7, 0.7, 1.0, font)
     end
 end
