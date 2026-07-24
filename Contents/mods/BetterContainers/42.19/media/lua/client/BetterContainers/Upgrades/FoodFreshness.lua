@@ -42,7 +42,7 @@ local function getLeastFreshItem(items)
     return leastFreshItem
 end
 
-local function drawIndicator(pane, item, row)
+local function drawIndicator(pane, item, row, permanentPercentage)
     local freshness, stalePoint = getFreshness(item)
     if freshness == nil then return end
 
@@ -51,14 +51,17 @@ local function drawIndicator(pane, item, row)
     if visibleTop + pane.itemHgt < pane.headerHgt or visibleTop > pane.height then return end
 
     local font = pane.font or UIFont.Medium
+    local showPercentage = Options.showFoodFreshnessPercentage
+        and (permanentPercentage or pane.mouseOverOption == row + 1)
     local percentSlotWidth = 0
-    if Options.showFoodFreshnessPercentage then
+    if showPercentage then
         percentSlotWidth = getTextManager():MeasureStringX(font, "100%") + PERCENT_PAD * 2
     end
 
     local x = pane.column2 + BAR_PAD
-    local right = pane.column3 - PERCENT_RIGHT_MARGIN - percentSlotWidth
-    if percentSlotWidth > 0 then
+    local right = pane.column3 - BAR_PAD
+    if permanentPercentage and percentSlotWidth > 0 then
+        right = pane.column3 - PERCENT_RIGHT_MARGIN - percentSlotWidth
         right = right - PERCENT_GAP
     end
     local width = right - x
@@ -83,7 +86,7 @@ local function drawIndicator(pane, item, row)
         pane:drawRect(staleX, y - 1, STALE_MARKER_WIDTH, BAR_HEIGHT + 2, 0.92, 0.88, 0.66, 0.38)
     end
 
-    if Options.showFoodFreshnessPercentage then
+    if showPercentage then
         local text = tostring(math.floor(freshness * 100 + 0.5)) .. "%"
         local textWidth = getTextManager():MeasureStringX(font, text)
         local slotX = pane.column3 - PERCENT_RIGHT_MARGIN - percentSlotWidth
@@ -103,14 +106,14 @@ local function drawIndicators(pane)
     local row = 0
     for _, stack in ipairs(pane.itemslist) do
         local items = stack and stack.items
-        drawIndicator(pane, getLeastFreshItem(items), row)
+        drawIndicator(pane, getLeastFreshItem(items), row, false)
 
         local collapsed = pane.collapsed and stack.name and pane.collapsed[stack.name]
         if not collapsed and items then
             local last = math.min(#items, ISInventoryPane.MAX_ITEMS_IN_STACK_TO_RENDER + 1)
             for index = 2, last do
                 row = row + 1
-                drawIndicator(pane, items[index], row)
+                drawIndicator(pane, items[index], row, true)
             end
         end
 

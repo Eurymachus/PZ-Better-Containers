@@ -516,7 +516,7 @@ local function initConfig()
             or "Show Freshness Percentage for Spoilable Food",
         Options.showFoodFreshnessPercentage,
         getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessPercentage_Tooltip")
-            or "Shows the remaining freshness percentage beside the item name."
+            or "Shows the remaining freshness percentage on hover and permanently for individual items in expanded stacks."
     )
 
     -- Apply handler (BGI pattern)

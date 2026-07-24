@@ -13,7 +13,7 @@
     "UI_BetterContainers_Options_showFoodFreshnessBar" : "Show Freshness Bar for Spoilable Food",
     "UI_BetterContainers_Options_showFoodFreshnessBar_Tooltip" : "Shows remaining freshness from 100% fresh to 0% rotten, with a marker at the stale threshold.",
     "UI_BetterContainers_Options_showFoodFreshnessPercentage" : "Show Freshness Percentage for Spoilable Food",
-    "UI_BetterContainers_Options_showFoodFreshnessPercentage_Tooltip" : "Shows the remaining freshness percentage beside the item name.",
+    "UI_BetterContainers_Options_showFoodFreshnessPercentage_Tooltip" : "Shows the remaining freshness percentage on hover and permanently for individual items in expanded stacks.",
     "UI_BetterContainers_EquippedAttachedSection" : "Equipped Items",
     "UI_BetterContainers_EquippedAttachedSection_Category" : "Gear",
     "UI_BetterContainers_Options_categoryBlacklist" : "Category Blacklist",
