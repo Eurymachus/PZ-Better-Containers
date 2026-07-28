@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Сбросить",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Добавить категорию в избранное",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Убрать категорию из избранного"
+    ,"ContextMenu_BetterContainers_Nesting" : "Вложенность"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Игнорировать тип вложенного контейнера"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Разрешить тип вложенного контейнера"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Игнорируемые типы контейнеров"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Нет"
 }

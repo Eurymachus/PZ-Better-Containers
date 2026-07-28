@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Tilbakestill",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Legg til favorittkategori",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Fjern favorittkategori"
+    ,"ContextMenu_BetterContainers_Nesting" : "Nesting"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ignorer nestet beholdertype"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Tillat nestet beholdertype"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ignorerte beholdertyper"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Ingen"
 }

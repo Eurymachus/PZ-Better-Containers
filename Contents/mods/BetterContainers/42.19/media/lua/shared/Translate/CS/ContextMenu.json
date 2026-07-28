@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Obnovit",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Pridat oblibenou kategorii",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Odebrat oblibenou kategorii"
+    ,"ContextMenu_BetterContainers_Nesting" : "Vnorovani"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ignorovat typ vnoreneho kontejneru"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Povolit typ vnoreneho kontejneru"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ignorovane typy kontejneru"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Zadne"
 }

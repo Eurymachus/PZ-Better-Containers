@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "リセット",
     "ContextMenu_BetterContainers_AddCategoryFav" : "カテゴリをお気に入りに追加",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "カテゴリをお気に入りから削除"
+    ,"ContextMenu_BetterContainers_Nesting" : "入れ子"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "入れ子コンテナタイプを無視"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "入れ子コンテナタイプを許可"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "無視されたコンテナタイプ"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "なし"
 }

@@ -9,5 +9,10 @@
     "ContextMenu_BetterContainers_AddCategoryFav" : "Add Category Favourite",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Remove Category Favourite",
     "ContextMenu_BetterContainers_PinItemType" : "Pin Item Type",
-    "ContextMenu_BetterContainers_UnpinItemType" : "Unpin Item Type"
+    "ContextMenu_BetterContainers_UnpinItemType" : "Unpin Item Type",
+    "ContextMenu_BetterContainers_Nesting" : "Nesting",
+    "ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ignore Nested Container Type",
+    "ContextMenu_BetterContainers_AllowNestedContainerType" : "Allow Nested Container Type",
+    "ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ignored Container Types",
+    "ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "None"
 }

@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Resetten",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Categorie als favoriet toevoegen",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Categorie uit favorieten verwijderen"
+    ,"ContextMenu_BetterContainers_Nesting" : "Nesten"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Genest containertype negeren"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Genest containertype toestaan"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Genegeerde containertypes"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Geen"
 }

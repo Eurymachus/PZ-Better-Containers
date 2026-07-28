@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Sifirla",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Favori kategori ekle",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Favori kategoriyi kaldir"
+    ,"ContextMenu_BetterContainers_Nesting" : "Iclestirme"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Iclestirilmis konteyner turunu yok say"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Iclestirilmis konteyner turune izin ver"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Yok sayilan konteyner turleri"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Yok"
 }

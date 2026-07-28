@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Palauta",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Lisaa luokkasuosikki",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Poista luokkasuosikki"
+    ,"ContextMenu_BetterContainers_Nesting" : "Sisakkaisyys"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ohita sisakkaisen sailion tyyppi"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Salli sisakkaisen sailion tyyppi"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ohitetut sailiotyypit"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Ei mitaan"
 }

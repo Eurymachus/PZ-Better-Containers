@@ -1,5 +1,6 @@
 local Options = require("BetterContainers/_Options")
 local Proximity = require("BetterContainers/Proximity")
+local IniWriter = require("BetterContainers/_IO/IniWriter")
 
 local Nested = {}
 
@@ -8,11 +9,75 @@ Nested._installed = false
 Nested._ignoredInventories = setmetatable({}, { __mode = "k" })
 Nested._ignoredInventoryTypes = {}
 Nested._ignoredInventoryPredicates = {}
+Nested._userIgnoredInventoryTypes = {}
 Nested.maxDepth = 10
 
 local PLAYER_FILTER_EVERYTHING = 1
 local PLAYER_FILTER_ONLY_POCKETS = 2
 local PLAYER_FILTER_ONLY_EQUIPPED = 3
+local IGNORED_TYPES_INI = IniWriter.makeFeature("NestedContainers", false)
+local IGNORED_TYPES_SECTION = "IgnoredContainerTypes"
+local ignoredTypesLoaded = false
+local ignoredTypesDirty = false
+
+local function sortedEnabledKeys(values)
+    local keys = {}
+    for key, enabled in pairs(values or {}) do
+        if enabled then
+            table.insert(keys, tostring(key))
+        end
+    end
+    table.sort(keys)
+    return keys
+end
+
+function Nested.loadUserIgnoredInventoryTypes()
+    if ignoredTypesLoaded then return true end
+
+    Nested._userIgnoredInventoryTypes = {}
+    local row = IGNORED_TYPES_INI.get(IGNORED_TYPES_SECTION) or {}
+    for invType, enabled in pairs(row) do
+        if enabled ~= nil and tostring(enabled) ~= "0" and tostring(enabled) ~= "false" then
+            Nested._userIgnoredInventoryTypes[tostring(invType)] = true
+        end
+    end
+
+    ignoredTypesLoaded = true
+    ignoredTypesDirty = false
+    return true
+end
+
+function Nested.setUserIgnoredInventoryType(invType, ignored)
+    if not invType or invType == "" then return false end
+    Nested.loadUserIgnoredInventoryTypes()
+
+    ignored = ignored == true
+    if (Nested._userIgnoredInventoryTypes[invType] == true) == ignored then
+        return false
+    end
+
+    Nested._userIgnoredInventoryTypes[invType] = ignored and true or nil
+    ignoredTypesDirty = true
+    return true
+end
+
+function Nested.saveUserIgnoredInventoryTypes()
+    if not ignoredTypesDirty then return false end
+
+    local order = sortedEnabledKeys(Nested._userIgnoredInventoryTypes)
+    if #order == 0 then
+        IGNORED_TYPES_INI.delete(IGNORED_TYPES_SECTION)
+    else
+        local row = {}
+        for _, invType in ipairs(order) do
+            row[invType] = "1"
+        end
+        IGNORED_TYPES_INI.setOrdered(IGNORED_TYPES_SECTION, row, order)
+    end
+
+    ignoredTypesDirty = false
+    return true
+end
 
 local function isEnabled(inventoryPage)
     if not inventoryPage then return false end
@@ -135,6 +200,11 @@ function Nested.isIgnoredInventory(inventoryPage, inventory)
 
     local invType = inventory:getType()
     if invType and Nested._ignoredInventoryTypes[invType] then
+        return true
+    end
+
+    Nested.loadUserIgnoredInventoryTypes()
+    if invType and Nested._userIgnoredInventoryTypes[invType] then
         return true
     end
 
@@ -303,6 +373,118 @@ function Nested.OnButtonsAdded(inventoryPage)
     end
 end
 
+local function addIgnoreTypeContextOption(inventoryPage, button)
+    local inventory = button and button.inventory or nil
+    local invType = inventory and inventory:getType() or nil
+    if not invType or invType == "" or invType == "floor" then return end
+
+    local context = getPlayerContextMenu(inventoryPage.player)
+    if not context then
+        context = ISContextMenu.get(inventoryPage.player, getMouseX(), getMouseY())
+    end
+    if not context then return end
+
+    Nested.loadUserIgnoredInventoryTypes()
+    local ignoredTypes = Nested._userIgnoredInventoryTypes
+    local isIgnored = ignoredTypes[invType] == true
+
+    local nestingMenu = context:getNew(context)
+    local nestingRoot = context:addOption(
+        getTextOrNull("ContextMenu_BetterContainers_Nesting") or "Nesting",
+        nil,
+        nil
+    )
+    context:addSubMenu(nestingRoot, nestingMenu)
+
+    local label
+    if isIgnored then
+        label = getTextOrNull("ContextMenu_BetterContainers_AllowNestedContainerType")
+            or "Allow Nested Container Type"
+    else
+        label = getTextOrNull("ContextMenu_BetterContainers_IgnoreNestedContainerType")
+            or "Ignore Nested Container Type"
+    end
+
+    local option = nestingMenu:addOption(label, nil, function()
+        Nested.setUserIgnoredInventoryType(invType, not isIgnored)
+        inventoryPage:refreshBackpacks()
+    end)
+    option.toolTip = ISToolTip:new()
+    option.toolTip:initialise()
+    option.toolTip.description = invType
+
+    local containedIgnoredTypes = {}
+    local visited = {}
+
+    local function collectContainedIgnoredTypes(container, depth)
+        if not container or depth > getMaxDepth() or visited[container] then return end
+        visited[container] = true
+
+        local items = container:getItems()
+        if not items then return end
+
+        for i = 0, items:size() - 1 do
+            local item = items:get(i)
+            if item and item:IsInventoryContainer() then
+                local childInventory = item:getInventory()
+                if childInventory and childInventory:getContainingItem() == item then
+                    local childType = childInventory:getType()
+                    if childType and ignoredTypes[childType] then
+                        containedIgnoredTypes[childType] = item:getName() or childType
+                    end
+                    collectContainedIgnoredTypes(childInventory, depth + 1)
+                end
+            end
+        end
+    end
+
+    collectContainedIgnoredTypes(inventory, 1)
+
+    local ignoredMenu = nestingMenu:getNew(nestingMenu)
+    local ignoredRoot = nestingMenu:addOption(
+        getTextOrNull("ContextMenu_BetterContainers_IgnoredNestedContainerTypes")
+            or "Ignored Container Types",
+        nil,
+        nil
+    )
+    nestingMenu:addSubMenu(ignoredRoot, ignoredMenu)
+
+    local sortedTypes = {}
+    for childType in pairs(containedIgnoredTypes) do
+        table.insert(sortedTypes, childType)
+    end
+    table.sort(sortedTypes, function(a, b)
+        local aName = tostring(containedIgnoredTypes[a] or a)
+        local bName = tostring(containedIgnoredTypes[b] or b)
+        if aName == bName then return a < b end
+        return aName < bName
+    end)
+
+    if #sortedTypes == 0 then
+        local emptyOption = ignoredMenu:addOption(
+            getTextOrNull("ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes")
+                or "None",
+            nil,
+            nil
+        )
+        emptyOption.notAvailable = true
+        return
+    end
+
+    for _, childType in ipairs(sortedTypes) do
+        local targetType = childType
+        local childName = containedIgnoredTypes[targetType]
+        local allowOption = ignoredMenu:addOption(childName, nil, function()
+            Nested.setUserIgnoredInventoryType(targetType, false)
+            inventoryPage:refreshBackpacks()
+        end)
+        allowOption.toolTip = ISToolTip:new()
+        allowOption.toolTip:initialise()
+        allowOption.toolTip.description = (getTextOrNull("ContextMenu_BetterContainers_AllowNestedContainerType")
+            or "Allow Nested Container Type") .. ": " .. targetType
+    end
+end
+
 function Nested.install()
     if Nested._installed then return end
     Nested._installed = true
@@ -312,6 +494,19 @@ function Nested.install()
             Nested.OnButtonsAdded(inventoryPage)
         end
     end)
+    Events.OnGameBoot.Add(Nested.loadUserIgnoredInventoryTypes)
+    Events.OnSave.Add(Nested.saveUserIgnoredInventoryTypes)
+
+    require "ISUI/ISInventoryPage"
+    local oldOnBackpackRightMouseDown = ISInventoryPage.onBackpackRightMouseDown
+    function ISInventoryPage:onBackpackRightMouseDown(x, y)
+        oldOnBackpackRightMouseDown(self, x, y)
+
+        local inventoryPage = self.parent and self.parent.parent or nil
+        if inventoryPage and self.inventory then
+            addIgnoreTypeContextOption(inventoryPage, self)
+        end
+    end
 end
 
 -- Compatibility aliases for mod authors that prefer the shorter wording.

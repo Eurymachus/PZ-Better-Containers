@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "รีเซ็ต",
     "ContextMenu_BetterContainers_AddCategoryFav" : "เพิ่มหมวดหมู่โปรด",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "ลบหมวดหมู่โปรด"
+    ,"ContextMenu_BetterContainers_Nesting" : "การซ้อน"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "ละเว้นประเภทภาชนะที่ซ้อน"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "อนุญาตประเภทภาชนะที่ซ้อน"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "ประเภทภาชนะที่ละเว้น"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "ไม่มี"
 }

@@ -182,13 +182,6 @@ function CategoryFilters.openPopup(pane, button)
             local newEntries = _buildCategoryEntries(pane, showAll == true)
             _syncChecksFromStaged(newEntries, _staged)
             return newEntries
-        end,
-        function(isAscending)
-            pane:sortByWeight(isAscending == true)
-            ISInventoryPage.dirtyUI()
-        end,
-        function()
-            return pane.itemSortFunc
         end
     )
 
@@ -223,6 +216,10 @@ function CategoryFilters.installInventoryPaneFilterButtonPatch()
         local filterButton = self.filterMenu
         if filterButton then
             filterButton.tooltip = getTextOrNull("Tooltip_FilterMenu") or "Category Filters Menu"
+            filterButton.onRightMouseDown = function(button)
+                _vanilla_onFilterMenu(self, button)
+                return true
+            end
         end
     end
 

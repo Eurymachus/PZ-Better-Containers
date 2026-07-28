@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Repor",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Adicionar categoria favorita",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Remover categoria favorita"
+    ,"ContextMenu_BetterContainers_Nesting" : "Aninhamento"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ignorar tipo de contentor aninhado"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Permitir tipo de contentor aninhado"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Tipos de contentor ignorados"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Nenhum"
 }

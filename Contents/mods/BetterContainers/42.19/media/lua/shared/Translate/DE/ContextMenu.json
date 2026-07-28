@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Zurucksetzen",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Kategorie zu Favoriten hinzufugen",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Kategorie aus Favoriten entfernen"
+    ,"ContextMenu_BetterContainers_Nesting" : "Verschachtelung"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Verschachtelten Behaltertyp ignorieren"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Verschachtelten Behaltertyp zulassen"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ignorierte Behaltertypen"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Keine"
 }

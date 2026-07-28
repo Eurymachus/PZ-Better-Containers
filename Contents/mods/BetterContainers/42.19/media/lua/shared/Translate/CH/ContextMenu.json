@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "重設",
     "ContextMenu_BetterContainers_AddCategoryFav" : "加入分類最愛",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "移除分類最愛"
+    ,"ContextMenu_BetterContainers_Nesting" : "巢狀容器"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "忽略巢狀容器類型"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "允許巢狀容器類型"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "已忽略的容器類型"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "無"
 }

@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "초기화",
     "ContextMenu_BetterContainers_AddCategoryFav" : "카테고리 즐겨찾기 추가",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "카테고리 즐겨찾기 제거"
+    ,"ContextMenu_BetterContainers_Nesting" : "중첩"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "중첩 컨테이너 유형 무시"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "중첩 컨테이너 유형 허용"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "무시된 컨테이너 유형"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "없음"
 }

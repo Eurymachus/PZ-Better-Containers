@@ -5,7 +5,6 @@ require("ISUI/ISScrollingListBox")
 require("ISUI/ISTickBox")
 require("ISUI/ISInventoryPane")
 
-local Constants = require("BetterContainers/Constants")
 local IniWriter = require("BetterContainers/_IO/IniWriter")
 
 local MOD = "BetterContainers"
@@ -343,8 +342,7 @@ function FiltersFooter:createChildren()
     local pad = ui._pad
     local btnH = ui._btnH
 
-    local iconBtnW = btnH
-    local btnW = math.floor((self.width - pad * 4 - iconBtnW) / 2)
+    local btnW = math.floor((self.width - pad * 3) / 2)
     local btnY = math.floor((self.height - btnH) / 2)
 
     ui.btnApply = ISButton:new(pad, btnY, btnW, btnH, getTextOrNull("UI_Apply") or "Apply", ui, FiltersUI.onApply)
@@ -354,14 +352,6 @@ function FiltersFooter:createChildren()
     ui.btnClear = ISButton:new(pad * 2 + btnW, btnY, btnW, btnH, getTextOrNull("UI_BetterContainers_Clear") or "Clear", ui, FiltersUI.onClear)
     ui.btnClear:initialise()
     self:addChild(ui.btnClear)
-
-    ui.btnWeightSort = ISButton:new(pad * 3 + btnW * 2, btnY, iconBtnW, btnH, "", ui, FiltersUI.onSortWeight)
-    ui.btnWeightSort:initialise()
-    ui.btnWeightSort:setImage(Constants.Icons.Loaded.Encumbrance)
-    ui.btnWeightSort:forceImageSize(btnH + 6, btnH + 6)
-    ui.btnWeightSort.borderColor.a = 0.2
-    self:addChild(ui.btnWeightSort)
-    ui:updateWeightSortTooltip()
 end
 
 -- ---------------------------------------------------------
@@ -380,8 +370,6 @@ function FiltersUI:new(x, y, w, h, playerNum)
     o._onApply = nil
     o._onClear = nil
     o._onClose = nil
-    o._onSortWeight = nil
-    o._onGetWeightSortFunc = nil
 
     -- Layout constants
     o._pad = 8
@@ -407,15 +395,13 @@ end
 
 -- entries = { { key="Food", label="Food", checked=true/false, count=number|nil }, ... }
 -- staged = { map = { [key]=true }, count = N }
-function FiltersUI:configure(entries, staged, onApply, onClear, onClose, rebuildEntries, onSortWeight, onGetWeightSortFunc)
+function FiltersUI:configure(entries, staged, onApply, onClear, onClose, rebuildEntries)
     self._entries = entries or {}
     self._staged = staged
     self._onApply = onApply
     self._onClear = onClear
     self._onClose = onClose
     self._rebuildEntries = rebuildEntries
-    self._onSortWeight = onSortWeight
-    self._onGetWeightSortFunc = onGetWeightSortFunc
 
     if self.showAllTick then
         self.showAllTick:setSelected(1, self.showAll == true)
@@ -462,7 +448,6 @@ end
 
 function FiltersUI:prerender()
     ISPanel.prerender(self)
-    self:updateWeightSortTooltip()
     self:bringToTop()
 end
 
@@ -592,40 +577,6 @@ function FiltersUI:onClear()
         -- ensure redraw reflects unchecked state
         -- (items are shared tables, so list already has the updated refs)
     end
-end
-
-function FiltersUI:getNextWeightSortAscending()
-    if not self._onGetWeightSortFunc then
-        return true
-    end
-
-    local currentSortFunc = self._onGetWeightSortFunc()
-    if currentSortFunc == ISInventoryPane.itemSortByWeightAsc then
-        return false
-    end
-    return true
-end
-
-function FiltersUI:updateWeightSortTooltip()
-    if not self.btnWeightSort then return end
-
-    local ascLabel = getTextOrNull("IGUI_invpanel_ascending") or "Ascending"
-    local descLabel = getTextOrNull("IGUI_invpanel_descending") or "Descending"
-    local directionLabel = self:getNextWeightSortAscending() and ascLabel or descLabel
-
-    if getTextOrNull("UI_BetterContainers_SortByEncumbrance_tooltip") then
-        self.btnWeightSort.tooltip = getText("UI_BetterContainers_SortByEncumbrance_tooltip", directionLabel)
-    else
-        self.btnWeightSort.tooltip = "Sort By: Encumbrance (" .. directionLabel .. ")"
-    end
-end
-
-function FiltersUI:onSortWeight()
-    local isAscending = self:getNextWeightSortAscending()
-    if self._onSortWeight then
-        self._onSortWeight(isAscending)
-    end
-    self:updateWeightSortTooltip()
 end
 
 function FiltersUI:close()

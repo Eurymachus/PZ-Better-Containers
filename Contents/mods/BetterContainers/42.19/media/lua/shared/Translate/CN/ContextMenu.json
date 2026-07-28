@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "重置",
     "ContextMenu_BetterContainers_AddCategoryFav" : "添加分类收藏",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "移除分类收藏"
+    ,"ContextMenu_BetterContainers_Nesting" : "嵌套容器"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "忽略嵌套容器类型"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "允许嵌套容器类型"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "已忽略的容器类型"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "无"
 }

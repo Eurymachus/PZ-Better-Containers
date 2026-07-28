@@ -8,4 +8,9 @@
     "ContextMenu_BC_Reset" : "Nulstil",
     "ContextMenu_BetterContainers_AddCategoryFav" : "Tilfoj favoritkategori",
     "ContextMenu_BetterContainers_RemoveCategoryFav" : "Fjern favoritkategori"
+    ,"ContextMenu_BetterContainers_Nesting" : "Indlejring"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ignorer indlejret beholdertype"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Tillad indlejret beholdertype"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ignorerede beholdertyper"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Ingen"
 }
