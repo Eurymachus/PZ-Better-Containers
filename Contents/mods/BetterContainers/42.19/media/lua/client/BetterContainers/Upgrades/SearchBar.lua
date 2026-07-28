@@ -91,6 +91,9 @@ local function _ensureSearchWidgets(pane)
             pane.inventory:setDrawDirty(true)
             pane:refreshContainer()
         end
+        entry.onCommandEntered = function(selfEntry)
+            selfEntry:unfocus()
+        end
         pane.bcSearchStrip:addChild(entry)
         pane.bcSearchEntry = entry
         pane.bcSearchQuery = pane.bcSearchQuery or ""
