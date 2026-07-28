@@ -347,8 +347,53 @@ local function scanInventory(inventoryPage, inventory, depth, visited, existingB
     end
 end
 
+local function isNestedUnderVehicle(inventory)
+    local current = inventory
+    local visited = {}
+
+    while current and not visited[current] do
+        visited[current] = true
+
+        local containingItem = current:getContainingItem()
+        if not containingItem then return false end
+
+        current = containingItem:getContainer()
+        if current and current:getVehiclePart() then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function removeIgnoredVanillaVehicleButtons(inventoryPage)
+    if inventoryPage.onCharacter then return end
+
+    for i = #inventoryPage.backpacks, 1, -1 do
+        local button = inventoryPage.backpacks[i]
+        local inventory = button and button.inventory or nil
+        if inventory
+            and isNestedUnderVehicle(inventory)
+            and Nested.isIgnoredInventory(inventoryPage, inventory)
+        then
+            inventoryPage.containerButtonPanel:removeChild(button)
+            table.insert(inventoryPage.buttonPool, button)
+            table.remove(inventoryPage.backpacks, i)
+        end
+    end
+
+    for i, button in ipairs(inventoryPage.backpacks) do
+        button:setY(((i - 1) * inventoryPage.buttonSize) - 1)
+    end
+end
+
 function Nested.OnButtonsAdded(inventoryPage)
     if not inventoryPage or not inventoryPage.backpacks then return end
+
+    -- Vanilla adds container items found directly inside vehicle storage before
+    -- this event. Remove ignored ones before treating the remaining buttons as
+    -- authoritative top-level entries.
+    removeIgnoredVanillaVehicleButtons(inventoryPage)
 
     local visited = {}
     local existingButtons = {}
@@ -379,7 +424,7 @@ local function addIgnoreTypeContextOption(inventoryPage, button)
     if not invType or invType == "" or invType == "floor" then return end
 
     local context = getPlayerContextMenu(inventoryPage.player)
-    if not context then
+    if not context or (context.numOptions and context.numOptions <= 1) then
         context = ISContextMenu.get(inventoryPage.player, getMouseX(), getMouseY())
     end
     if not context then return end
