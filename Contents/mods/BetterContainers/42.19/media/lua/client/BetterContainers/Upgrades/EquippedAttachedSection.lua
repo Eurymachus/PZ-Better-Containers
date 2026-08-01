@@ -592,7 +592,11 @@ function EquippedAttachedSection.install()
     local oldRefreshContainer = ISInventoryPane.refreshContainer
     ISInventoryPane.refreshContainer = function(self, ...)
         oldRefreshContainer(self, ...)
+        local selected = self:saveSelection({})
         applySection(self)
+        table.wipe(self.selected)
+        self:restoreSelection(selected)
+        table.wipe(selected)
         self:updateScrollbars()
     end
 

@@ -242,6 +242,7 @@ function CategoryFilters.installInventoryPaneFilteringPatch()
             return
         end
 
+        local selected = self:saveSelection({})
         local src = self.itemslist or {}
         local out = {}
         for i = 1, #src do
@@ -254,6 +255,9 @@ function CategoryFilters.installInventoryPaneFilteringPatch()
         end
 
         self.itemslist = out
+        table.wipe(self.selected)
+        self:restoreSelection(selected)
+        table.wipe(selected)
         self:setScrollHeight(#out * self.itemHgt)
         self:setScrollWidth(0)
     end

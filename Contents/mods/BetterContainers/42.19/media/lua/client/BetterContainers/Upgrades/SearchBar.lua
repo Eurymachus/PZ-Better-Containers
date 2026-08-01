@@ -281,6 +281,7 @@ local function _applySearchFilter(pane)
         return
     end
 
+    local selected = pane:saveSelection({})
     local filtered = {}
     for i = 1, #pane.itemslist do
         local stack = pane.itemslist[i]
@@ -290,6 +291,9 @@ local function _applySearchFilter(pane)
     end
 
     pane.itemslist = filtered
+    table.wipe(pane.selected)
+    pane:restoreSelection(selected)
+    table.wipe(selected)
     pane:updateScrollbars()
     pane.inventory:setDrawDirty(false)
 end
