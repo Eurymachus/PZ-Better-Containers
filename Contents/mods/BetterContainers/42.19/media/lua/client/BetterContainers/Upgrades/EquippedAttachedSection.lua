@@ -423,6 +423,13 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     local renderedHeaderIcon = false
     local sectionRow = getSectionHeaderRow(pane)
 
+    local function isSectionRowY(y)
+        if not sectionRow or not y then return false end
+
+        local rowTop = (sectionRow * pane.itemHgt) + pane.headerHgt
+        return y >= rowTop and y < rowTop + pane.itemHgt
+    end
+
     local function isHeaderIconDecorationDraw(self, x, y)
         if self._bcEquippedAttachedDrawingPreview then return false end
         if not sectionRow or not x or not y then return false end
@@ -435,10 +442,11 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     end
 
     pane.drawText = function(self, text, x, y, r, g, b, a, font, ...)
-        if not replacedHeader and text == headerText and x < self.column3 then
+        if not replacedHeader and isSectionRowY(y) and text == headerText and x < self.column3 then
             replacedHeader = true
             text = label
-        elseif replacedHeader and not replacedCategory and text == categoryText and x >= self.column3 then
+        elseif replacedHeader and not replacedCategory and isSectionRowY(y)
+                and text == categoryText and x >= self.column3 then
             replacedCategory = true
             text = ""
         end
@@ -463,11 +471,11 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     end
 
     ISInventoryItem.renderItemIcon = function(self, item, ...)
-        if not renderedHeaderIcon and item == headerItem then
+        local args = { ... }
+        local x = args[1] or 0
+        local y = args[2] or 0
+        if not renderedHeaderIcon and isSectionRowY(y) and item == headerItem then
             renderedHeaderIcon = true
-            local args = { ... }
-            local x = args[1] or 0
-            local y = args[2] or 0
             local alpha = args[3] or 1
             local width = args[4] or pane.itemHgt
             local height = args[5] or width
