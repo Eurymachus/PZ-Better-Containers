@@ -8,6 +8,17 @@ function ProximityInventoryTransferAction.install()
     if ProximityInventoryTransferAction._installed then return end
     ProximityInventoryTransferAction._installed = true
 
+    local old_ISInventoryTransferAction_isValid = ISInventoryTransferAction.isValid
+    function ISInventoryTransferAction:isValid(...)
+        if Proximity.isLockedForPlayer(self.srcContainer, self.character)
+            or Proximity.isLockedForPlayer(self.destContainer, self.character)
+        then
+            return false
+        end
+
+        return old_ISInventoryTransferAction_isValid(self, ...)
+    end
+
     local old_ISInventoryTransferAction_start = ISInventoryTransferAction.start
     function ISInventoryTransferAction:start(...)
         local playerNum = self.character and self.character:getPlayerNum()

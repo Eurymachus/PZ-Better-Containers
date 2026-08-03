@@ -31,6 +31,14 @@ function Proximity.isProximityType(invType)
     return invType == Proximity.invName or invType == Proximity.invName_corpses
 end
 
+function Proximity.isLockedForPlayer(container, playerObj)
+    local parent = container and container.getParent and container:getParent() or nil
+    return parent ~= nil
+        and playerObj ~= nil
+        and instanceof(parent, "IsoThumpable")
+        and parent:isLockedToCharacter(playerObj)
+end
+
 function Proximity.HasNearbyCorpses(invSelf)
     if not invSelf or not invSelf.backpacks then return false end
 
@@ -195,6 +203,7 @@ function Proximity.OnButtonsAdded(invSelf)
     if not eff.proximityActive then return end
 
     local playerNum = invSelf.player
+    local playerObj = getSpecificPlayer(playerNum)
     local corpseOnly = eff.corpseOnly == true
     local hasCorpsesNearby = corpseOnly and Proximity.HasNearbyCorpses(invSelf) or false
 
@@ -250,7 +259,7 @@ function Proximity.OnButtonsAdded(invSelf)
     for i = 1, #invSelf.backpacks do
         local btn = invSelf.backpacks[i]
         local invToAdd = btn and btn.inventory
-        if invToAdd then
+        if invToAdd and not Proximity.isLockedForPlayer(invToAdd, playerObj) then
             local invType = invToAdd:getType()
 
             if invType ~= Proximity.invName and invType ~= Proximity.invName_corpses then
