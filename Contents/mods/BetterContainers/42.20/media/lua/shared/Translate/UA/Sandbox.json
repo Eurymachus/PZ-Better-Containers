@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Uvімknuty inventar blyzkosti",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Uvімkaye systemu inventariu blyzkosti dlia tsoho servera.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Prymусyty rezhym lyshe trupy",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Prymushuye inventar blyzkosti pratsiuvaty lyshe z trupamy. Hravtsi ne zmozhut zminiuvaty rezhym.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Dozvolyty hravtsiam peremykaty blyzkist",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Dozvoliaie hravtsiam uvimkaty abo vymykaty inventar blyzkosti cherez klavishu abo opsiї moda.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Dozvolyty hravtsiam peremykaty rezhym",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Dozvoliaie hravtsiam peremykatysia mizh rezhymom usikh konteineriv ta rezhymom lyshe trupy.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Uvімknuty avtomatychne blokuvannia",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Uvімkaye funktsiiu avtomatychnoho blokuvannia. Koly vona aktyvna, inventar blyzkosti povernetsia do vybranoho konteynera, yakshcho yoho ne zminyly navmysno.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Dozvolyty hravtsiam peremykaty avtomatychne blokuvannia",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Dozvoliaie hravtsiam uvimkaty abo vymykaty avtomatychne blokuvannia cherez opsiї moda."
+}

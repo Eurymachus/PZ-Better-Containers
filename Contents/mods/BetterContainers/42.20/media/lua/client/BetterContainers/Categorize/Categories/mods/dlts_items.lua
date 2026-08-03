@@ -1,0 +1,222 @@
+return {
+
+    Cont = {
+        "DLTS.LTSDryingMeatWet",
+        "DLTS.LTSDryingMeat",
+        "DLTS.LTSDryingHerbsWet",
+        "DLTS.LTSDryingHerbs",
+        "DLTS.LTSDryingVegetableWet",
+        "DLTS.LTSDryingVegetable",
+        "DLTS.LTSDryingFruitWet",
+        "DLTS.LTSDryingFruit",
+        "DLTS.LTSDryingMushroomWet",
+        "DLTS.LTSDryingMushroom",
+        "DLTS.LTSChemEmpty",
+        "DLTS.LTSBoxBlank",
+        "DLTS.LTSBoxRed",
+        "DLTS.LTSBoxBlue",
+        "DLTS.LTSBoxGray",
+        "DLTS.LTSBoxGreen",
+        "DLTS.LTSBoxPurple",
+        "DLTS.LTSBoxYellow",
+        "DLTS.LTSStorageCellar00",
+        "DLTS.LTSStorageCellar01",
+        "DLTS.LTSStorageCellar02",
+        "DLTS.LTSStorageCellar03",
+        "DLTS.LTSStorageCellar04",
+        "DLTS.LTSStorageCellar05",
+        "DLTS.LTSStorageCellar06",
+        "DLTS.LTSStorageCellar07",
+        "DLTS.LTSStorageCellar08",
+        "DLTS.LTSStorageCellar09",
+        "DLTS.LTSStorageCellar10",
+        "DLTS.LTSWaterCanEmpty",
+    },
+
+    CookB = {
+        "DLTS.LTSFermentingJuiceYoung",
+        "DLTS.LTSFermentingWine",
+        "DLTS.LTSFermentingJuiceOld",
+        "DLTS.LTSFermentingVinegar",
+    },
+
+    Cook = {
+        "DLTS.LTSYeastWet",
+        "DLTS.LTSYeastDry",
+        "DLTS.LTSSugarWet",
+        "DLTS.LTSSeasoningHerbs",
+        "DLTS.LTSSeasoningFruit",
+        "DLTS.LTSSeasoningMushroom",
+        "DLTS.LTSPropaneTankEmpty",
+        "DLTS.LTSClingWrap",
+        "DLTS.LTSSaltWet",
+        "DLTS.LTSSaltDry",
+        "DLTS.LTSStackHoneyComb",
+        "DLTS.LTSCamomille",
+        "DLTS.LTSDandelion",
+        "DLTS.LTSStackCamomille",
+        "DLTS.LTSStackDandelion",
+    },
+
+    Craft = {
+        "DLTS.LTSStackHinge",
+        "DLTS.LTSStackDoorknob",
+        "DLTS.LTSWoodBits",
+        "DLTS.LTSWoodAsh",
+        "DLTS.LTSBirchBark",
+        "DLTS.LTSCharcoalPowder",
+        "DLTS.LTSGlueMixture",
+        "DLTS.LTSPineTar",
+        "DLTS.LTSLimestone",
+        "DLTS.LTSPineCone",
+        "DLTS.LTSQuicklime",
+        "DLTS.LTSScrapPlastic",
+        "DLTS.LTSStackBirchBark",
+        "DLTS.LTSStackPineCone",
+        "DLTS.LTSStackSharpedStone",
+        "DLTS.LTSStackStone",
+        "DLTS.LTSStackTreeBranch",
+        "DLTS.LTSStackTwigs",
+        "DLTS.LTSStackWoodBits",
+        "DLTS.LTSStackWoodAsh",
+        "DLTS.LTSStackCharcoalPowder",
+        "DLTS.LTSStackLimestone",
+        "DLTS.LTSStackScrapPlastic",
+    },
+
+    CraftCarp = {
+        "DLTS.LTSStackLog",
+        "DLTS.LTSStackPlank",
+    },
+
+    CraftElec = {
+        "DLTS.LTSStackElectronicsScrap",
+    },
+
+    CraftMetal = {
+        "DLTS.LTSStackScrapMetal",
+        "DLTS.LTSStackSheetMetal",
+        "DLTS.LTSStackSmallSheetMetal",
+        "DLTS.LTSStackMetalPipe",
+        "DLTS.LTSStackMetalBar",
+    },
+
+    CraftTailor = {
+        "DLTS.LTSRecycledThread",
+    },
+
+    Drugs = {
+        "DLTS.LTSTobacco",
+        "DLTS.LTSTobaccoLeavesWet",
+        "DLTS.LTSTobaccoLeaves",
+        "DLTS.LTSStackTobacco",
+    },
+
+    FoodA = {
+        "DLTS.LTSFruitWine",
+        "DLTS.LTSMoonshineDrink",
+        "DLTS.LTSMoonshine",
+    },
+
+    FoodB = {
+        "DLTS.LTSTeaServingBirch",
+        "DLTS.LTSTeaServingFruit",
+        "DLTS.LTSTeaServingHerbs",
+        "DLTS.LTSWaterCanFilled",
+        "DLTS.LTSStackTeaServingBirch",
+        "DLTS.LTSStackTeaServingFruit",
+        "DLTS.LTSStackTeaServingHerbs",
+    },
+
+    FoodN = {
+        "DLTS.LTSHoneyCandyFruit",
+        "DLTS.LTSHoneyCandyHealing",
+        "DLTS.LTSHoneyCandyEnergy",
+        "DLTS.LTSHoneyBar",
+        "DLTS.LTSPickledVegetableWet",
+        "DLTS.LTSPickledVegetable",
+        "DLTS.LTSSugarDry",
+        "DLTS.LTSDriedMeat",
+        "DLTS.LTSDriedHerbs",
+        "DLTS.LTSDriedVegetable",
+        "DLTS.LTSDriedFruit",
+        "DLTS.LTSDriedMushroom",
+        "DLTS.LTSWildNuts",
+        "DLTS.LTSWildOnion",
+        "DLTS.LTSHoneyComb",
+        "DLTS.LTSStackWildNuts",
+        "DLTS.LTSStackViolets",
+        "DLTS.LTSStackGrapeLeaves",
+        "DLTS.LTSStackRosehips",
+        "DLTS.LTSStackCockroach",
+        "DLTS.LTSStackCricket",
+        "DLTS.LTSStackGrasshopper",
+        "DLTS.LTSStackWorm",
+        "DLTS.LTSStackHoneyCandyFruit",
+        "DLTS.LTSStackHoneyCandyHealing",
+        "DLTS.LTSStackHoneyCandyEnergy",
+        "DLTS.LTSStackHoneyBar",
+        "DLTS.LTSStackDriedMeat",
+        "DLTS.LTSStackDriedHerbs",
+        "DLTS.LTSStackDriedVegetable",
+        "DLTS.LTSStackDriedFruit",
+        "DLTS.LTSStackDriedMushroom",
+    },
+
+    FoodP = {
+        "DLTS.LTSBitsMeat",
+        "DLTS.LTSBitsHerbs",
+        "DLTS.LTSBitsVegetable",
+        "DLTS.LTSBitsFruit",
+        "DLTS.LTSBitsMushroom",
+    },
+
+    LitS = {
+        "DLTS.LTSWorkbookWood",
+        "DLTS.LTSWorkbookElectricity",
+        "DLTS.LTSWorkbookWelding",
+        "DLTS.LTSWorkbookTailoring",
+    },
+
+    Mech = {
+        "DLTS.LTSCarTools",
+        "DLTS.LTSCarParts",
+    },
+
+    Med = {
+        "DLTS.LTSStackBlackSage",
+        "DLTS.LTSStackComfrey",
+        "DLTS.LTSStackCommonMallow",
+        "DLTS.LTSStackGinseng",
+        "DLTS.LTSStackLemonGrass",
+        "DLTS.LTSStackPlantain",
+        "DLTS.LTSStackWildGarlic",
+    },
+
+    SurCamp = {
+        "DLTS.LTSUsedLiterature",
+        "DLTS.LTSBriquette",
+        "DLTS.LTSStackBriquette",
+    },
+
+    SurFarm = {
+        "DLTS.LTSCorpseFlesh",
+    },
+
+    Tool = {
+        "DLTS.LTSLighterEmpty",
+        "DLTS.LTSLighterFluid",
+        "DLTS.LTSSharpeningStone",
+        "DLTS.LTSReplacementHandle",
+        "DLTS.LTSDryingRackEmpty",
+        "DLTS.LTSScrappingSaw",
+        "DLTS.LTSWoodBurner",
+    },
+
+    WepMelee = {
+        "DLTS.LTSBatHardened",
+        "DLTS.LTSBatBarbed",
+        "DLTS.LTSBatSpiked",
+    },
+
+}

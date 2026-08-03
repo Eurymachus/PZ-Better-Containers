@@ -1,0 +1,16 @@
+{
+    "ContextMenu_BC_Customize" : "Testreszabas",
+    "ContextMenu_BC_Presets" : "Elobeallitasok",
+    "ContextMenu_BC_SavedPresets" : "Mentett elobeallitasok",
+    "ContextMenu_BC_NoSavedPresets" : "Nincsenek mentett elobeallitasok",
+    "ContextMenu_BC_Copy" : "Masolas",
+    "ContextMenu_BC_Paste" : "Beillesztes",
+    "ContextMenu_BC_Reset" : "Visszaallitas",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Kategoria hozzaadasa a kedvencekhez",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Kategoria eltavolitasa a kedvencekbol"
+    ,"ContextMenu_BetterContainers_Nesting" : "Beagyazas"
+    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Beagyazott tarolotipus figyelmen kivul hagyasa"
+    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Beagyazott tarolotipus engedelyezese"
+    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Figyelmen kivul hagyott tarolotipusok"
+    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Nincs"
+}

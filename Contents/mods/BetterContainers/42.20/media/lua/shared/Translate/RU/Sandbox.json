@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Включить инвентарь рядом",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Включает систему инвентаря рядом на этом сервере.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Принудительный режим только трупов",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Заставляет инвентарь рядом работать только с трупами. Игроки не смогут переключать режимы.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Разрешить игрокам переключать режим рядом",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Позволяет игрокам включать или отключать инвентарь рядом через клавишу или настройки мода.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Разрешить игрокам менять режим",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Позволяет игрокам переключаться между режимом всех контейнеров и режимом только трупов.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Включить автоблокировку",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Включает функцию автоблокировки. Когда она активна, инвентарь рядом возвращается к выбранному контейнеру, если игрок не сменил его намеренно.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Разрешить игрокам переключать автоблокировку",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Позволяет игрокам включать или отключать автоблокировку через настройки мода."
+}
