@@ -361,6 +361,48 @@ local function scanInventory(inventoryPage, inventory, depth, visited, existingB
     end
 end
 
+local function isWithinContainer(container, ancestor)
+    local visited = {}
+
+    while container and not visited[container] do
+        if container == ancestor then return true end
+        visited[container] = true
+
+        local containingItem = container:getContainingItem()
+        container = containingItem and containingItem:getContainer() or nil
+    end
+
+    return false
+end
+
+local function nestedAncestorsHaveRoom(character, item, source, destination)
+    if not item or not destination then return true end
+
+    local containingItem = destination:getContainingItem()
+    local ancestor = containingItem and containingItem:getContainer() or nil
+    local addedWeight = item:getUnequippedWeight()
+    local visited = {}
+
+    while ancestor and not visited[ancestor] do
+        visited[ancestor] = true
+
+        -- Moving an item within the same ancestor does not increase that
+        -- ancestor's total weight, so only check genuinely incoming weight.
+        if not isWithinContainer(source, ancestor) then
+            local used = ancestor:getCapacityWeight()
+            local capacity = ancestor:getEffectiveCapacity(character)
+            if used + addedWeight > capacity + 0.0001 then
+                return false
+            end
+        end
+
+        containingItem = ancestor:getContainingItem()
+        ancestor = containingItem and containingItem:getContainer() or nil
+    end
+
+    return true
+end
+
 function Nested.OnButtonsAdded(inventoryPage)
     if not inventoryPage or not inventoryPage.backpacks then return end
 
@@ -510,6 +552,21 @@ function Nested.install()
     end)
     Events.OnGameBoot.Add(Nested.loadUserIgnoredInventoryTypes)
     Events.OnSave.Add(Nested.saveUserIgnoredInventoryTypes)
+
+    require "TimedActions/ISInventoryTransferAction"
+    local oldTransferIsValid = ISInventoryTransferAction.isValid
+    function ISInventoryTransferAction:isValid(...)
+        if not nestedAncestorsHaveRoom(
+            self.character,
+            self.item,
+            self.srcContainer,
+            self.destContainer
+        ) then
+            return false
+        end
+
+        return oldTransferIsValid(self, ...)
+    end
 
     require "ISUI/ISInventoryPage"
     local oldOnBackpackRightMouseDown = ISInventoryPage.onBackpackRightMouseDown
