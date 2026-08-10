@@ -522,8 +522,9 @@ local function initConfig()
         getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessBar")
             or "Show Freshness Bar for Spoilable Food",
         Options.showFoodFreshnessBar,
-        getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessBar_Tooltip")
-            or "Shows remaining freshness from 100% fresh to 0% rotten, with a marker at the stale threshold."
+        -- getTextOrNull("UI_BetterContainers_Options_showFoodFreshnessBar_Tooltip")
+        --     or "Shows remaining freshness from 100% fresh to 0% rotten, with a marker at the stale threshold."
+        "UI_BetterContainers_Options_showFoodFreshnessBar_Tooltip"
     )
 
     config.showFoodFreshnessPercentage = panel:addTickBox(
