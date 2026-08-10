@@ -219,8 +219,22 @@ function Nested.isIgnoredInventory(inventoryPage, inventory)
     return false
 end
 
-local function shouldAddItemContainer(inventoryPage, item)
+local function isSupportedMultiplayerLootParent(inventoryPage, parentInventory)
+    if not isClient() or inventoryPage.onCharacter then return true end
+
+    -- ContainerID can identify an item-owned inventory in a player's inventory.
+    -- On the loot side it only has a nested representation for an item directly
+    -- inside a vehicle part. World objects, corpses, floor containers, and deeper
+    -- vehicle nesting resolve to no source container on the server.
+    return parentInventory and parentInventory:getVehiclePart() ~= nil
+end
+
+local function shouldAddItemContainer(inventoryPage, item, parentInventory)
     if not item or not item:IsInventoryContainer() then return false end
+
+    if not isSupportedMultiplayerLootParent(inventoryPage, parentInventory) then
+        return false
+    end
 
     -- Equipped bags already have their own player inventory buttons.
     if inventoryPage.onCharacter then
@@ -335,7 +349,7 @@ local function scanInventory(inventoryPage, inventory, depth, visited, existingB
     -- Add a button for each nested container, then keep walking into that container.
     for i = 0, items:size() - 1 do
         local item = items:get(i)
-        if shouldAddItemContainer(inventoryPage, item) then
+        if shouldAddItemContainer(inventoryPage, item, inventory) then
             local itemInventory = item:getInventory()
             if not visited[itemInventory] then
                 if not (existingButtons and existingButtons[itemInventory]) then
