@@ -66,5 +66,8 @@
     "UI_BetterContainers_Options_enableAutoLockHeader" : "CAUTION: Auto-Locking Functionality - Overrides Default Behaviour",
     "UI_BetterContainers_Options_enableAutoLock" : "Enable Auto-Lock",
     "UI_BetterContainers_Options_disableAutoLock" : "Disable Auto-Lock",
-    "UI_BetterContainers_Options_enableAutoLockHeader_tooltip" : "When enabled lock keybind is ignored and locking is automatic. Players can browse inventories and when moving away or after 10 ingame minutes the selected inventory snaps back to Proximity/Corpse inventory."
+    "UI_BetterContainers_Options_enableAutoLockHeader_tooltip" : "When enabled, locking is automatic. Players can browse other inventories until moving away or the configured delay expires.",
+    "UI_BetterContainers_Options_enableAutoLock_tooltip" : "When enabled, locking is automatic. Players can browse other inventories until moving away or the configured delay expires.",
+    "UI_BetterContainers_Options_autoLockDelaySeconds" : "Auto-Lock Delay (seconds)",
+    "UI_BetterContainers_Options_autoLockDelaySeconds_tooltip" : "How long a browsed inventory remains selected during active gameplay before snapping back to the Proximity/Corpse inventory. Paused time is not counted."
 }

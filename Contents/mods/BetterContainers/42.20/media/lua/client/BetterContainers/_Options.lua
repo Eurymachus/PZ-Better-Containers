@@ -32,6 +32,7 @@ local Options = {
     enableCorpseOnly = false,
     corpseOnlyModeKeybind = Keyboard.KEY_NUMPAD3,
     enableAutoLock = false,
+    autoLockDelaySeconds = 10,
     enableAutoLockKeybind = "TOGGLE_AUTOLOCK",
 
     -- UPDRAGES
@@ -74,6 +75,7 @@ local config = {
     enableCorpseOnly = nil,
     corpseOnlyModeKeybind = nil,
     enableAutoLock = nil,
+    autoLockDelaySeconds = nil,
     enableAutoLockKeybind = nil,
 
     -- UPDRAGES
@@ -151,6 +153,7 @@ local function updateOptions()
     _applyUi("toggleLock", config.forceProximityLockKeybind)
     _applyUi("enableProximity", config.enableProximityHighlight)
     _applyUi("enableAutoLock", config.enableAutoLock)
+    _applyUi("autoLockDelaySeconds", config.autoLockDelaySeconds)
 end
 
 local function applyOptions()
@@ -186,6 +189,7 @@ local function applyOptions()
     Options.enableCorpseOnly = opts:getOption("enableCorpseOnly"):getValue()
     Options.corpseOnlyModeKeybind = opts:getOption("corpseOnlyModeKeybind"):getValue()
     Options.enableAutoLock = opts:getOption("enableAutoLock"):getValue()
+    Options.autoLockDelaySeconds = opts:getOption("autoLockDelaySeconds"):getValue()
 
     -- UPGRADES
     Options.enableSearchBar = opts:getOption("enableSearchBar"):getValue()
@@ -428,7 +432,19 @@ local function initConfig()
             or "Enable Auto-Lock",
         Options.enableAutoLock,
         getTextOrNull("UI_BetterContainers_Options_enableAutoLock_tooltip")
-            or "When enabled lock keybind is ignored and locking is automatic. Players can browse inventories and when moving away or after 10 ingame minutes the selected inventory snaps back to Proximity/Corpse inventory."
+            or "When enabled, locking is automatic. Players can browse other inventories until moving away or the configured delay expires."
+    )
+
+    config.autoLockDelaySeconds = panel:addSlider(
+        "autoLockDelaySeconds",
+        getTextOrNull("UI_BetterContainers_Options_autoLockDelaySeconds")
+            or "Auto-Lock Delay (seconds)",
+        5,
+        60,
+        5,
+        Options.autoLockDelaySeconds,
+        getTextOrNull("UI_BetterContainers_Options_autoLockDelaySeconds_tooltip")
+            or "How long a browsed inventory remains selected during active gameplay before snapping back to the Proximity/Corpse inventory. Paused time is not counted."
     )
 
     panel:addSeparator()

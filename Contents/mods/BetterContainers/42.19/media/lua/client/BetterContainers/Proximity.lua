@@ -17,8 +17,7 @@ Proximity.corpseInventoryButtonRef = {}
 Proximity.isForceSelected = {}
 Proximity.forceSelectedType = {}
 Proximity._ForceSwitchIntent = {}
-Proximity._LastBrowseMs = {}
-Proximity._lastBrowseGraceMs = 10000
+Proximity._BrowseElapsedMs = {}
 Proximity._LastTransfer = {}
 Proximity._TransferRunning = {}
 
@@ -101,6 +100,7 @@ function Proximity.ForceSelectContainer(page, invType)
 
     if Proximity.isProximityType(invType) then
         page.tempForceSelectUnlock = false
+        Proximity._BrowseElapsedMs[page.player] = nil
         Proximity._ForceSwitchIntent[page.player] = invType
     else
         page.tempForceSelectUnlock = true
@@ -110,7 +110,7 @@ function Proximity.ForceSelectContainer(page, invType)
         Proximity._ForceSwitchIntent[page.player] = nil
         page.forceSelectedContainer = nil
         page.forceSelectedContainerTime = 0
-        Proximity._LastBrowseMs[page.player] = getTimestampMs()
+        Proximity._BrowseElapsedMs[page.player] = 0
     end
 end
 
@@ -387,7 +387,16 @@ function Proximity.setTransferRunning(playerNum, isRunning)
         Proximity._TransferRunning[playerNum] = nil
     end
 
-    Proximity._LastBrowseMs[playerNum] = getTimestampMs()
+    local lootWindow = getPlayerLoot and getPlayerLoot(playerNum)
+    local page = lootWindow and lootWindow.inventoryPane and lootWindow.inventoryPane.inventoryPage or nil
+    local current = page and page.inventoryPane and page.inventoryPane.inventory or page and page.inventory or nil
+    local currentType = current and current:getType() or nil
+
+    if page and page.tempForceSelectUnlock and not Proximity.isProximityType(currentType) then
+        Proximity._BrowseElapsedMs[playerNum] = 0
+    else
+        Proximity._BrowseElapsedMs[playerNum] = nil
+    end
 end
 
 function Proximity.hasQueuedTransferAction(playerNum)
@@ -437,8 +446,18 @@ function Proximity.DoAutoLock(playerNum, page, queue)
         Proximity.forceSelectedType[playerNum] = defaultType
     end
 
+    local current = page.inventoryPane and page.inventoryPane.inventory or page.inventory
+    local currentType = current and current:getType() or nil
+    if Proximity.isProximityType(currentType) then
+        page.tempForceSelectUnlock = false
+        Proximity._BrowseElapsedMs[playerNum] = nil
+        Proximity._ForceSwitchIntent[playerNum] = nil
+        return false
+    end
+
     if queue == true then
         page.tempForceSelectUnlock = false
+        Proximity._BrowseElapsedMs[playerNum] = nil
         Proximity._ForceSwitchIntent[playerNum] = Proximity.forceSelectedType[playerNum]
         return true
     end
@@ -471,25 +490,40 @@ function Proximity.DoAutoLock(playerNum, page, queue)
     return false
 end
 
-function Proximity.OnAutolockFailsafeEveryTenMinutes()
+function Proximity.OnAutoLockTick()
     local eff = Options.getEffectivePermissions() or {}
     if not (eff.proximityActive and eff.autoLock) then return end
+    if isGamePaused and isGamePaused() then return end
+
+    local delaySeconds = tonumber(Options.autoLockDelaySeconds) or 10
+    local delayMs = math.max(5, delaySeconds) * 1000
+    local gameTime = getGameTime and getGameTime()
+    local elapsedThisTickMs = gameTime and gameTime:getRealworldSecondsSinceLastUpdate() * 1000 or 0
+    local snappedBack = false
 
     for playerNum = 0, getNumActivePlayers() - 1 do
         local player = getSpecificPlayer(playerNum)
         if player then
-            local last = Proximity._LastBrowseMs[playerNum] or 0
-            local now = getTimestampMs()
-            local remaining = now - last
+            local lootWindow = getPlayerLoot and getPlayerLoot(playerNum)
+            local page = lootWindow and lootWindow.inventoryPane and lootWindow.inventoryPane.inventoryPage or nil
+            local current = page and page.inventoryPane and page.inventoryPane.inventory or page and page.inventory or nil
+            local currentType = current and current:getType() or nil
 
-            if last > 0 and remaining < Proximity._lastBrowseGraceMs then
-                Helpers.dlog("Don't snapback yet: " .. tostring(remaining) .. "ms remaining.")
-            else
-                local lootWindow = getPlayerLoot and getPlayerLoot(playerNum)
-                local page = lootWindow and lootWindow.inventoryPane and lootWindow.inventoryPane.inventoryPage or nil
+            if not page or not page.tempForceSelectUnlock or Proximity.isProximityType(currentType) then
+                Proximity._BrowseElapsedMs[playerNum] = nil
+            end
+
+            local transferActive = Proximity.isTransferActive(playerNum)
+            local elapsed = Proximity._BrowseElapsedMs[playerNum]
+            if elapsed ~= nil and not transferActive then
+                elapsed = elapsed + elapsedThisTickMs
+                Proximity._BrowseElapsedMs[playerNum] = elapsed
+            end
+
+            if elapsed ~= nil and not transferActive and elapsed >= delayMs then
                 if page then
                     Helpers.dlog("Snap Back Now!")
-                    Proximity.DoAutoLock(playerNum, page, true)
+                    snappedBack = Proximity.DoAutoLock(playerNum, page, true) or snappedBack
                 else
                     Helpers.dlog("Failed Snap Back.")
                 end
@@ -497,7 +531,9 @@ function Proximity.OnAutolockFailsafeEveryTenMinutes()
         end
     end
 
-    ISInventoryPage.dirtyUI()
+    if snappedBack then
+        ISInventoryPage.dirtyUI()
+    end
 end
 
 Proximity._vanillaHoveredItems = {}
@@ -550,8 +586,8 @@ Proximity.install = function()
             Proximity.OnOptionsApplied()
         end)
 
-        Events.EveryTenMinutes.Add(function()
-            Proximity.OnAutolockFailsafeEveryTenMinutes()
+        Events.OnTick.Add(function()
+            Proximity.OnAutoLockTick()
         end)
 
         Events.OnKeyPressed.Add(function(key)

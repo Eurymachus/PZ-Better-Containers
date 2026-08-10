@@ -40,8 +40,9 @@ function ProximityInventoryTransferAction.install()
             ret = old_ISInventoryTransferAction_perform(self, ...)
         end
 
-        if playerNum ~= nil and not Proximity.hasQueuedTransferAction(playerNum) then
-            Proximity.setTransferRunning(playerNum, false)
+        if playerNum ~= nil then
+            local hasMoreTransfers = Proximity.hasQueuedTransferAction(playerNum)
+            Proximity.setTransferRunning(playerNum, hasMoreTransfers)
         end
 
         return ret
