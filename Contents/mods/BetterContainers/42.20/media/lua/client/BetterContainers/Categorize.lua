@@ -287,6 +287,23 @@ local function loadCategories()
         return item and item.isItemType and ItemType and itemType and item:isItemType(itemType) == true
     end
 
+    local function isPerishableFood(item)
+        if not isItemTypeSafe(item, ItemType and ItemType.FOOD) then
+            return false
+        end
+
+        local dtr = item.getDaysTotallyRotten and item:getDaysTotallyRotten() or -1
+        return dtr > 0 and dtr < 1000000000
+    end
+
+    -- Script spoilage data is authoritative when a broad or stale manual rule
+    -- places perishable food in the non-perishable category.
+    for fullType, rec in pairs(best) do
+        if rec.category == "FoodN" and isPerishableFood(SCRIPTITEM_BY_FULLTYPE[fullType]) then
+            rec.category = "FoodP"
+        end
+    end
+
     local function autoCategory(item)
         if not item then return nil end
 
@@ -299,8 +316,7 @@ local function loadCategories()
 
         -- Food: perishable vs non-perishable
         if isItemTypeSafe(item, ItemType and ItemType.FOOD) then
-            local dtr = item.getDaysTotallyRotten and item:getDaysTotallyRotten() or -1
-            if dtr > 0 and dtr < 1000000000 then
+            if isPerishableFood(item) then
                 return "FoodP"
             end
             return "FoodN"
