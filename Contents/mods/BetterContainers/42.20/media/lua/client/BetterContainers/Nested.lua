@@ -556,6 +556,13 @@ function Nested.install()
     require "TimedActions/ISInventoryTransferAction"
     local oldTransferIsValid = ISInventoryTransferAction.isValid
     function ISInventoryTransferAction:isValid(...)
+        -- Bicycle uses a zero-time floor-to-inventory transfer as part of its
+        -- mount sequence. Leave mod-owned mount transfers entirely to the
+        -- validator that created them, regardless of mod load order.
+        if self.bicycleMount then
+            return oldTransferIsValid(self, ...)
+        end
+
         if not nestedAncestorsHaveRoom(
             self.character,
             self.item,

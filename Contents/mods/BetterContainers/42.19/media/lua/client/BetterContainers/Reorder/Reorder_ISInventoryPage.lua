@@ -46,6 +46,28 @@ end
 local Reorder_ISInventoryPage = {}
 
 Reorder_ISInventoryPage.install = function()
+    -- Vanilla restores a selected stack header as its first InventoryItem.
+    -- The next refresh then treats it as a child selection and loses the header.
+    function ISInventoryPane:restoreSelection(selected)
+        local row = 1
+        for _, stack in ipairs(self.itemslist) do
+            local item = stack.items[1]
+            if selected[item] == "group" then
+                self.selected[row] = stack
+            end
+            row = row + 1
+            if not self.collapsed[stack.name] then
+                for j = 2, #stack.items do
+                    local childItem = stack.items[j]
+                    if selected[childItem] then
+                        self.selected[row] = childItem
+                    end
+                    row = row + 1
+                end
+            end
+        end
+    end
+
     local _old_update = ISInventoryPage.update
     ISInventoryPage.update = function(self)
         if Helpers.isCleanUIActive() then return _old_update(self) end
