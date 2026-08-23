@@ -173,7 +173,10 @@ local function _prerenderLeft(self, oldPrerender)
 
     self:drawTextRight(weightLabel, self.pinButton:getX() - buttonOffset, 0, 1, 1, 1, 1)
 
-    local weightWid = getTextManager():MeasureStringX(UIFont.Small, "9999.99 / 9999") + 30
+    local weightWid = 30
+    if weightLabel then
+        weightWid = getTextManager():MeasureStringX(UIFont.Small, weightLabel) + 30
+    end
 
     if self.title and not self.onCharacter then
         local fontHgt = getTextManager():getFontHeight(self.font)
