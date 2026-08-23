@@ -227,6 +227,28 @@ local function _tokenPrefixMatch(candidate, query)
     return true
 end
 
+local function _getAttributionUsername(item)
+    if not (item and item.getModData) then return nil end
+    local modData = item:getModData()
+    local betterItemInfo = modData and modData.BetterItemInfo
+    local attribution = betterItemInfo and betterItemInfo.Attribution
+    return attribution and attribution.username or nil
+end
+
+local function _stackAttributionUsernameMatches(stack, query)
+    for _, item in ipairs(stack.items) do
+        if item then
+            local username = _getAttributionUsername(item)
+
+            if _tokenPrefixMatch(_normalizeSearch(username), query) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 local function _stackMatchesQuery(pane, stack, query)
     if not stack or not stack.items or not stack.items[1] then
         return false
@@ -238,6 +260,10 @@ local function _stackMatchesQuery(pane, stack, query)
 
     local playerObj = getSpecificPlayer(pane.player)
     local item = stack.items[1]
+
+    if _stackAttributionUsernameMatches(stack, query) then
+        return true
+    end
 
     if stack._bcEquippedAttachedSeparator then
         local sectionName = _normalizeSearch(getTextOrNull("UI_BetterContainers_EquippedAttachedSection") or "Equipped Items")
