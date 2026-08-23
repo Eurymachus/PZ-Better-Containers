@@ -6,6 +6,7 @@ require("ISUI/ISTickBox")
 require("ISUI/ISInventoryPane")
 
 local IniWriter = require("BetterContainers/_IO/IniWriter")
+local CategoryStore = require("BetterContainers/Categorize/CategoryStore")
 
 local MOD = "BetterContainers"
 local DEBUG = getCore():getDebug()
@@ -267,7 +268,7 @@ function FiltersList:doDrawItem(y, item, alt)
     local tx = ui._checkboxW
 
     local theLabel = (e and e.label) or "errorCat"
-    local translatedLabel = getTextOrNull("IGUI_ItemCat_" .. theLabel) or theLabel
+    local translatedLabel = CategoryStore.getCategoryDisplayName(theLabel)
 
     -- Name column clip width
     local itemsW = ui.itemsColW or ui.minItemsW
@@ -342,7 +343,7 @@ function FiltersFooter:createChildren()
     local pad = ui._pad
     local btnH = ui._btnH
 
-    local btnW = math.floor((self.width - pad * 3) / 2)
+    local btnW = math.floor((self.width - pad * 4) / 3)
     local btnY = math.floor((self.height - btnH) / 2)
 
     ui.btnApply = ISButton:new(pad, btnY, btnW, btnH, getTextOrNull("UI_Apply") or "Apply", ui, FiltersUI.onApply)
@@ -352,6 +353,11 @@ function FiltersFooter:createChildren()
     ui.btnClear = ISButton:new(pad * 2 + btnW, btnY, btnW, btnH, getTextOrNull("UI_BetterContainers_Clear") or "Clear", ui, FiltersUI.onClear)
     ui.btnClear:initialise()
     self:addChild(ui.btnClear)
+
+    ui.btnManage = ISButton:new(pad * 3 + btnW * 2, btnY, btnW, btnH,
+        getTextOrNull("UI_BetterContainers_CategoryManager_Manage") or "Manage", ui, FiltersUI.onManage)
+    ui.btnManage:initialise()
+    self:addChild(ui.btnManage)
 end
 
 -- ---------------------------------------------------------
@@ -577,6 +583,13 @@ function FiltersUI:onClear()
         -- ensure redraw reflects unchecked state
         -- (items are shared tables, so list already has the updated refs)
     end
+end
+
+function FiltersUI:onManage()
+    local playerNum = self.playerNum or 0
+    self:close()
+    local CategoryManagerUI = require("BetterContainers/Categorize/ui/CategoryManagerUI")
+    CategoryManagerUI.open(playerNum)
 end
 
 function FiltersUI:close()

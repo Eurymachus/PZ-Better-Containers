@@ -3,6 +3,7 @@ require("BetterContainers/Categorize/ItemTweaker_CC")
 local CATEGORIES_ROOT = "BetterContainers/Categorize/Categories/"
 
 local Helpers = require("BetterContainers/Helpers")
+local CategoryStore = require("BetterContainers/Categorize/CategoryStore")
 
 local function dlog(msg)
     Helpers.dlog(msg)
@@ -404,6 +405,34 @@ local function loadCategories()
         end
     end
 
+    local resolvedDefaults = {}
+    for fullType, rec in pairs(best) do
+        resolvedDefaults[fullType] = rec.category
+    end
+    for fullType, scriptItem in pairs(SCRIPTITEM_BY_FULLTYPE) do
+        if not resolvedDefaults[fullType] then
+            local captured = _BC_OrigDisplayCategory and _BC_OrigDisplayCategory[fullType]
+            if captured and captured ~= "" then
+                resolvedDefaults[fullType] = captured
+            elseif captured == nil and scriptItem.getDisplayCategory then
+                local ok, category = pcall(function() return scriptItem:getDisplayCategory() end)
+                if ok and category and category ~= "" then
+                    resolvedDefaults[fullType] = category
+                end
+            end
+        end
+    end
+    CategoryStore.setDefaults(resolvedDefaults)
+    CategoryStore.injectCustomTranslations()
+
+    -- Sparse player overrides are authoritative over the resolved defaults.
+    for fullType, category in pairs(CategoryStore.overrides) do
+        local scriptItem = SCRIPTITEM_BY_FULLTYPE[fullType]
+        if scriptItem and not _bcIsDisplayCategoryBlacklisted(scriptItem, CATEGORY_BLACKLIST) then
+            best[fullType] = { category = category, spec = 3, wildcardScore = 0 }
+        end
+    end
+
     -- ===== 3) APPLY =====
     local applied = 0
     for fullType, rec in pairs(best) do
@@ -422,6 +451,19 @@ local function loadCategories()
     _BC_AllDisplayCategories = nil
 end
 
+local function _clearDisplayCategoryTweak(fullType)
+    if not (TweakItemData and TweakItemData[fullType]) then return end
+    TweakItemData[fullType].DisplayCategory = nil
+    local hasRemainingTweaks = false
+    for _ in pairs(TweakItemData[fullType]) do
+        hasRemainingTweaks = true
+        break
+    end
+    if not hasRemainingTweaks then
+        TweakItemData[fullType] = nil
+    end
+end
+
 local function unloadCategories()
     if not _BC_OrigDisplayCategory then
         return
@@ -432,6 +474,7 @@ local function unloadCategories()
         if _bcRestoreOriginalDisplayCategory(fullType) then
             restored = restored + 1
         end
+        _clearDisplayCategoryTweak(fullType)
     end
 
     dlog("UnloadCategories restored script items = " .. tostring(restored))
@@ -448,13 +491,14 @@ local function _getScriptDisplayCategory(scriptItem)
     return nil
 end
 
-local function _applyItemDisplayCategoryFromScript(invItem)
+local function _applyItemDisplayCategoryFromScript(invItem, onlyFullType)
     if not invItem then return false end
     if not invItem.getFullType then return false end
     if not invItem.setDisplayCategory then return false end
 
     local fullType = invItem:getFullType()
     if not fullType then return false end
+    if onlyFullType and fullType ~= onlyFullType then return false end
 
     local scriptItem = ScriptManager.instance and ScriptManager.instance:getItem(fullType) or nil
     local cat = _getScriptDisplayCategory(scriptItem)
@@ -467,7 +511,7 @@ local function _applyItemDisplayCategoryFromScript(invItem)
     return true
 end
 
-local function _walkContainer(container, seenContainers, stats)
+local function _walkContainer(container, seenContainers, stats, onlyFullType)
     if not container then return end
     if seenContainers[container] then return end
     seenContainers[container] = true
@@ -478,7 +522,7 @@ local function _walkContainer(container, seenContainers, stats)
     for i = 0, items:size() - 1 do
         local item = items:get(i)
         if item then
-            if _applyItemDisplayCategoryFromScript(item) then
+            if _applyItemDisplayCategoryFromScript(item, onlyFullType) then
                 stats.items = stats.items + 1
             end
 
@@ -490,13 +534,13 @@ local function _walkContainer(container, seenContainers, stats)
                 if ok then nested = c end
             end
             if nested then
-                _walkContainer(nested, seenContainers, stats)
+                _walkContainer(nested, seenContainers, stats, onlyFullType)
             end
         end
     end
 end
 
-local function _walkPlayersInventories(stats)
+local function _walkPlayersInventories(stats, onlyFullType)
     if not getNumActivePlayers or not getPlayer then
         return
     end
@@ -513,20 +557,20 @@ local function _walkPlayersInventories(stats)
         if playerObj and playerObj.getInventory then
             local inv = playerObj:getInventory()
             if inv then
-                _walkContainer(inv, seenContainers, stats)
+                _walkContainer(inv, seenContainers, stats, onlyFullType)
             end
         end
     end
 end
 
-local function _applyObjectContainers(obj, seenContainers, stats)
+local function _applyObjectContainers(obj, seenContainers, stats, onlyFullType)
     if not obj then return end
 
     -- Single container
     if obj.getContainer then
         local ok, c = pcall(function() return obj:getContainer() end)
         if ok and c then
-            _walkContainer(c, seenContainers, stats)
+            _walkContainer(c, seenContainers, stats, onlyFullType)
         end
     end
 
@@ -537,14 +581,14 @@ local function _applyObjectContainers(obj, seenContainers, stats)
             for j = 0, n - 1 do
                 local okC, cj = pcall(function() return obj:getContainerByIndex(j) end)
                 if okC and cj then
-                    _walkContainer(cj, seenContainers, stats)
+                    _walkContainer(cj, seenContainers, stats, onlyFullType)
                 end
             end
         end
     end
 end
 
-local function _walkSquare(square, seenSquares, seenContainers, stats)
+local function _walkSquare(square, seenSquares, seenContainers, stats, onlyFullType)
     if not square then return end
 
     local x = square:getX()
@@ -562,7 +606,7 @@ local function _walkSquare(square, seenSquares, seenContainers, stats)
                 local wio = worldObjs:get(i)
                 if wio and wio.getItem then
                     local item = wio:getItem()
-                    if item and _applyItemDisplayCategoryFromScript(item) then
+                    if item and _applyItemDisplayCategoryFromScript(item, onlyFullType) then
                         stats.items = stats.items + 1
                     end
                 end
@@ -577,14 +621,14 @@ local function _walkSquare(square, seenSquares, seenContainers, stats)
             for i = 0, objs:size() - 1 do
                 local obj = objs:get(i)
                 if obj and instanceof(obj, "IsoObject") and (not instanceof(obj, "IsoMovingObject")) then
-                    _applyObjectContainers(obj, seenContainers, stats)
+                    _applyObjectContainers(obj, seenContainers, stats, onlyFullType)
                 end
             end
         end
     end
 end
 
-local function _walkWorldObjectsAndContainers(stats)
+local function _walkWorldObjectsAndContainers(stats, onlyFullType)
     if not (getCell and getNumActivePlayers and getPlayer) then
         return
     end
@@ -606,7 +650,7 @@ local function _walkWorldObjectsAndContainers(stats)
                 for z = 0, 7 do
                     local sq = cell:getGridSquare(x, y, z)
                     if sq then
-                        _walkSquare(sq, seenSquares, seenContainers, stats)
+                        _walkSquare(sq, seenSquares, seenContainers, stats, onlyFullType)
                     end
                 end
             end
@@ -651,7 +695,7 @@ local function _walkWorldObjectsAndContainers(stats)
                     for dy = -R, R do
                         local sq = cell:getGridSquare(px + dx, py + dy, pz)
                         if sq then
-                            _walkSquare(sq, seenSquares, seenContainers, stats)
+                            _walkSquare(sq, seenSquares, seenContainers, stats, onlyFullType)
                         end
                     end
                 end
@@ -729,15 +773,104 @@ function Categorize.getAllDisplayCategories()
     return _BC_AllDisplayCategories
 end
 
+function Categorize.getAvailableCategories()
+    return CategoryStore.getAllCategoryIDs(Categorize.getAllDisplayCategories())
+end
+
+function Categorize.getCategoryDisplayName(categoryID)
+    return CategoryStore.getCategoryDisplayName(categoryID)
+end
+
+function Categorize.getCategoryStore()
+    return CategoryStore
+end
+
+function Categorize.applyCategoryChanges(flush)
+    recategorizeAllLoadedItemsNow(isEnabled)
+    if flush ~= false then
+        CategoryStore.flush()
+    end
+end
+
+function Categorize.applySingleCategoryChange(fullType, flush)
+    if type(fullType) ~= "string" or fullType == "" then return false end
+    if not isEnabled then
+        if flush ~= false then CategoryStore.flush() end
+        return false
+    end
+
+    local scriptItem = ScriptManager.instance and ScriptManager.instance:getItem(fullType) or nil
+    if not scriptItem then return false end
+    local blacklist = _bcBuildCategoryBlacklist(OPTS.categoryBlacklist)
+    if _bcIsDisplayCategoryBlacklisted(scriptItem, blacklist) then return false end
+
+    local category = CategoryStore.getEffective(fullType)
+    if category and category ~= "" then
+        _bcCaptureOriginalDisplayCategory(fullType)
+        TweakItem(fullType, "DisplayCategory", category)
+        scriptItem:DoParam("DisplayCategory = " .. category)
+    else
+        _bcRestoreOriginalDisplayCategory(fullType)
+        _clearDisplayCategoryTweak(fullType)
+    end
+
+    _BC_AllDisplayCategories = nil
+    local stats = { items = 0 }
+    _walkPlayersInventories(stats, fullType)
+    _walkWorldObjectsAndContainers(stats, fullType)
+    if ISInventoryPage and ISInventoryPage.dirtyUI then
+        ISInventoryPage.dirtyUI()
+    end
+    dlog("Re-categorised item type " .. fullType .. ", loaded items = " .. tostring(stats.items))
+
+    if flush ~= false then CategoryStore.flush() end
+    return true
+end
+
 function Categorize.invalidateAllDisplayCategories()
     _BC_AllDisplayCategories = nil
+end
+
+local function _contextItemFullType(items)
+    if type(items) ~= "table" then return nil end
+    local item = items[1]
+    if type(item) == "table" and item.items then
+        item = item.items[1]
+    end
+    if item and item.getFullType then return item:getFullType() end
+    return nil
+end
+
+local function _addCategoryManagerContextOption(playerNum, context, items, test)
+    if test or not (context and context.addOption) then return end
+    local fullType = _contextItemFullType(items)
+    if not fullType then return end
+
+    local scriptItem = ScriptManager.instance and ScriptManager.instance:getItem(fullType) or nil
+    if not scriptItem then return end
+    if scriptItem.isHidden then
+        local ok, hidden = pcall(function() return scriptItem:isHidden() end)
+        if ok and hidden then return end
+    end
+
+    context:addOption(getTextOrNull("ContextMenu_BetterContainers_ChangeCategory") or "Change Category",
+        nil, function()
+            local CategoryManagerUI = require("BetterContainers/Categorize/ui/CategoryManagerUI")
+            CategoryManagerUI.open(playerNum, fullType)
+        end)
 end
 
 Categorize.install = function()
     if Categorize._installed then return end
     Categorize._installed = true
+    CategoryStore.ensureLoaded()
+    CategoryStore.installTextResolver()
+    CategoryStore.injectCustomTranslations()
     Events.OnMainMenuEnter.Add(function() loadCategories() end)
     Events[Helpers.OPTIONS_APPLIED].Add(updateCategories)
+    Events.OnSave.Add(CategoryStore.flush)
+    Events.OnDisconnect.Add(CategoryStore.flush)
+    Events.OnFillInventoryObjectContextMenu.Add(_addCategoryManagerContextOption)
 
     local CategoryFilters = require("BetterContainers/Categorize/CategoryFilters")
 
