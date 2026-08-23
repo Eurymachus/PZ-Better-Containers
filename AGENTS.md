@@ -44,4 +44,5 @@ Treat runtime logs as read-only diagnostic references unless the user explicitly
 - Do not edit files outside this mod workspace unless the user explicitly asks for that.
 - Use external workshop, local workshop, Project Zomboid, and Java paths as read-only references by default.
 - Preserve existing mod structure and Project Zomboid conventions.
+- Never use Lua `next()`. Use `pairs()` or `ipairs()` iteration, including when checking whether a table is empty.
 - Keep edits focused and avoid unrelated refactors.
