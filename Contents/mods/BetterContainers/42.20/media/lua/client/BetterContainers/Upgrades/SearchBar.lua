@@ -227,6 +227,27 @@ local function _tokenPrefixMatch(candidate, query)
     return true
 end
 
+local function _getAttributionUsername(item)
+    if not item or not item.getModData then
+        return ""
+    end
+
+    local itemData = item:getModData()
+    local betterItemInfo = itemData and itemData.BetterItemInfo
+    local attribution = type(betterItemInfo) == "table" and betterItemInfo.Attribution or nil
+    return _normalizeSearch(type(attribution) == "table" and attribution.username or nil)
+end
+
+local function _stackAttributionMatches(stack, query)
+    for _, stackItem in ipairs(stack.items or {}) do
+        if _tokenPrefixMatch(_getAttributionUsername(stackItem), query) then
+            return true
+        end
+    end
+
+    return false
+end
+
 local function _stackMatchesQuery(pane, stack, query)
     if not stack or not stack.items or not stack.items[1] then
         return false
@@ -250,7 +271,10 @@ local function _stackMatchesQuery(pane, stack, query)
             if sectionItem then
                 local sectionItemName = _normalizeSearch(sectionItem:getName(playerObj))
                 local sectionItemCat = _normalizeSearch(sectionItem:getDisplayCategory() or sectionItem:getCategory())
-                if _tokenPrefixMatch(sectionItemName, query) or _tokenPrefixMatch(sectionItemCat, query) then
+                local sectionItemUsername = _getAttributionUsername(sectionItem)
+                if _tokenPrefixMatch(sectionItemName, query)
+                    or _tokenPrefixMatch(sectionItemCat, query)
+                    or _tokenPrefixMatch(sectionItemUsername, query) then
                     return true
                 end
             end
@@ -269,6 +293,7 @@ local function _stackMatchesQuery(pane, stack, query)
     return _tokenPrefixMatch(name, query)
         or _tokenPrefixMatch(rawCat, query)
         or _tokenPrefixMatch(locCat, query)
+        or _stackAttributionMatches(stack, query)
 end
 
 local function _applySearchFilter(pane)
