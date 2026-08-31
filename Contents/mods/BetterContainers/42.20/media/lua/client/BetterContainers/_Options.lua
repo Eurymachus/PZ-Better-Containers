@@ -30,6 +30,8 @@ local Options = {
     forceProximityLockKeybind = Keyboard.KEY_NUMPAD0,
     enableProximityHighlight = true,
     enableCorpseOnly = false,
+    enableDualMode = false,
+    showCorpsesOnlyWhenNearby = true,
     corpseOnlyModeKeybind = Keyboard.KEY_NUMPAD3,
     enableAutoLock = false,
     autoLockDelaySeconds = 10,
@@ -73,6 +75,8 @@ local config = {
     forceProximityLockKeybind = nil,
     enableProximityHighlight = nil,
     enableCorpseOnly = nil,
+    enableDualMode = nil,
+    showCorpsesOnlyWhenNearby = nil,
     corpseOnlyModeKeybind = nil,
     enableAutoLock = nil,
     autoLockDelaySeconds = nil,
@@ -149,6 +153,8 @@ local function updateOptions()
     _applyUi("enableProximity", config.enableProximity)
     _applyUi("enableProximity", config.enableProximityKeybind)
     _applyUi("enableCorpseOnly", config.enableCorpseOnly)
+    _applyUi("enableCorpseOnly", config.enableDualMode)
+    _applyUi("enableCorpseOnly", config.showCorpsesOnlyWhenNearby)
     _applyUi("enableCorpseOnly", config.corpseOnlyModeKeybind)
     _applyUi("toggleLock", config.forceProximityLockKeybind)
     _applyUi("enableProximity", config.enableProximityHighlight)
@@ -187,6 +193,8 @@ local function applyOptions()
     Options.forceProximityLockKeybind = opts:getOption("forceProximityLockKeybind"):getValue()
     Options.enableProximityHighlight = opts:getOption("enableProximityHighlight"):getValue()
     Options.enableCorpseOnly = opts:getOption("enableCorpseOnly"):getValue()
+    Options.enableDualMode = opts:getOption("enableDualMode"):getValue()
+    Options.showCorpsesOnlyWhenNearby = opts:getOption("showCorpsesOnlyWhenNearby"):getValue()
     Options.corpseOnlyModeKeybind = opts:getOption("corpseOnlyModeKeybind"):getValue()
     Options.enableAutoLock = opts:getOption("enableAutoLock"):getValue()
     Options.autoLockDelaySeconds = opts:getOption("autoLockDelaySeconds"):getValue()
@@ -408,6 +416,24 @@ local function initConfig()
         Options.enableCorpseOnly,
         getTextOrNull("UI_BetterContainers_Options_enableCorpseOnly_tooltip")
             or "Enables/Disables Proximity Inventory in Corpse Only mode"
+    )
+
+    config.enableDualMode = panel:addTickBox(
+        "enableDualMode",
+        getTextOrNull("UI_BetterContainers_Options_enableDualMode")
+            or "Dual Mode",
+        Options.enableDualMode,
+        getTextOrNull("UI_BetterContainers_Options_enableDualMode_tooltip")
+            or "Shows both Proximity and Corpses Only. Auto-Lock prefers corpses while any are nearby. Corpse Only mode takes priority if both modes are enabled."
+    )
+
+    config.showCorpsesOnlyWhenNearby = panel:addTickBox(
+        "showCorpsesOnlyWhenNearby",
+        getTextOrNull("UI_BetterContainers_Options_showCorpsesOnlyWhenNearby")
+            or "Show Corpses Only When Nearby",
+        Options.showCorpsesOnlyWhenNearby,
+        getTextOrNull("UI_BetterContainers_Options_showCorpsesOnlyWhenNearby_tooltip")
+            or "In Dual Mode, hides the Corpses Only button when no corpses are nearby. The Proximity button remains available."
     )
 
     config.corpseOnlyModeKeybind = panel:addKeyBind(

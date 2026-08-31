@@ -43,6 +43,11 @@ function Permissions.compute(options)
     eff.corpseOnly = (sb.ForceCorpseOnly == true) or (
         (sb.ForceCorpseOnly == false) and (sb.AllowSwitchMode == true) and (options.enableCorpseOnly == true)
     )
+    eff.dualMode = (eff.corpseOnly == false)
+        and (sb.ForceCorpseOnly == false)
+        and (sb.AllowSwitchMode == true)
+        and (options.enableDualMode == true)
+    eff.showCorpsesOnlyWhenNearby = options.showCorpsesOnlyWhenNearby ~= false
 
     -- Auto-lock (local pref key is Options.enableAutoLock)
     eff.allowToggleAutoLock = (sb.ProximityEnabled == true)

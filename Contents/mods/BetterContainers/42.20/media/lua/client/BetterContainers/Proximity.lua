@@ -20,6 +20,7 @@ Proximity._ForceSwitchIntent = {}
 Proximity._BrowseElapsedMs = {}
 Proximity._LastTransfer = {}
 Proximity._TransferRunning = {}
+Proximity._HasNearbyCorpses = {}
 
 function Proximity.isHumanContainer(containerType)
     return containerType == "inventoryfemale"
@@ -52,6 +53,20 @@ function Proximity.HasNearbyCorpses(invSelf)
     end
 
     return false
+end
+
+function Proximity.GetPreferredType(eff, invSelf)
+    eff = eff or Options.getEffectivePermissions() or {}
+
+    if eff.corpseOnly == true then
+        return Proximity.invName_corpses
+    end
+
+    if eff.dualMode == true and Proximity.HasNearbyCorpses(invSelf) then
+        return Proximity.invName_corpses
+    end
+
+    return Proximity.invName
 end
 
 function Proximity.GetItemContainer(playerNum)
@@ -98,6 +113,21 @@ function Proximity.ForceSelectContainer(page, invType)
     if not page then return end
     if Proximity.isTransferActive(page.player) then return end
 
+    local eff = Options.getEffectivePermissions() or {}
+    local preferredType = Proximity.GetPreferredType(eff, page)
+    local browsingAlternateAggregate = eff.dualMode == true
+        and Proximity.isProximityType(invType)
+        and invType ~= preferredType
+
+    if browsingAlternateAggregate then
+        page.tempForceSelectUnlock = true
+        Proximity._ForceSwitchIntent[page.player] = nil
+        page.forceSelectedContainer = nil
+        page.forceSelectedContainerTime = 0
+        Proximity._BrowseElapsedMs[page.player] = 0
+        return
+    end
+
     if Proximity.isProximityType(invType) then
         page.tempForceSelectUnlock = false
         Proximity._BrowseElapsedMs[page.player] = nil
@@ -117,6 +147,10 @@ end
 function Proximity.AddProximityInventoryButton(invSelf)
     local eff = Options.getEffectivePermissions() or {}
     local corpseOnly = eff.corpseOnly == true
+    local showDualCorpseButton = eff.dualMode == true and (
+        eff.showCorpsesOnlyWhenNearby ~= true
+        or Proximity._HasNearbyCorpses[invSelf.player] ~= false
+    )
 
     local proximityInvButton = nil
     local corpseButton = nil
@@ -145,6 +179,18 @@ function Proximity.AddProximityInventoryButton(invSelf)
             Proximity.inventoryIcon,
             title
         )
+
+        if showDualCorpseButton then
+            local corpseContainer = Proximity.GetCorpseContainer(invSelf.player)
+            corpseContainer:clear()
+
+            local corpseTitle = getText("IGUI_BC_Proximity_CorpseName")
+            corpseButton = invSelf:addContainerButton(
+                corpseContainer,
+                Proximity.corpseIcon,
+                corpseTitle
+            )
+        end
     end
 
     return proximityInvButton, corpseButton
@@ -205,7 +251,20 @@ function Proximity.OnButtonsAdded(invSelf)
     local playerNum = invSelf.player
     local playerObj = getSpecificPlayer(playerNum)
     local corpseOnly = eff.corpseOnly == true
-    local hasCorpsesNearby = corpseOnly and Proximity.HasNearbyCorpses(invSelf) or false
+    local dualMode = eff.dualMode == true
+    local hasCorpsesNearby = (corpseOnly or dualMode) and Proximity.HasNearbyCorpses(invSelf) or false
+
+    if dualMode and eff.showCorpsesOnlyWhenNearby then
+        local previousHasCorpses = Proximity._HasNearbyCorpses[playerNum]
+        Proximity._HasNearbyCorpses[playerNum] = hasCorpsesNearby
+
+        local corpseButtonVisible = corpseInvButtonRef ~= nil
+        if previousHasCorpses ~= nil and corpseButtonVisible ~= hasCorpsesNearby then
+            ISInventoryPage.dirtyUI()
+        elseif previousHasCorpses == nil and not hasCorpsesNearby then
+            ISInventoryPage.dirtyUI()
+        end
+    end
 
     local policyForce = eff.autoLock == true
     local shouldForce
@@ -217,7 +276,11 @@ function Proximity.OnButtonsAdded(invSelf)
 
     local targetType = Proximity.forceSelectedType[playerNum]
     if policyForce and not targetType then
-        targetType = corpseOnly and Proximity.invName_corpses or Proximity.invName
+        targetType = Proximity.GetPreferredType(eff, invSelf)
+    end
+
+    if dualMode and shouldForce and not invSelf.tempForceSelectUnlock then
+        targetType = hasCorpsesNearby and Proximity.invName_corpses or Proximity.invName
     end
 
     if corpseOnly then
@@ -291,9 +354,9 @@ function Proximity.updateForceSelected(playerNum, state)
         if eff.autoLock ~= true then
             Proximity.isForceSelected[playerNum] = state
         end
-        Proximity.forceSelectedType[playerNum] = (eff.corpseOnly == true)
-            and Proximity.invName_corpses
-            or Proximity.invName
+        local lootWindow = getPlayerLoot and getPlayerLoot(playerNum)
+        local page = lootWindow and lootWindow.inventoryPane and lootWindow.inventoryPane.inventoryPage or nil
+        Proximity.forceSelectedType[playerNum] = Proximity.GetPreferredType(eff, page)
     end
 
     ISInventoryPage.dirtyUI()
@@ -438,17 +501,12 @@ function Proximity.DoAutoLock(playerNum, page, queue)
     if Proximity.isTransferActive(playerNum) then return false end
     if not page then return false end
 
-    local defaultType = (eff.corpseOnly == true)
-        and Proximity.invName_corpses
-        or Proximity.invName
-
-    if not Proximity.forceSelectedType[playerNum] then
-        Proximity.forceSelectedType[playerNum] = defaultType
-    end
+    local preferredType = Proximity.GetPreferredType(eff, page)
+    Proximity.forceSelectedType[playerNum] = preferredType
 
     local current = page.inventoryPane and page.inventoryPane.inventory or page.inventory
     local currentType = current and current:getType() or nil
-    if Proximity.isProximityType(currentType) then
+    if currentType == preferredType then
         page.tempForceSelectUnlock = false
         Proximity._BrowseElapsedMs[playerNum] = nil
         Proximity._ForceSwitchIntent[playerNum] = nil
@@ -462,25 +520,35 @@ function Proximity.DoAutoLock(playerNum, page, queue)
         return true
     end
 
+
+    if Proximity.isProximityType(currentType) then
+        if eff.dualMode == true and page.tempForceSelectUnlock then
+            return false
+        end
+
+        page.tempForceSelectUnlock = false
+        Proximity._BrowseElapsedMs[playerNum] = nil
+        Proximity._ForceSwitchIntent[playerNum] = preferredType
+        return true
+    end
+
     if eff.proximityActive and eff.autoLock and page.tempForceSelectUnlock then
         local proxInv = Proximity.itemContainer[playerNum] or Proximity.GetItemContainer(playerNum)
         local corpseInv = Proximity.corpseContainer[playerNum]
 
-        local foundOther = false
-        for i = 1, #page.backpacks do
-            local entry = page.backpacks[i]
-            local inv = entry and entry.inventory
-            if inv
-                and inv ~= proxInv
-                and (not corpseInv or inv ~= corpseInv)
-                and inv:getType() ~= "floor"
-            then
-                foundOther = true
-                break
+        local currentAvailable = currentType == "floor"
+        if not currentAvailable then
+            for i = 1, #page.backpacks do
+                local entry = page.backpacks[i]
+                local inv = entry and entry.inventory
+                if inv == current and inv ~= proxInv and (not corpseInv or inv ~= corpseInv) then
+                    currentAvailable = true
+                    break
+                end
             end
         end
 
-        if not foundOther then
+        if not currentAvailable then
             page.tempForceSelectUnlock = false
             Proximity._ForceSwitchIntent[playerNum] = Proximity.forceSelectedType[playerNum]
             return true
@@ -508,8 +576,9 @@ function Proximity.OnAutoLockTick()
             local page = lootWindow and lootWindow.inventoryPane and lootWindow.inventoryPane.inventoryPage or nil
             local current = page and page.inventoryPane and page.inventoryPane.inventory or page and page.inventory or nil
             local currentType = current and current:getType() or nil
+            local preferredType = page and Proximity.GetPreferredType(eff, page) or nil
 
-            if not page or not page.tempForceSelectUnlock or Proximity.isProximityType(currentType) then
+            if not page or not page.tempForceSelectUnlock or currentType == preferredType then
                 Proximity._BrowseElapsedMs[playerNum] = nil
             end
 
