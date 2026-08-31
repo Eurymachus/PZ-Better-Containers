@@ -140,6 +140,19 @@ function ProximityInventoryPage.install()
         return old_selectContainer(self, button, ...)
     end
 
+    -- Clicking a container in the world can select it through setNewContainer(),
+    -- bypassing selectContainer() and its auto-lock browse-timer reset.
+    local old_setNewContainer = ISInventoryPage.setNewContainer
+    function ISInventoryPage:setNewContainer(inventory, ...)
+        local eff = Options.getEffectivePermissions() or {}
+        if not self.onCharacter and inventory and eff.proximityActive and eff.autoLock then
+            local invType = inventory and inventory:getType() or nil
+            Proximity.ForceSelectContainer(self, invType)
+        end
+
+        return old_setNewContainer(self, inventory, ...)
+    end
+
     local old_selectButtonForContainer = ISInventoryPage.selectButtonForContainer
     function ISInventoryPage:selectButtonForContainer(container, ...)
         if shouldIgnoreTransferContainerSwitch(self, container) then
