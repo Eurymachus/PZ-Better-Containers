@@ -32,17 +32,7 @@ Treat runtime logs as read-only diagnostic references unless the user explicitly
 
 ## Working Rules
 
-- Prefer `rg` for searches across Lua, Java references, `mod.info`, media scripts, recipes, translations, and workshop dependencies.
-- When investigating behavior, search in this order unless the task suggests otherwise:
-  1. Better Containers workspace.
-  2. Relevant version folders under `Contents/mods/BetterContainers/`.
-  3. Local workshop mods under `C:\Users\refle\Zomboid\Workshop` when code style or established Eurymachus patterns matter.
-  4. Steam workshop mods when checking compatibility or comparable mod behavior.
-  5. Project Zomboid game files.
-  6. The matching authoritative versioned Java decompile under `ProjectZomboid\tgsrr_decompiled`.
-  7. Legacy decompiled Java references in `PZJava` when legacy comparison is useful.
 - Do not edit files outside this mod workspace unless the user explicitly asks for that.
 - Use external workshop, local workshop, Project Zomboid, and Java paths as read-only references by default.
 - Preserve existing mod structure and Project Zomboid conventions.
 - Never use Lua `next()`. Use `pairs()` or `ipairs()` iteration, including when checking whether a table is empty.
-- Keep edits focused and avoid unrelated refactors.
