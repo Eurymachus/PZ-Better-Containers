@@ -31,6 +31,19 @@ function Proximity.isProximityType(invType)
     return invType == Proximity.invName or invType == Proximity.invName_corpses
 end
 
+function Proximity.isHumanCorpseContainer(container)
+    local parent = container and container.getParent and container:getParent() or nil
+    if not parent or not instanceof(parent, "IsoDeadBody") then return false end
+    return not parent:isAnimal()
+end
+
+function Proximity.shouldHideIndividualCorpseContainers(eff)
+    eff = eff or Options.getEffectivePermissions() or {}
+    return eff.proximityActive == true
+        and eff.hideIndividualCorpseContainers == true
+        and (eff.corpseOnly == true or eff.dualMode == true)
+end
+
 function Proximity.isLockedForPlayer(container, playerObj)
     local parent = container and container.getParent and container:getParent() or nil
     return parent ~= nil
@@ -39,7 +52,7 @@ function Proximity.isLockedForPlayer(container, playerObj)
         and parent:isLockedToCharacter(playerObj)
 end
 
-function Proximity.HasNearbyCorpses(invSelf)
+function Proximity.HasNearbyCorpseButtons(invSelf)
     if not invSelf or not invSelf.backpacks then return false end
 
     for i = 1, #invSelf.backpacks do
@@ -53,6 +66,39 @@ function Proximity.HasNearbyCorpses(invSelf)
     end
 
     return false
+end
+
+function Proximity.HasNearbyCorpses(invSelf)
+    if not invSelf then return false end
+
+    if Proximity.HasNearbyCorpseButtons(invSelf) then
+        return true
+    end
+
+    local eff = Options.getEffectivePermissions() or {}
+    if Proximity.shouldHideIndividualCorpseContainers(eff) then
+        return Proximity._HasNearbyCorpses[invSelf.player] == true
+    end
+
+    return false
+end
+
+function Proximity.HideIndividualCorpseButtons(invSelf)
+    local eff = Options.getEffectivePermissions() or {}
+    if not Proximity.shouldHideIndividualCorpseContainers(eff) then return end
+    if not invSelf or invSelf.onCharacter or not invSelf.backpacks then return end
+
+    invSelf.buttonPool = invSelf.buttonPool or {}
+    invSelf.bcHiddenCorpseContainers = invSelf.bcHiddenCorpseContainers or {}
+    for index = #invSelf.backpacks, 1, -1 do
+        local button = invSelf.backpacks[index]
+        if button and Proximity.isHumanCorpseContainer(button.inventory) then
+            table.insert(invSelf.bcHiddenCorpseContainers, button.inventory)
+            invSelf.containerButtonPanel:removeChild(button)
+            table.remove(invSelf.backpacks, index)
+            table.insert(invSelf.buttonPool, button)
+        end
+    end
 end
 
 function Proximity.GetPreferredType(eff, invSelf)
@@ -197,6 +243,8 @@ function Proximity.AddProximityInventoryButton(invSelf)
 end
 
 function Proximity.OnBeginRefresh(invSelf)
+    invSelf.bcHiddenCorpseContainers = nil
+
     local eff = Options.getEffectivePermissions() or {}
     if not eff.proximityActive then return end
 
@@ -216,6 +264,16 @@ function Proximity.DoRightClickMenu(self, x, y)
     local playerNum = self.player
     local context = ISContextMenu.get(playerNum, getMouseX(), getMouseY())
     if not context then return end
+
+    if invType == Proximity.invName_corpses then
+        local corpseContainersText = eff.hideIndividualCorpseContainers
+            and (getTextOrNull("UI_BetterContainers_ShowCorpseContainers") or "Show Corpse Containers")
+            or (getTextOrNull("UI_BetterContainers_HideCorpseContainers") or "Hide Corpse Containers")
+
+        context:addOption(corpseContainersText, self, function()
+            Options.OnToggleHideIndividualCorpseContainers()
+        end)
+    end
 
     if not eff.autoLock and eff.allowToggleLock then
         local locked = Proximity.isForceSelected[playerNum] and true or false
@@ -252,12 +310,11 @@ function Proximity.OnButtonsAdded(invSelf)
     local playerObj = getSpecificPlayer(playerNum)
     local corpseOnly = eff.corpseOnly == true
     local dualMode = eff.dualMode == true
-    local hasCorpsesNearby = (corpseOnly or dualMode) and Proximity.HasNearbyCorpses(invSelf) or false
+    local hasCorpsesNearby = (corpseOnly or dualMode) and Proximity.HasNearbyCorpseButtons(invSelf) or false
+    local previousHasCorpses = Proximity._HasNearbyCorpses[playerNum]
+    Proximity._HasNearbyCorpses[playerNum] = hasCorpsesNearby
 
     if dualMode and eff.showCorpsesOnlyWhenNearby then
-        local previousHasCorpses = Proximity._HasNearbyCorpses[playerNum]
-        Proximity._HasNearbyCorpses[playerNum] = hasCorpsesNearby
-
         local corpseButtonVisible = corpseInvButtonRef ~= nil
         if previousHasCorpses ~= nil and corpseButtonVisible ~= hasCorpsesNearby then
             ISInventoryPage.dirtyUI()

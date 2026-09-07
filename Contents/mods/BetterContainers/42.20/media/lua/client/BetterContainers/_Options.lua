@@ -32,6 +32,7 @@ local Options = {
     enableCorpseOnly = false,
     enableDualMode = false,
     showCorpsesOnlyWhenNearby = true,
+    hideIndividualCorpseContainers = false,
     corpseOnlyModeKeybind = Keyboard.KEY_NUMPAD3,
     enableAutoLock = false,
     autoLockDelaySeconds = 10,
@@ -77,6 +78,7 @@ local config = {
     enableCorpseOnly = nil,
     enableDualMode = nil,
     showCorpsesOnlyWhenNearby = nil,
+    hideIndividualCorpseContainers = nil,
     corpseOnlyModeKeybind = nil,
     enableAutoLock = nil,
     autoLockDelaySeconds = nil,
@@ -155,6 +157,7 @@ local function updateOptions()
     _applyUi("enableCorpseOnly", config.enableCorpseOnly)
     _applyUi("enableCorpseOnly", config.enableDualMode)
     _applyUi("enableCorpseOnly", config.showCorpsesOnlyWhenNearby)
+    _applyUi("enableCorpseOnly", config.hideIndividualCorpseContainers)
     _applyUi("enableCorpseOnly", config.corpseOnlyModeKeybind)
     _applyUi("toggleLock", config.forceProximityLockKeybind)
     _applyUi("enableProximity", config.enableProximityHighlight)
@@ -195,6 +198,7 @@ local function applyOptions()
     Options.enableCorpseOnly = opts:getOption("enableCorpseOnly"):getValue()
     Options.enableDualMode = opts:getOption("enableDualMode"):getValue()
     Options.showCorpsesOnlyWhenNearby = opts:getOption("showCorpsesOnlyWhenNearby"):getValue()
+    Options.hideIndividualCorpseContainers = opts:getOption("hideIndividualCorpseContainers"):getValue()
     Options.corpseOnlyModeKeybind = opts:getOption("corpseOnlyModeKeybind"):getValue()
     Options.enableAutoLock = opts:getOption("enableAutoLock"):getValue()
     Options.autoLockDelaySeconds = opts:getOption("autoLockDelaySeconds"):getValue()
@@ -436,6 +440,15 @@ local function initConfig()
             or "In Dual Mode, hides the Corpses Only button when no corpses are nearby. The Proximity button remains available."
     )
 
+    config.hideIndividualCorpseContainers = panel:addTickBox(
+        "hideIndividualCorpseContainers",
+        getTextOrNull("UI_BetterContainers_Options_hideIndividualCorpseContainers")
+            or "Hide Individual Corpse Containers",
+        Options.hideIndividualCorpseContainers,
+        getTextOrNull("UI_BetterContainers_Options_hideIndividualCorpseContainers_tooltip")
+            or "When Corpses Only or Dual Mode is active, hides individual corpse buttons and uses the Corpses Only inventory instead."
+    )
+
     config.corpseOnlyModeKeybind = panel:addKeyBind(
         "corpseOnlyModeKeybind",
         getTextOrNull("UI_BetterContainers_Options_corpseOnlyModeKeybind")
@@ -591,6 +604,13 @@ end
 function Options.OnToggleMode()
     if config.enableCorpseOnly and config.enableCorpseOnly.setValue then
         config.enableCorpseOnly:setValue(not Options.enableCorpseOnly)
+        applyOptions()
+    end
+end
+
+function Options.OnToggleHideIndividualCorpseContainers()
+    if config.hideIndividualCorpseContainers and config.hideIndividualCorpseContainers.setValue then
+        config.hideIndividualCorpseContainers:setValue(not Options.hideIndividualCorpseContainers)
         applyOptions()
     end
 end

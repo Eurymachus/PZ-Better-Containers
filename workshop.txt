@@ -68,6 +68,7 @@ description=
 description=[h3]Proximity Inventory[/h3]
 description=[list]
 description=[*]Proximity and [b]Corpse Only[/b] inventory (mutually exclusive modes)
+description=[*]Dual mode - Both Proximity and Corpse Only mode visible - optional Hide Corpse Only mode when no corpses are visible
 description=[*]Sandbox Options can override default behaviour and player permissions
 description=[*]Proximity Inventory (can be locked) Displays the contents of all inventories within range
 description=[*]Corpse Only Inventory (can be locked) Displays the contents of all corpse inventories within range

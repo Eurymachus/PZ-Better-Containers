@@ -145,6 +145,12 @@ function ProximityInventoryPage.install()
     local old_setNewContainer = ISInventoryPage.setNewContainer
     function ISInventoryPage:setNewContainer(inventory, ...)
         local eff = Options.getEffectivePermissions() or {}
+        if not self.onCharacter
+            and Proximity.shouldHideIndividualCorpseContainers(eff)
+            and Proximity.isHumanCorpseContainer(inventory)
+        then
+            inventory = Proximity.GetCorpseContainer(self.player)
+        end
         if not self.onCharacter and inventory and eff.proximityActive and eff.autoLock then
             local invType = inventory and inventory:getType() or nil
             Proximity.ForceSelectContainer(self, invType)
@@ -155,6 +161,13 @@ function ProximityInventoryPage.install()
 
     local old_selectButtonForContainer = ISInventoryPage.selectButtonForContainer
     function ISInventoryPage:selectButtonForContainer(container, ...)
+        local eff = Options.getEffectivePermissions() or {}
+        if not self.onCharacter
+            and Proximity.shouldHideIndividualCorpseContainers(eff)
+            and Proximity.isHumanCorpseContainer(container)
+        then
+            container = Proximity.GetCorpseContainer(self.player)
+        end
         if shouldIgnoreTransferContainerSwitch(self, container) then
             return
         end
@@ -246,6 +259,16 @@ function ProximityInventoryPage.install()
                     container
                 )
             end
+        end
+
+        for i = 1, #(self.bcHiddenCorpseContainers or {}) do
+            applyProximityHighlightForContainer(
+                self,
+                playerNum,
+                false,
+                hl, hlR, hlG, hlB,
+                self.bcHiddenCorpseContainers[i]
+            )
         end
     end
 end

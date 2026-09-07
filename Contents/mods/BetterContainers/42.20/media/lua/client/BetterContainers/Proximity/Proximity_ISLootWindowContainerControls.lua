@@ -24,7 +24,8 @@ function ProximityLootWindowContainerControls.install()
         end
 
         if state == "buttonsAdded" then
-            return Proximity.OnButtonsAdded(invSelf)
+            Proximity.OnButtonsAdded(invSelf)
+            Proximity.HideIndividualCorpseButtons(invSelf)
         end
     end)
 
