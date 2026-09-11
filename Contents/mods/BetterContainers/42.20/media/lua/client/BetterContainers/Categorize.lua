@@ -370,20 +370,25 @@ local function loadCategories()
 
         -- Weapons
         if isItemTypeSafe(item, ItemType and ItemType.WEAPON) then
+            -- Cap guns can carry both firearm and fake-weapon tags.
+            if item.hasTag and ItemTag and ItemTag.FAKE_WEAPON and item:hasTag(ItemTag.FAKE_WEAPON) then
+                return dc ~= "" and dc or nil
+            end
+
             if dc == "Explosives" or dc == "Devices" then
                 return "WepBomb"
             end
 
-            if dc ~= "" then
-                if string.sub(dc, -6) == "Weapon" then
-                    return "WepMelee"
-                end
-                if dc == "Weapon" or dc == "WeaponCrafted" then
-                    return "WepMelee"
-                end
-                if dc == "Gun" or dc == "Guns" or dc == "Firearm" or dc == "Firearms" then
-                    return "WepFire"
-                end
+            if item.hasTag and ItemTag and ItemTag.FIREARM and item:hasTag(ItemTag.FIREARM) then
+                return "WepFire"
+            end
+
+            if item.isRanged and item:isRanged() then
+                return "WepRange"
+            end
+
+            if dc == "Gun" or dc == "Guns" or dc == "Firearm" or dc == "Firearms" then
+                return "WepFire"
             end
 
             return "WepMelee"
