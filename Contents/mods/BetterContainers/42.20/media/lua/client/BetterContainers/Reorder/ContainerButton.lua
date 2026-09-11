@@ -111,7 +111,23 @@ function ContainerButton:onMouseUp(x, y)
         page:setContainerButtons_Reorder(self)
         page:refreshBackpacks()
     else
-        self._onMouseUp_BetterContainers_Reorder(self, x, y)
+        -- Vanilla dropItemsInContainer() validates self.mouseOverButton instead
+        -- of the button that actually received mouse-up. A container refresh can
+        -- clear that hover reference while an inventory drag is active, causing
+        -- vanilla to consume the drop without queuing a transfer. Supply the
+        -- reliable mouse-up target only for the duration of the vanilla call.
+        local restoreMouseOverButton = page and page.mouseOverButton or nil
+        local suppliedDropTarget = page and ISMouseDrag and ISMouseDrag.dragging ~= nil
+        if suppliedDropTarget then
+            page.mouseOverButton = self
+        end
+
+        local result = self._onMouseUp_BetterContainers_Reorder(self, x, y)
+
+        if suppliedDropTarget then
+            page.mouseOverButton = restoreMouseOverButton
+        end
+        return result
     end
 end
 
