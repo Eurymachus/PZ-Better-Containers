@@ -368,6 +368,19 @@ SearchBar.install = function()
             _layoutSearchBar(self)
         end
 
+        local _old_update = ISInventoryPane.update
+        ISInventoryPane.update = function(self)
+            _old_update(self)
+
+            local entry = self.bcSearchEntry
+            if not entry then return end
+
+            local actualText = entry:getInternalText() or ""
+            if actualText ~= (self.bcSearchQuery or "") then
+                entry:onTextChange()
+            end
+        end
+
         ISInventoryPane._BetterContainers_SearchBar_installed = true
 
         Events[Helpers.OPTIONS_APPLIED].Add(_applyToExistingPanes)
