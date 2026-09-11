@@ -243,6 +243,7 @@ function Proximity.AddProximityInventoryButton(invSelf)
 end
 
 function Proximity.OnBeginRefresh(invSelf)
+    invSelf.bcProximityRefreshGeneration = (invSelf.bcProximityRefreshGeneration or 0) + 1
     invSelf.bcHiddenCorpseContainers = nil
 
     local eff = Options.getEffectivePermissions() or {}
@@ -298,6 +299,7 @@ function Proximity.DoRightClickMenu(self, x, y)
 end
 
 function Proximity.OnButtonsAdded(invSelf)
+    local refreshGeneration = invSelf.bcProximityRefreshGeneration
     local eff = Options.getEffectivePermissions() or {}
 
     local proximityInvButtonRef = Proximity.inventoryButtonRef[invSelf.player]
@@ -321,6 +323,12 @@ function Proximity.OnButtonsAdded(invSelf)
         elseif previousHasCorpses == nil and not hasCorpsesNearby then
             ISInventoryPage.dirtyUI()
         end
+    end
+
+    -- dirtyUI can immediately rebuild the page and reassign pooled buttons.
+    -- Let the nested refresh own its completed aggregation.
+    if invSelf.bcProximityRefreshGeneration ~= refreshGeneration then
+        return
     end
 
     local policyForce = eff.autoLock == true
@@ -355,6 +363,18 @@ function Proximity.OnButtonsAdded(invSelf)
     if shouldForce and not autolockUnlock then
         Proximity.forceSelectedType[playerNum] = targetType
         invSelf:setForceSelectedContainer(Proximity.GetCurrentForceContainer(playerNum))
+    end
+
+    if invSelf.bcProximityRefreshGeneration ~= refreshGeneration then
+        return
+    end
+
+    -- Verify ownership before modifying inventories through pooled buttons.
+    if proximityInvButtonRef and proximityInvButtonRef.inventory ~= Proximity.itemContainer[playerNum] then
+        proximityInvButtonRef = nil
+    end
+    if corpseInvButtonRef and corpseInvButtonRef.inventory ~= Proximity.corpseContainer[playerNum] then
+        corpseInvButtonRef = nil
     end
 
     local locked = (eff.autoLock == true) or (Proximity.isForceSelected[playerNum] and true or false)

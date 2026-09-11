@@ -1,5 +1,6 @@
 # Next Workshop Upload
 
+- Fixed the first nearby container appearing empty on login when a nested inventory refresh reused its button.
 - Fixed Smithing magazines being categorized as skill books instead of magazines.
 - Fixed selected inventory items becoming deselected or shifting to different rows after multiplayer inventory updates.
 - Added optional freshness bars and hover percentages for spoilable food in inventory lists, including a stale-threshold marker and permanent percentages for expanded stacks.
