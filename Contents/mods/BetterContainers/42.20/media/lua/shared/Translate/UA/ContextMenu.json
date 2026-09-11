@@ -1,16 +1,18 @@
 {
-    "ContextMenu_BC_Customize" : "Nalashtuvaty",
-    "ContextMenu_BC_Presets" : "Shablony",
-    "ContextMenu_BC_SavedPresets" : "Zberezheni shablony",
-    "ContextMenu_BC_NoSavedPresets" : "Nemaie zberezhenykh shabloniv",
-    "ContextMenu_BC_Copy" : "Kopiiuvaty",
-    "ContextMenu_BC_Paste" : "Vstavyty",
-    "ContextMenu_BC_Reset" : "Skynuty",
-    "ContextMenu_BetterContainers_AddCategoryFav" : "Dodaty katehoriiu v obrane",
-    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Prybraty katehoriiu z obranogo"
-    ,"ContextMenu_BetterContainers_Nesting" : "Vkladenist"
-    ,"ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ihnoruvaty typ vkladenoho konteynera"
-    ,"ContextMenu_BetterContainers_AllowNestedContainerType" : "Dozvolyty typ vkladenoho konteynera"
-    ,"ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ihnorovani typy konteineriv"
-    ,"ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Nemaie"
+    "ContextMenu_BC_Customize" : "Налаштувати",
+    "ContextMenu_BC_Presets" : "Шаблони",
+    "ContextMenu_BC_SavedPresets" : "Збережені шаблони",
+    "ContextMenu_BC_NoSavedPresets" : "Немає збережених шаблонів",
+    "ContextMenu_BC_Copy" : "Копіювати",
+    "ContextMenu_BC_Paste" : "Вставити",
+    "ContextMenu_BC_Reset" : "Скинути",
+    "ContextMenu_BetterContainers_AddCategoryFav" : "Додати категорію в обране",
+    "ContextMenu_BetterContainers_RemoveCategoryFav" : "Прибрати категорію з обраного",
+    "ContextMenu_BetterContainers_PinItemType" : "Закріпити тип предмета",
+    "ContextMenu_BetterContainers_UnpinItemType" : "Відкріпити тип предмета",
+    "ContextMenu_BetterContainers_Nesting" : "Вкладеність",
+    "ContextMenu_BetterContainers_IgnoreNestedContainerType" : "Ігнорувати тип вкладеного контейнера",
+    "ContextMenu_BetterContainers_AllowNestedContainerType" : "Дозволити тип вкладеного контейнера",
+    "ContextMenu_BetterContainers_IgnoredNestedContainerTypes" : "Ігноровані типи контейнерів",
+    "ContextMenu_BetterContainers_NoIgnoredNestedContainerTypes" : "Немає"
 }

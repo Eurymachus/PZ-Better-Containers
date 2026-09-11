@@ -1,15 +1,15 @@
 {
     "Sandbox_BetterContainers" : "Better Containers",
-    "Sandbox_BetterContainers_ProximityEnabled" : "Uvімknuty inventar blyzkosti",
-    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Uvімkaye systemu inventariu blyzkosti dlia tsoho servera.",
-    "Sandbox_BetterContainers_ForceCorpseOnly" : "Prymусyty rezhym lyshe trupy",
-    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Prymushuye inventar blyzkosti pratsiuvaty lyshe z trupamy. Hravtsi ne zmozhut zminiuvaty rezhym.",
-    "Sandbox_BetterContainers_AllowToggleProximity" : "Dozvolyty hravtsiam peremykaty blyzkist",
-    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Dozvoliaie hravtsiam uvimkaty abo vymykaty inventar blyzkosti cherez klavishu abo opsiї moda.",
-    "Sandbox_BetterContainers_AllowSwitchMode" : "Dozvolyty hravtsiam peremykaty rezhym",
-    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Dozvoliaie hravtsiam peremykatysia mizh rezhymom usikh konteineriv ta rezhymom lyshe trupy.",
-    "Sandbox_BetterContainers_AutoLockEnabled" : "Uvімknuty avtomatychne blokuvannia",
-    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Uvімkaye funktsiiu avtomatychnoho blokuvannia. Koly vona aktyvna, inventar blyzkosti povernetsia do vybranoho konteynera, yakshcho yoho ne zminyly navmysno.",
-    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Dozvolyty hravtsiam peremykaty avtomatychne blokuvannia",
-    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Dozvoliaie hravtsiam uvimkaty abo vymykaty avtomatychne blokuvannia cherez opsiї moda."
+    "Sandbox_BetterContainers_ProximityEnabled" : "Увімкнути інвентар близькості",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Вмикає систему інвентарю близькості для цього сервера.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Примусити режим лише трупи",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Примушує інвентар близькості працювати лише з трупами. Гравці не зможуть змінювати режим.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Дозволити гравцям перемикати близькість",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Дозволяє гравцям вмикати або вимикати інвентар близькості через клавішу або опції мода.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Дозволити гравцям перемикати режим",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Дозволяє гравцям перемикатися між режимом усіх контейнерів та режимом лише трупи.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Увімкнути автоматичне блокування",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Вмикає функцію автоматичного блокування. Коли вона активна, інвентар близькості повернеться до вибраного контейнера, якщо його не змінили навмисно.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Дозволити гравцям перемикати автоматичне блокування",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Дозволяє гравцям вмикати або вимикати автоматичне блокування через опції мода."
 }
