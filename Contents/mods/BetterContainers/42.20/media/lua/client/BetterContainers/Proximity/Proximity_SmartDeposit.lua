@@ -358,8 +358,7 @@ local function runSmartDeposit(pane, items, targetContainer)
     local plan = getSmartDepositPlan(playerNum, playerObj, items, targetContainer)
     if not plan then return end
 
-    ISTimedActionQueue.clear(playerObj)
-
+    -- Append each drop so transfers already in progress keep their queue position.
     for _, destination in ipairs(plan.destinationOrder) do
         if queueWalkNearContainer(destination, playerObj) then
             for _, item in ipairs(plan.groupedItems[destination]) do
