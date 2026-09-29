@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "รวมภาชนะซ้อนกัน",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "ทำงานเมื่อเปิดใช้งานภาชนะซ้อนกันในคลังของที่ปล้นได้",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "อนุญาตให้จัดเรียงปุ่มภาชนะใหม่",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "เมื่อเปิดใช้งาน จะสามารถจัดเรียงปุ่มภาชนะในคลังใหม่ได้ รวมถึงปุ่มของผู้เล่น",

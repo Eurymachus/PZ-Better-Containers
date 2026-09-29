@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Include Nested Containers",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Active when Loot Nested Containers is enabled",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Allow Reordering Container Buttons",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "When enabled will allow the reordering of inventory container buttons, including player buttons",

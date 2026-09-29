@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Включати вкладені контейнери",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Активно, коли увімкнено вкладені контейнери здобичі",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Дозволити зміну порядку кнопок контейнерів",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Коли увімкнено, дозволяє змінювати порядок кнопок контейнерів інвентарю, включно з кнопками гравця.",

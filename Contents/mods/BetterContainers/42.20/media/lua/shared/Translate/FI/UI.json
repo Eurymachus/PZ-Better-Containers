@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Sisällytä sisäkkäiset säiliöt",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktiivinen, kun saaliin sisäkkäiset säiliöt ovat käytössä",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Salli sailiopainikkeiden uudelleenjarjestys",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Kun toiminto on kaytossa, inventaarion sailiopainikkeiden jarjestysta voi muuttaa, mukaan lukien pelaajan painikkeet.",

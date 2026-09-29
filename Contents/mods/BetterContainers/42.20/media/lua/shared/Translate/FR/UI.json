@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Inclure les conteneurs imbriqués",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Actif lorsque les conteneurs imbriqués du butin sont activés",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Autoriser la reorganisation des boutons de conteneur",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Lorsqu’active, permet de reordonner les boutons des conteneurs d’inventaire, y compris ceux du joueur.",

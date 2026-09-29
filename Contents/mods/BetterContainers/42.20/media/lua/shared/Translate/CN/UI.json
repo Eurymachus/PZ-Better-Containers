@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "包含嵌套容器",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "启用战利品嵌套容器时生效",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "允许重新排列容器按钮",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "启用后可重新排列物品栏容器按钮，包括玩家按钮。",

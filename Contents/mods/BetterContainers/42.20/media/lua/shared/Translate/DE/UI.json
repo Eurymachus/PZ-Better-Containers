@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Verschachtelte Behälter einbeziehen",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktiv, wenn verschachtelte Beutebehälter aktiviert sind",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Neuanordnung von Behalter-Schaltflachen erlauben",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Wenn aktiviert, konnen die Schaltflachen der Inventarbehalter neu angeordnet werden, einschliesslich der Spieler-Schaltflachen.",

@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "入れ子のコンテナを含める",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "戦利品の入れ子コンテナが有効な場合に動作します",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "コンテナボタンの並び替えを許可",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "有効にすると、プレイヤーボタンを含むインベントリコンテナボタンの並び替えができます。",

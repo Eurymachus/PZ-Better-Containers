@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Incluir contêineres aninhados",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Ativo quando os contêineres aninhados de saque estão ativados",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Permitir reordenar botoes de conteiner",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Quando ativado, permite reorganizar os botoes dos conteineres do inventario, incluindo os botoes do jogador.",

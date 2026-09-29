@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Inkluder nøstede beholdere",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktiv når nøstede beholdere for bytte er aktivert",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Tillat omorganisering av beholderknapper",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Nar aktivert kan inventarbeholderknapper omorganiseres, inkludert spillerknapper.",

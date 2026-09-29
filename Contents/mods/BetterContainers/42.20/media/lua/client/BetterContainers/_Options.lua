@@ -26,6 +26,7 @@ local Options = {
 
     -- PROXIMITY
     enableProximity = true,
+    proximityIncludeNestedContainers = false,
     enableProximityKeybind = Keyboard.KEY_NUMPAD1,
     forceProximityLockKeybind = Keyboard.KEY_NUMPAD0,
     enableProximityHighlight = true,
@@ -72,6 +73,7 @@ local config = {
 
     -- PROXIMITY
     enableProximity = nil,
+    proximityIncludeNestedContainers = nil,
     enableProximityKeybind = nil,
     forceProximityLockKeybind = nil,
     enableProximityHighlight = nil,
@@ -161,6 +163,7 @@ local function updateOptions()
     _applyUi("enableCorpseOnly", config.corpseOnlyModeKeybind)
     _applyUi("toggleLock", config.forceProximityLockKeybind)
     _applyUi("enableProximity", config.enableProximityHighlight)
+    _applyUi("enableProximity", config.proximityIncludeNestedContainers)
     _applyUi("enableAutoLock", config.enableAutoLock)
     _applyUi("autoLockDelaySeconds", config.autoLockDelaySeconds)
 end
@@ -192,6 +195,7 @@ local function applyOptions()
 
     -- PROXIMITY
     Options.enableProximity = opts:getOption("enableProximity"):getValue()
+    Options.proximityIncludeNestedContainers = opts:getOption("proximityIncludeNestedContainers"):getValue()
     Options.enableProximityKeybind = opts:getOption("enableProximityKeybind"):getValue()
     Options.forceProximityLockKeybind = opts:getOption("forceProximityLockKeybind"):getValue()
     Options.enableProximityHighlight = opts:getOption("enableProximityHighlight"):getValue()
@@ -384,6 +388,15 @@ local function initConfig()
         Options.enableProximity,
         getTextOrNull("UI_BetterContainers_Options_enableProximity_tooltip")
             or "Enables/Disables the Proximity Inventory feature"
+    )
+
+    config.proximityIncludeNestedContainers = panel:addTickBox(
+        "proximityIncludeNestedContainers",
+        getTextOrNull("UI_BetterContainers_Options_proximityIncludeNestedContainers")
+            or "Include Nested Containers",
+        Options.proximityIncludeNestedContainers,
+        getTextOrNull("UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip")
+            or "Active when Loot Nested Containers is enabled"
     )
 
     config.enableProximityKeybind = panel:addKeyBind(

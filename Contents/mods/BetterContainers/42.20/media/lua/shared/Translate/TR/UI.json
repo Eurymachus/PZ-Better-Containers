@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "İç içe kapları dahil et",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Ganimet için iç içe kaplar etkinleştirildiğinde aktiftir",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Konteyner dugmelerini yeniden siralamaya izin ver",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Etkinlestirildiginde, oyuncu dugmeleri dahil envanter konteyner dugmelerinin yeniden siralanmasina izin verir.",

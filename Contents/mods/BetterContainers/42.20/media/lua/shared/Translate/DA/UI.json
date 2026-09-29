@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Medtag indlejrede beholdere",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktiv, når indlejrede beholdere til bytte er aktiveret",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Tillad omorganisering af beholderknapper",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Nar funktionen er aktiv, kan inventarbeholderknapper omarrangeres, inklusive spillerknapper.",

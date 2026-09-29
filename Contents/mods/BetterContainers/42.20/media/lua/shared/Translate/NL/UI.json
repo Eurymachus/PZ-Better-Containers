@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Geneste containers opnemen",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Actief wanneer geneste buitcontainers zijn ingeschakeld",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Herordenen van containerknoppen toestaan",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Als dit is ingeschakeld, kunnen inventariscontainerknoppen opnieuw geordend worden, inclusief spelerknoppen.",

@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "包含巢狀容器",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "啟用拾取物品欄的巢狀容器時生效",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "允許重新排序容器按鈕",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "啟用後可重新排序物品欄中的容器按鈕，包括玩家按鈕",

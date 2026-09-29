@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Incluir contenedores anidados",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Activo cuando los contenedores anidados de botín están habilitados",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Permitir reordenar botones de contenedores",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Al activarlo, permite reordenar los botones de los contenedores del inventario, incluidos los del jugador.",

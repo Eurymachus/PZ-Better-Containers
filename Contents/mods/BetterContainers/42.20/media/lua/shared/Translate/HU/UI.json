@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Beágyazott tárolók bevonása",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Akkor aktív, ha a zsákmány beágyazott tárolói engedélyezve vannak",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Tarologombok atrendezesenek engedelyezese",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Bekapcsolva lehetove teszi a leltartarologombok atrendezeset, beleertve a jatekos gombjait is.",

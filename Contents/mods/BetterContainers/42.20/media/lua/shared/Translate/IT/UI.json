@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Includi contenitori annidati",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Attivo quando i contenitori annidati del bottino sono abilitati",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Consenti riordino dei pulsanti contenitore",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Quando attivo consente di riordinare i pulsanti dei contenitori dell’inventario, inclusi quelli del giocatore.",

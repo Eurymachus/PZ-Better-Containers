@@ -111,6 +111,14 @@ function ContainerButton:onMouseUp(x, y)
         page:setContainerButtons_Reorder(self)
         page:refreshBackpacks()
     else
+        -- A normal click already selects through ISButton's onclick callback.
+        -- Vanilla's backpack mouse-up selects again after that callback rebuilds
+        -- the button pool. With hidden corpses, this button may now represent a
+        -- different inventory, so finish the click without selecting it again.
+        if not (ISMouseDrag and ISMouseDrag.dragging) then
+            return ISButton.onMouseUp(self, x, y)
+        end
+
         -- Vanilla dropItemsInContainer() validates self.mouseOverButton instead
         -- of the button that actually received mouse-up. A container refresh can
         -- clear that hover reference while an inventory drag is active, causing

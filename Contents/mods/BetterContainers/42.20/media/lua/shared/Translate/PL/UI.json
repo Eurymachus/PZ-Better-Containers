@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Uwzględnij zagnieżdżone pojemniki",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktywne, gdy włączone są zagnieżdżone pojemniki z łupami",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Pozwol zmieniac kolejnosc przyciskow pojemnikow",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Po wlaczeniu umozliwia zmiane kolejnosci przyciskow pojemnikow ekwipunku, w tym przyciskow gracza.",

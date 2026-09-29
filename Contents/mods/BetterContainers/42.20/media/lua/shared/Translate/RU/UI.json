@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Включать вложенные контейнеры",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Активно, когда включены вложенные контейнеры добычи",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Разрешить менять порядок кнопок контейнеров",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Если включено, позволит менять порядок кнопок контейнеров в инвентаре, включая кнопки игрока",

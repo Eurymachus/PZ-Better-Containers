@@ -6,8 +6,9 @@ local Categorize = require("BetterContainers/Categorize")
 local Upgrades = require("BetterContainers/Upgrades")
 
 Reorder.install()
-Proximity.install()
 Nested.install()
+-- Discover BC nested buttons before proximity aggregates their contents.
+Proximity.install()
 Customize.install()
 Categorize.install()
 Upgrades.install()

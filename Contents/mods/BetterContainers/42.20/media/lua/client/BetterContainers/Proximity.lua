@@ -298,6 +298,28 @@ function Proximity.DoRightClickMenu(self, x, y)
     end
 end
 
+-- Only BC-created buttons are optional. Vanilla vehicle bag buttons stay included.
+function Proximity.getAggregateSource(invSelf, inventory, playerObj)
+    local parents = invSelf.bcNestedParents or {}
+    if parents[inventory] and not (Options.proximityIncludeNestedContainers == true
+        and Options.enableNestedContainers_Loot == true) then
+        return nil
+    end
+
+    local source = inventory
+    local visited = {}
+    while source do
+        if visited[source] or Proximity.isLockedForPlayer(source, playerObj) then
+            return nil
+        end
+        visited[source] = true
+        local parent = parents[source]
+        if not parent then return source end
+        source = parent
+    end
+    return nil
+end
+
 function Proximity.OnButtonsAdded(invSelf)
     local refreshGeneration = invSelf.bcProximityRefreshGeneration
     local eff = Options.getEffectivePermissions() or {}
@@ -396,24 +418,28 @@ function Proximity.OnButtonsAdded(invSelf)
         corpseInvButtonRef.onRightMouseDown = consumeRightClick
     end
 
+    local aggregated = {}
     for i = 1, #invSelf.backpacks do
         local btn = invSelf.backpacks[i]
         local invToAdd = btn and btn.inventory
-        if invToAdd and not Proximity.isLockedForPlayer(invToAdd, playerObj) then
+        local source = invToAdd and Proximity.getAggregateSource(invSelf, invToAdd, playerObj)
+        if source and not aggregated[invToAdd] then
+            aggregated[invToAdd] = true
             local invType = invToAdd:getType()
+            local isCorpse = Proximity.isHumanContainer(source:getType())
 
             if invType ~= Proximity.invName and invType ~= Proximity.invName_corpses then
                 local items = invToAdd:getItems()
 
                 if corpseOnly then
-                    if corpseInvButtonRef and Proximity.isHumanContainer(invType) then
+                    if corpseInvButtonRef and isCorpse then
                         corpseInvButtonRef.inventory:getItems():addAll(items)
                     end
                 else
                     if proximityInvButtonRef then
                         proximityInvButtonRef.inventory:getItems():addAll(items)
                     end
-                    if corpseInvButtonRef and Proximity.isHumanContainer(invType) then
+                    if corpseInvButtonRef and isCorpse then
                         corpseInvButtonRef.inventory:getItems():addAll(items)
                     end
                 end

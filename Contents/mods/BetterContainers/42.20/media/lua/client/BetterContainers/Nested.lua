@@ -354,6 +354,7 @@ local function scanInventory(inventoryPage, inventory, depth, visited, existingB
             if not visited[itemInventory] then
                 if not (existingButtons and existingButtons[itemInventory]) then
                     addNestedButton(inventoryPage, item, inventory)
+                    inventoryPage.bcNestedParents[itemInventory] = inventory
                 end
                 scanInventory(inventoryPage, itemInventory, depth + 1, visited, existingButtons)
             end
@@ -405,6 +406,7 @@ end
 
 function Nested.OnButtonsAdded(inventoryPage)
     if not inventoryPage or not inventoryPage.backpacks then return end
+    inventoryPage.bcNestedParents = {}
 
     local visited = {}
     local existingButtons = {}

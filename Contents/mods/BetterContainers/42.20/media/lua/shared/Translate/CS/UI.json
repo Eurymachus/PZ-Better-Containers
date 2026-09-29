@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Zahrnout vnořené kontejnery",
+    "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Aktivní, když jsou povoleny vnořené kontejnery kořisti",
     "UI_BetterContainers_Options_Title" : "Better Containers",
     "UI_BetterContainers_Options_allowReorderingContainers" : "Povolit zmenu poradi tlacitek kontejneru",
     "UI_BetterContainers_Options_allowReorderingContainers_Tooltip" : "Po zapnuti umozni menit poradi tlacitek inventarnich kontejneru, vcetne tlacitek hrace.",
