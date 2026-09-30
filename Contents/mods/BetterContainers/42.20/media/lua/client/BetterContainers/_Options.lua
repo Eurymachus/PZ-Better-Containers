@@ -48,6 +48,7 @@ local Options = {
     showEquippedAttachedSection = false,
     preserveInventoryWindowsAfterPause = true,
     showFoodFreshnessBar = true,
+    showWeightColumn = false,
     showFoodFreshnessPercentage = true,
 }
 
@@ -95,6 +96,7 @@ local config = {
     showEquippedAttachedSection = nil,
     preserveInventoryWindowsAfterPause = nil,
     showFoodFreshnessBar = nil,
+    showWeightColumn = nil,
     showFoodFreshnessPercentage = nil,
 }
 
@@ -216,6 +218,7 @@ local function applyOptions()
     Options.showEquippedAttachedSection = opts:getOption("showEquippedAttachedSection"):getValue()
     Options.preserveInventoryWindowsAfterPause = opts:getOption("preserveInventoryWindowsAfterPause"):getValue()
     Options.showFoodFreshnessBar = opts:getOption("showFoodFreshnessBar"):getValue()
+    Options.showWeightColumn = opts:getOption("showWeightColumn"):getValue()
     Options.showFoodFreshnessPercentage = opts:getOption("showFoodFreshnessPercentage"):getValue()
 
     triggerEvent(Helpers.OPTIONS_APPLIED)
@@ -567,6 +570,14 @@ local function initConfig()
         Options.preserveInventoryWindowsAfterPause,
         getTextOrNull("UI_BetterContainers_Options_preserveInventoryWindowsAfterPause_Tooltip")
             or "When enabled, inventory windows that were open before entering the pause menu are restored after returning to the game."
+    )
+
+    config.showWeightColumn = panel:addTickBox(
+        "showWeightColumn",
+        getTextOrNull("UI_BetterContainers_Options_showWeightColumn") or "Show Weight Column",
+        Options.showWeightColumn,
+        getTextOrNull("UI_BetterContainers_Options_showWeightColumn_Tooltip")
+            or "Show stack and individual weights in inventory lists. Click the weight header to change sort direction."
     )
 
     config.showFoodFreshnessBar = panel:addTickBox(

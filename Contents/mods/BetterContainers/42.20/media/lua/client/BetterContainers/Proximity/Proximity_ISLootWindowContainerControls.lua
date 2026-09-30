@@ -1,5 +1,6 @@
 local Helpers = require("BetterContainers/Helpers")
 local Proximity = require("BetterContainers/Proximity")
+local BlacklistCompat = require("BetterContainers/Proximity/BlacklistCompat")
 
 local ProximityLootWindowContainerControls = {}
 
@@ -67,6 +68,41 @@ function ProximityLootWindowContainerControls.install()
 
     if not Helpers.isCleanUIActive() then
         require "ISUI/LootWindow/ISLootWindowContainerControls"
+
+        local MoveToFloor = ISLootWindowObjectControlHandler_MoveToFloor:derive("BCProximityMoveToFloor")
+
+        local function canMoveItemToFloor(item, handler)
+            local source = item:getContainer()
+            return source and source:getType() ~= "floor" and not item:isFavorite()
+                and not (instanceof(item, "Moveable") and not item:CanBeDroppedOnFloor())
+                and not BlacklistCompat.isHidden(item, handler.container, handler.playerObj or getSpecificPlayer(handler.playerNum))
+        end
+
+        function MoveToFloor:shouldBeVisible()
+            local kind = self.container and self.container:getType()
+            if kind ~= Proximity.invName and kind ~= Proximity.invName_corpses then return false end
+            local items = self.container:getItems()
+            for i = 0, items:size() - 1 do
+                if canMoveItemToFloor(items:get(i), self) then return true end
+            end
+            return false
+        end
+
+        function MoveToFloor:perform()
+            if isGamePaused() or not self:shouldBeVisible() then return end
+            local items, seen = {}, {}
+            local sourceItems = self.container:getItems()
+            for i = 0, sourceItems:size() - 1 do
+                local item = sourceItems:get(i)
+                if not seen[item] and canMoveItemToFloor(item, self) then
+                    seen[item] = true
+                    items[#items + 1] = item
+                end
+            end
+            ISInventoryPaneContextMenu.onMoveItemsTo(items, ISInventoryPage.GetFloorContainer(self.playerNum), self.playerNum)
+        end
+
+        ISLootWindowContainerControls.AddFloorHandler(MoveToFloor)
 
         if ISLootWindowContainerControls
             and not ISLootWindowContainerControls.__proximityInvFloorHandlers

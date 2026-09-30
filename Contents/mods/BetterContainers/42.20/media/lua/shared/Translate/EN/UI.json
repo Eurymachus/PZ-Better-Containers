@@ -1,4 +1,6 @@
 {
+    "UI_BetterContainers_Options_showWeightColumn" : "Show Weight Column",
+    "UI_BetterContainers_Options_showWeightColumn_Tooltip" : "Show stack and individual weights in inventory lists. Click the weight header to change sort direction.",
     "UI_BetterContainers_Options_proximityIncludeNestedContainers" : "Include Nested Containers",
     "UI_BetterContainers_Options_proximityIncludeNestedContainers_tooltip" : "Active when Loot Nested Containers is enabled",
     "UI_BetterContainers_Options_Title" : "Better Containers",
