@@ -611,12 +611,34 @@ Events.OnMainMenuEnter.Add(function() applyOptions() end)
 
 local function refreshBackpacks()
     ISInventoryPage.dirtyUI()
+
+    for playerNum = 0, getNumActivePlayers() - 1 do
+        local inventoryPage = getPlayerInventory(playerNum)
+        if inventoryPage and inventoryPage.inventoryPane then
+            inventoryPage.inventoryPane:refreshContainer()
+        end
+
+        local lootPage = getPlayerLoot(playerNum)
+        if lootPage and lootPage.inventoryPane then
+            lootPage.inventoryPane:refreshContainer()
+        end
+    end
 end
 
 Events[Helpers.OPTIONS_APPLIED].Add(refreshBackpacks)
-Events.OnGameStart.Add(
-    updateOptions
-)
+
+local function applyStartupOptions()
+    Events.OnTick.Remove(applyStartupOptions)
+    applyOptions()
+    updateOptions()
+end
+
+Events.OnGameStart.Add(function()
+    -- Vanilla loads saved mod options while building its in-game menu on game start.
+    -- Wait until all game-start handlers finish before copying values and refreshing panes.
+    Events.OnTick.Remove(applyStartupOptions)
+    Events.OnTick.Add(applyStartupOptions)
+end)
 
 function Options.OnToggle()
     if config.enableProximity and config.enableProximity.setValue then

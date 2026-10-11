@@ -26,6 +26,12 @@ Events[EURY_CONTAINERS.OPTIONS_APPLIED].Add(function()
     ISInventoryPage.renderDirty = true
 end)
 
+-- Virtualized vehicle parts still exist, but no longer expose a BaseVehicle.
+function EURY_CONTAINERS.isStaleVehicleContainer(container)
+    local part = container and container:getVehiclePart()
+    return part ~= nil and part:getVehicle() == nil
+end
+
 local _ACTIVE_MOD_CACHE = {}
 
 local function _normalizeModId(id)

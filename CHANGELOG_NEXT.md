@@ -1,5 +1,7 @@
 # Next Workshop Upload
 
+- Guarded stale vehicle containers during inventory updates, seat labels, and nested transfers to prevent null-vehicle errors after vehicles unload.
+
 - Fixed the first nearby container appearing empty on login when a nested inventory refresh reused its button.
 - Fixed cutting all text from an inventory search bar leaving the old search filter active.
 - Fixed Smithing magazines being categorized as skill books instead of magazines.

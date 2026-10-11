@@ -70,11 +70,20 @@ Reorder_ISInventoryPage.install = function()
 
     local _old_update = ISInventoryPage.update
     ISInventoryPage.update = function(self)
+        local playerObj = getSpecificPlayer(self.player)
+        if Helpers.isStaleVehicleContainer(self.inventory)
+            or Helpers.isStaleVehicleContainer(self.inventoryPane.inventory) then
+            -- Drop the stale selection before refresh or vanilla can query its capacity.
+            self.inventoryPane.selected = {}
+            self:setNewContainer(playerObj:getInventory())
+            self:refreshBackpacks()
+        end
+
         if Helpers.isCleanUIActive() then return _old_update(self) end
 
-        local playerObj = getSpecificPlayer(self.player)
-        if self.inventory:getEffectiveCapacity(playerObj) ~= self.capacity then
-            self.capacity = self.inventory:getEffectiveCapacity(playerObj)
+        local capacity = self.inventory:getEffectiveCapacity(playerObj)
+        if capacity ~= self.capacity then
+            self.capacity = capacity
         end
 
         self:updateContainerHighlight()

@@ -197,7 +197,9 @@ local function _prerenderLeft(self, oldPrerender)
             end
         end
 
-        if self.inventoryPane.inventory and self.inventoryPane.inventory:isOccupiedVehicleSeat() then
+        if self.inventoryPane.inventory
+            and not Helpers.isStaleVehicleContainer(self.inventoryPane.inventory)
+            and self.inventoryPane.inventory:isOccupiedVehicleSeat() then
             text = text .. " " .. getText("IGUI_invpage_Occupied")
         end
 

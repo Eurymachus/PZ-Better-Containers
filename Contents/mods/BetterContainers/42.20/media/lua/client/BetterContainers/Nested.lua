@@ -2,6 +2,8 @@ local Options = require("BetterContainers/_Options")
 local Proximity = require("BetterContainers/Proximity")
 local IniWriter = require("BetterContainers/_IO/IniWriter")
 
+local Helpers = require("BetterContainers/Helpers")
+
 local Nested = {}
 
 Nested._installed = false
@@ -386,6 +388,9 @@ local function nestedAncestorsHaveRoom(character, item, source, destination)
 
     while ancestor and not visited[ancestor] do
         visited[ancestor] = true
+
+        -- A virtualized vehicle cannot receive transfers through a stale container.
+        if Helpers.isStaleVehicleContainer(ancestor) then return false end
 
         -- Moving an item within the same ancestor does not increase that
         -- ancestor's total weight, so only check genuinely incoming weight.
