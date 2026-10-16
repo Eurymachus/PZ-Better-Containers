@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Kozelsegi leltar engedelyezese",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Engedelyezi a kozelsegi leltar rendszert ezen a szerveren.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Csak holttest mod kenyszeritese",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "A kozelsegi leltart csak holttestekre kenyszeriti. A jatekosok nem valthatnak modot.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Jatekosoknak engedelyezett a kozelseg kapcsolasa",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Lehetove teszi a jatekosoknak, hogy billentyuvel vagy a mod beallitasain keresztul be- vagy kikapcsoljak a kozelsegi leltart.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Jatekosoknak engedelyezett a modvaltas",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Lehetove teszi a jatekosoknak, hogy az osszes tarolo mod es a csak holttest mod kozott valtsanak.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Automatikus zarolas engedelyezese",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Bekapcsolja az automatikus zarolast. Aktiv allapotban a kozelsegi leltar visszaugrik a kivalasztott tarolora, hacsak azt szandekosan nem valtoztatjak meg.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Jatekosoknak engedelyezett az automatikus zarolas kapcsolasa",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Lehetove teszi a jatekosoknak, hogy a mod beallitasain keresztul be- vagy kikapcsoljak az automatikus zarolast."
+}

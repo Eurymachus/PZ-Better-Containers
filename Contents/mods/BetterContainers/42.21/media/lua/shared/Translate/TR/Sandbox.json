@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Yakinlik envanterini etkinlestir",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Bu sunucu icin yakinlik envanteri sistemini etkinlestirir.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Sadece ceset modunu zorla",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Yakinlik envanterini sadece cesetlerle calismaya zorlar. Oyuncular mod degistiremez.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Oyuncularin yakinligi acip kapatmasina izin ver",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Oyuncularin tus atamasi veya mod secenekleriyle yakinlik envanterini acip kapatmasina izin verir.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Oyuncularin mod degistirmesine izin ver",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Oyuncularin tum konteynerler modu ile sadece ceset modu arasinda gecis yapmasina izin verir.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Otomatik kilidi etkinlestir",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Otomatik kilit ozelligini etkinlestirir. Etkin oldugunda, yakinlik envanteri kasitli olarak degistirilmedigi surece secilen konteynere geri doner.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Oyuncularin otomatik kilidi acip kapatmasina izin ver",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Oyuncularin mod secenekleriyle otomatik kilidi acip kapatmasina izin verir."
+}

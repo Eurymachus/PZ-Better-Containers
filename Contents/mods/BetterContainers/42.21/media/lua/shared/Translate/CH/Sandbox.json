@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "啟用附近物品欄",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "為此伺服器啟用附近物品欄系統。",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "強制僅屍體模式",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "強制附近物品欄只對屍體運作，玩家不能切換模式。",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "允許玩家切換附近物品欄",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "允許玩家透過按鍵或模組選項啟用或停用附近物品欄。",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "允許玩家切換模式",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "允許玩家在全部容器模式與僅屍體模式間切換。",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "啟用自動鎖定",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "啟用自動鎖定功能。啟用後，附近物品欄會回到已選容器，除非玩家刻意更改。",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "允許玩家切換自動鎖定",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "允許玩家透過模組選項啟用或停用自動鎖定。"
+}

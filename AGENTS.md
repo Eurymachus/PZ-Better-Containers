@@ -7,8 +7,8 @@ This workspace is the source for Better Containers for Project Zomboid.
 - Mod workspace: `E:\LocalProfiles\Eurymachus\GameData\Zomboid\Workshop\Better Containers`
 - Primary editable mod content lives under `Contents/`.
 - Mod versions currently live under `Contents/mods/BetterContainers/`.
-- Current and only working mod version: `Contents/mods/BetterContainers/42.20/`.
-- Make implementation changes only in `42.20/`. Treat all earlier version folders as read-only historical references unless the user explicitly requests otherwise.
+- Current and only working mod version: `Contents/mods/BetterContainers/42.21/`.
+- Make implementation changes only in `42.21/`. Treat all earlier version folders as read-only historical references unless the user explicitly requests otherwise.
 - Treat this workspace as the normal place to make changes.
 
 ## Reference Paths

@@ -1,0 +1,49 @@
+VERSION = 1,
+
+option BetterContainers.ProximityEnabled
+{
+    type = boolean,
+    default = true,
+    page = BetterContainers,
+    translation = BetterContainers_ProximityEnabled,
+}
+
+option BetterContainers.ForceCorpseOnly
+{
+    type = boolean,
+    default = false,
+    page = BetterContainers,
+    translation = BetterContainers_ForceCorpseOnly,
+}
+
+option BetterContainers.AllowToggleProximity
+{
+    type = boolean,
+    default = true,
+    page = BetterContainers,
+    translation = BetterContainers_AllowToggleProximity,
+}
+
+option BetterContainers.AllowSwitchMode
+{
+    type = boolean,
+    default = true,
+    page = BetterContainers,
+    translation = BetterContainers_AllowSwitchMode,
+}
+
+option BetterContainers.AutoLockEnabled
+{
+    type = boolean,
+    default = true,
+    page = BetterContainers,
+    translation = BetterContainers_AutoLockEnabled,
+}
+
+option BetterContainers.AllowToggleAutoLock
+{
+    type = boolean,
+    default = true,
+    page = BetterContainers,
+    translation = BetterContainers_AllowToggleAutoLock,
+}

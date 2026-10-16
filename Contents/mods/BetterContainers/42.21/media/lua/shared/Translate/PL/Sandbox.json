@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Wlacz ekwipunek bliskosci",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Wlacza system ekwipunku bliskosci na tym serwerze.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Wymus tylko zwloki",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Zmusi ekwipunek bliskosci do dzialania tylko dla zwlok. Gracze nie beda mogli zmieniac trybu.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Pozwol graczom przelaczac bliskosc",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Pozwala graczom wlaczac lub wylaczac ekwipunek bliskosci za pomoca klawisza lub opcji moda.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Pozwol graczom przelaczac tryb",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Pozwala graczom przelaczac sie miedzy trybem wszystkich pojemnikow a trybem tylko zwloki.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Wlacz automatyczna blokade",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Wlacza funkcje automatycznej blokady. Gdy jest aktywna, ekwipunek bliskosci wraca do wybranego pojemnika, chyba ze zostal celowo zmieniony.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Pozwol graczom przelaczac automatyczna blokade",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Pozwala graczom wlaczac lub wylaczac automatyczna blokade w opcjach moda."
+}

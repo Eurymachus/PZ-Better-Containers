@@ -1,0 +1,15 @@
+{
+    "Sandbox_BetterContainers" : "Better Containers",
+    "Sandbox_BetterContainers_ProximityEnabled" : "Ota laheisyysinventaario kayttoon",
+    "Sandbox_BetterContainers_ProximityEnabled_tooltip" : "Ottaa laheisyysinventaariojarjestelman kayttoon talla palvelimella.",
+    "Sandbox_BetterContainers_ForceCorpseOnly" : "Pakota vain ruumiit -tila",
+    "Sandbox_BetterContainers_ForceCorpseOnly_tooltip" : "Pakottaa laheisyysinventaarion toimimaan vain ruumiiden kanssa. Pelaajat eivat voi vaihtaa tilaa.",
+    "Sandbox_BetterContainers_AllowToggleProximity" : "Salli pelaajien vaihtaa laheisyys",
+    "Sandbox_BetterContainers_AllowToggleProximity_tooltip" : "Sallii pelaajien ottaa laheisyysinventaarion kayttoon tai pois kaytosta pikanappaimella tai modin asetuksista.",
+    "Sandbox_BetterContainers_AllowSwitchMode" : "Salli pelaajien vaihtaa tilaa",
+    "Sandbox_BetterContainers_AllowSwitchMode_tooltip" : "Sallii pelaajien vaihtaa kaikkien sailioiden tilan ja vain ruumiit -tilan valilla.",
+    "Sandbox_BetterContainers_AutoLockEnabled" : "Ota automaattinen lukitus kayttoon",
+    "Sandbox_BetterContainers_AutoLockEnabled_tooltip" : "Ottaa automaattisen lukituksen kayttoon. Kun se on aktiivinen, laheisyysinventaario palautuu valittuun sailioon, ellei sita muuteta tarkoituksella.",
+    "Sandbox_BetterContainers_AllowToggleAutoLock" : "Salli pelaajien vaihtaa automaattinen lukitus",
+    "Sandbox_BetterContainers_AllowToggleAutoLock_tooltip" : "Sallii pelaajien ottaa automaattisen lukituksen kayttoon tai pois kaytosta modin asetuksista."
+}
