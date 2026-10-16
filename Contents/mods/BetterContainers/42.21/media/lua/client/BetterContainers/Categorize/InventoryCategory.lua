@@ -38,4 +38,9 @@ function InventoryCategory.get(itemOrFullType)
     return nil
 end
 
+function InventoryCategory.getDisplayName(categoryID)
+    if not categoryID or categoryID == "" then return "" end
+    return CategoryStore.getCategoryDisplayName(categoryID)
+end
+
 return InventoryCategory

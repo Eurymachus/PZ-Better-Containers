@@ -113,7 +113,7 @@ local function _buildItemGroups(groupsByKey, q1, q2)
 
                             local displayCatText = nil
                             if displayCat and displayCat ~= "" then
-                                displayCatText = getTextOrNull("IGUI_ItemCat_" .. displayCat) or displayCat
+                                displayCatText = InventoryCategory.getDisplayName(displayCat)
                             end
 
                             group = {
@@ -160,7 +160,7 @@ local function _buildItemGroups(groupsByKey, q1, q2)
                             else
                                 local displayCatText = nil
                                 if group.displayCategory and group.displayCategory ~= "" then
-                                    displayCatText = getTextOrNull("IGUI_ItemCat_" .. group.displayCategory) or group.displayCategory
+                                    displayCatText = InventoryCategory.getDisplayName(group.displayCategory)
                                 end
                                 local child = {
                                     kind = "child",

@@ -364,9 +364,9 @@ function ISInventoryPane:renderdetails(doDragged)
 						if doDragged then
 							-- Don't draw the category when dragging
 						elseif v.cat then
-							self:drawText(getText("IGUI_ItemCat_" .. v.cat), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
+							self:drawText(InventoryCategory.getDisplayName(v.cat), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
                         else
-                            self:drawText(getText("IGUI_ItemCat_" .. item:getCategory()), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
+                            self:drawText(InventoryCategory.getDisplayName(item:getCategory()), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
                         end
                     else
                         local redDetail = false;

@@ -182,7 +182,11 @@ end
 function Store.getCategoryDisplayName(categoryID)
     local customName = Store.getCustomDisplayName(categoryID)
     if customName then return customName end
-    return getTextOrNull("IGUI_ItemCat_" .. tostring(categoryID)) or tostring(categoryID)
+    local category = tostring(categoryID)
+    local key = "IGUI_ItemCat_" .. category
+    local translated = getTextOrNull(key)
+    if not translated or translated == key then return category end
+    return translated
 end
 
 function Store.injectCustomTranslations()

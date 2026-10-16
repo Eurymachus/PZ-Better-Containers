@@ -288,7 +288,7 @@ local function _stackMatchesQuery(pane, stack, query)
     local rawCat = _normalizeSearch(stack.cat or InventoryCategory.get(item))
 
     local catKey = InventoryCategory.get(item)
-    local locCat = catKey and getTextOrNull("IGUI_ItemCat_" .. catKey) or nil
+    local locCat = catKey and InventoryCategory.getDisplayName(catKey) or nil
     locCat = _normalizeSearch(locCat or catKey)
 
     return _tokenPrefixMatch(name, query)

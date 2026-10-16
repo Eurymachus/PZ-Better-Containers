@@ -288,7 +288,7 @@ local function findSectionHeaderDrawTargets(pane)
             local item = stack.items[1]
             local category = item and InventoryCategory.get(item) or ""
             return getHeaderDisplayName(stack, playerObj),
-                getTextOrNull("IGUI_ItemCat_" .. category) or category,
+                InventoryCategory.getDisplayName(category),
                 item,
                 stack
         end
