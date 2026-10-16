@@ -4,23 +4,47 @@ require("ISUI/ISInventoryPane")
 -- The only rendering change is that category labels use the transient row.cat
 -- populated by Better Containers instead of InventoryItem.DisplayCategory.
 local InventoryCategory = require("BetterContainers/Categorize/InventoryCategory")
-local vanillaRefreshContainer = ISInventoryPane.refreshContainer
+local Helpers = require("BetterContainers/Helpers")
+
+local function installRowCategoryDecorator(paneClass)
+    if not paneClass or paneClass._bcInventoryCategoryRows then return end
+    if type(paneClass.refreshContainer) ~= "function" then return end
+
+    paneClass._bcInventoryCategoryRows = true
+    local hostRefreshContainer = paneClass.refreshContainer
+
+    function paneClass:refreshContainer(...)
+        hostRefreshContainer(self, ...)
+
+        if self.itemslist then
+            for _, row in ipairs(self.itemslist) do
+                local item = row and row.items and row.items[1] or nil
+                if item then
+                    row.cat = InventoryCategory.get(item) or row.cat
+                end
+            end
+
+            table.sort(self.itemslist, self.itemSortFunc)
+        end
+    end
+end
+
+local function decorateKnownPaneClasses()
+    installRowCategoryDecorator(ISInventoryPane)
+    installRowCategoryDecorator(rawget(_G, "CleanUI_Clean_ISInventoryPane"))
+    installRowCategoryDecorator(rawget(_G, "CleanUI_Vanilla_ISInventoryPane"))
+end
+
+decorateKnownPaneClasses()
+Events.OnGameStart.Add(decorateKnownPaneClasses)
+
+-- CleanUI owns its inventory renderer. It can display Better Containers'
+-- presentation category by rendering row.cat, which is populated above.
+if Helpers.isCleanUIActive() then return true end
+
 local favoriteRecipeInputStarSize = 16
 local normalTextColor = { r = 0.7, g = 0.7, b = 0.7, a = 1.0 }
 local unwantedTextColor = { r = 0.5, g = 0.5, b = 0.5, a = 0.65 }
-
-function ISInventoryPane:refreshContainer(...)
-    vanillaRefreshContainer(self, ...)
-
-    for _, row in ipairs(self.itemslist or {}) do
-        local item = row and row.items and row.items[1] or nil
-        if item then
-            row.cat = InventoryCategory.get(item) or row.cat
-        end
-    end
-
-    table.sort(self.itemslist, self.itemSortFunc)
-end
 
 function ISInventoryPane:renderdetails(doDragged)
     self:updateScrollbars();
