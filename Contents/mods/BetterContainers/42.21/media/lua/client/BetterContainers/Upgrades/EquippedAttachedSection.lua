@@ -409,7 +409,7 @@ local function getHeaderPreviewItems(sectionItems, fallbackItem)
 end
 
 local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
-    local headerText, categoryText, headerItem, sectionStack = findSectionHeaderDrawTargets(pane)
+    local headerText, _, headerItem, sectionStack = findSectionHeaderDrawTargets(pane)
     if not headerText then
         return oldRenderDetails(pane, doDragged)
     end
@@ -447,7 +447,7 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
             replacedHeader = true
             text = label
         elseif replacedHeader and not replacedCategory and isSectionRowY(y)
-                and text == categoryText and x >= self.column3 then
+                and x >= self.column3 then
             replacedCategory = true
             text = ""
         end
