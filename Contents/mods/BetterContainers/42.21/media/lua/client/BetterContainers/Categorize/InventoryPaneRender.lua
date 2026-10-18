@@ -6,27 +6,55 @@ require("ISUI/ISInventoryPane")
 local InventoryCategory = require("BetterContainers/Categorize/InventoryCategory")
 local Helpers = require("BetterContainers/Helpers")
 
-local function installRowCategoryDecorator(paneClass)
-    if not paneClass or paneClass._bcInventoryCategoryRows then return end
-    if type(paneClass.refreshContainer) ~= "function" then return end
+local rowCategoryWrappers = {}
+local refreshingPanes = {}
 
-    paneClass._bcInventoryCategoryRows = true
-    local hostRefreshContainer = paneClass.refreshContainer
-
-    function paneClass:refreshContainer(...)
-        hostRefreshContainer(self, ...)
-
-        if self.itemslist then
-            for _, row in ipairs(self.itemslist) do
-                local item = row and row.items and row.items[1] or nil
-                if item then
-                    row.cat = InventoryCategory.get(item) or row.cat
-                end
+local function finishRowCategoryRefresh(self, ok, ...)
+    refreshingPanes[self] = nil
+    if not ok then error((...), 0) end
+    if self.itemslist then
+        for _, row in ipairs(self.itemslist) do
+            local item = row and row.items and row.items[1] or nil
+            if item then
+                row.cat = InventoryCategory.get(item) or row.cat
             end
+        end
 
-            table.sort(self.itemslist, self.itemSortFunc)
+        local sortFunc = self.itemSortFunc
+        local hasCleanUISearch = Helpers.isCleanUIActive()
+            and ((self.searchText and self.searchText ~= "")
+                or (self.searchCategoryText and self.searchCategoryText ~= ""))
+        if hasCleanUISearch then
+            -- CleanUI computes matchesSearch during refresh. Keep that priority
+            -- while sorting each group using the updated presentation categories.
+            table.sort(self.itemslist, function(a, b)
+                local aMatches = a.matchesSearch == true
+                local bMatches = b.matchesSearch == true
+                if aMatches ~= bMatches then return aMatches end
+                return sortFunc(a, b)
+            end)
+        else
+            table.sort(self.itemslist, sortFunc)
         end
     end
+    return ...
+end
+
+local function installRowCategoryDecorator(paneClass)
+    if not paneClass then return end
+    local hostRefreshContainer = paneClass.refreshContainer
+    if type(hostRefreshContainer) ~= "function" or rowCategoryWrappers[hostRefreshContainer] then return end
+
+    local function refreshContainer(self, ...)
+        -- A later mod may wrap an older copy of our wrapper. Only the outermost
+        -- invocation decorates rows, after the entire host refresh has finished.
+        if refreshingPanes[self] then return hostRefreshContainer(self, ...) end
+        refreshingPanes[self] = true
+        return finishRowCategoryRefresh(self, pcall(hostRefreshContainer, self, ...))
+    end
+
+    rowCategoryWrappers[refreshContainer] = true
+    paneClass.refreshContainer = refreshContainer
 end
 
 local function decorateKnownPaneClasses()
@@ -38,8 +66,16 @@ end
 decorateKnownPaneClasses()
 Events.OnGameStart.Add(decorateKnownPaneClasses)
 
--- CleanUI owns its inventory renderer. It can display Better Containers'
--- presentation category by rendering row.cat, which is populated above.
+-- CleanUI loads its alternate class and switches globals after startup. Check
+-- function identity so replacements are repaired on the next tick, including
+-- wrappers installed by later OnGameStart handlers. Unchanged classes are cheap.
+if Helpers.isCleanUIActive() then
+    Events.OnTick.Add(decorateKnownPaneClasses)
+end
+
+-- CleanUI owns its inventory renderer. Its current renderer reads the item's
+-- original category, so custom labels require upstream support for row.cat
+-- and InventoryCategory.getDisplayName(). The decorator only changes row data.
 if Helpers.isCleanUIActive() then return true end
 
 local favoriteRecipeInputStarSize = 16
