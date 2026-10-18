@@ -285,7 +285,7 @@ local function _stackMatchesQuery(pane, stack, query)
     end
 
     local name = _normalizeSearch(item:getName(playerObj))
-    local rawCat = _normalizeSearch(stack.cat or InventoryCategory.get(item))
+    local rawCat = _normalizeSearch(InventoryCategory.get(item))
 
     local catKey = InventoryCategory.get(item)
     local locCat = catKey and InventoryCategory.getDisplayName(catKey) or nil

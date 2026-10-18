@@ -10,6 +10,7 @@ end
 
 local OPTS = require("BetterContainers/_Options")
 local isEnabled = OPTS.showAdvancedDisplayCategories
+local categoriesInitialized = false
 
 local Categorize = {}
 
@@ -57,7 +58,10 @@ end
 local function loadCategories()
     dlog("showAdvancedDisplayCategories = " .. tostring(isEnabled))
     InventoryCategory.setEnabled(isEnabled)
-    if not isEnabled then return end
+    if not isEnabled then
+        categoriesInitialized = true
+        return
+    end
     local Categories = {}
 
     local function loadCategoryFile(path)
@@ -393,6 +397,25 @@ local function loadCategories()
 
     -- The inventory-category universe has changed; rebuild on next request.
     _BC_AllDisplayCategories = nil
+    categoriesInitialized = true
+end
+
+local function refreshCategoryPanes()
+    if ISInventoryPage and ISInventoryPage.dirtyUI then
+        ISInventoryPage.dirtyUI()
+    end
+    if not getNumActivePlayers then return end
+    for playerNum = 0, getNumActivePlayers() - 1 do
+        local function refreshPage(page)
+            local pane = page and page.inventoryPane
+            if not (pane and pane.inventory and pane.refreshContainer) then return end
+            -- Use the complete refresh chain so pinning, filters and equipped
+            -- sections retain their ordering. Proximity uses the live loot pane.
+            pane:refreshContainer()
+        end
+        refreshPage(getPlayerInventory and getPlayerInventory(playerNum))
+        refreshPage(getPlayerLoot and getPlayerLoot(playerNum))
+    end
 end
 
 local function recategorizeAllLoadedItemsNow(load)
@@ -402,17 +425,18 @@ local function recategorizeAllLoadedItemsNow(load)
     else
         CategoryStore.setDefaults({})
         _BC_AllDisplayCategories = nil
+        categoriesInitialized = true
     end
 
-    if ISInventoryPage and ISInventoryPage.dirtyUI then
-        ISInventoryPage.dirtyUI()
-    end
+    refreshCategoryPanes()
 end
 
 local categoryBlacklist = OPTS.categoryBlacklist
 
 local function updateCategories()
-    if isEnabled ~= OPTS.showAdvancedDisplayCategories or categoryBlacklist ~= OPTS.categoryBlacklist then
+    -- A session may load this module after the main-menu event. Matching saved
+    -- options must still initialize the resolver, which starts disabled.
+    if not categoriesInitialized or isEnabled ~= OPTS.showAdvancedDisplayCategories or categoryBlacklist ~= OPTS.categoryBlacklist then
         isEnabled = OPTS.showAdvancedDisplayCategories
         categoryBlacklist = OPTS.categoryBlacklist
         recategorizeAllLoadedItemsNow(isEnabled)
@@ -484,9 +508,7 @@ function Categorize.applySingleCategoryChange(fullType, flush)
     if _bcIsDisplayCategoryBlacklisted(scriptItem, blacklist) then return false end
 
     _BC_AllDisplayCategories = nil
-    if ISInventoryPage and ISInventoryPage.dirtyUI then
-        ISInventoryPage.dirtyUI()
-    end
+    refreshCategoryPanes()
     dlog("Updated inventory category for item type " .. fullType)
 
     if flush ~= false then CategoryStore.flush() end

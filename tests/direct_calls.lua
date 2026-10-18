@@ -177,6 +177,88 @@ for _, id in ipairs(categories) do if id == "UnmappedCategory" then found = true
 assert(found)
 require = previousRequire
 
+-- A game session can load the mod without firing OnMainMenuEnter afterward.
+-- Saved options equal to the defaults must still initialize the real resolver.
+local realCategory = loadInventoryCategory()
+modules["BetterContainers/Categorize/InventoryCategory"] = realCategory
+local session = loadCategorize()
+local radio = {getFullType = function() return "Base.WalkieTalkie4" end,
+    getDisplayCategory = function() return "Communications" end}
+local scriptRadio = {getDisplayCategory = radio.getDisplayCategory}
+ScriptManager = {instance = {getItem = function() return scriptRadio end}}
+require = function(name)
+    if categoryLoaders[name] then return categoryLoaders[name]() end
+    return previousRequire(name)
+end
+session.update()
+store.setOverride("Base.WalkieTalkie4", "ClothingFeet")
+assert(realCategory.get(radio) == "ClothingFeet", "unchanged startup options left category resolver disabled")
+-- All presentation consumers must ignore a category overwritten by a later mod.
+radio.getName = function() return "Tactical Walkie Talkie" end
+radio.getJobDelta = function() return 0 end
+local stale = {items = {radio, radio}, cat = "Communications", count = 2}
+assert(realCategory.getRow(stale) == "ClothingFeet")
+assert(BetterContainersInventoryCategory == realCategory, "optional API missing")
+local drawn
+loadCategoryDraw()(realCategory, {column3=0, itemHgt=20, headerHgt=0,
+    drawText=function(_, text) drawn=text end}, radio, stale)
+assert(drawn == realCategory.getDisplayName("ClothingFeet"), "renderer trusted overwritten cat")
+local search = loadSearchBar()
+assert(search.matches({player=0}, stale, "clothingfeet"), "search missed resolved category")
+assert(not search.matches({player=0}, stale, "communications"), "search used overwritten category")
+modules["BetterContainers/Categorize"] = {getAllDisplayCategories=function() return {"ClothingFeet", "Communications"} end}
+getCore = function() return {getDebug=function() return false end} end
+ISInventoryPane = {refreshContainer=function(self) self.itemslist={stale} end}
+local filters = loadCategoryFilters()
+local entries = filters.entries({itemslist={stale}}, false)
+assert(#entries == 1 and entries[1].key == "ClothingFeet" and entries[1].count == 1)
+filters.module.installInventoryPaneFilteringPatch()
+local filtered = setmetatable({_bcCategoryFilterApplied={map={ClothingFeet=true},count=1}, selected={}, itemHgt=20,
+    saveSelection=function() return {} end, restoreSelection=function() end,
+    setScrollHeight=function() end, setScrollWidth=function() end}, {__index=ISInventoryPane})
+filtered:refreshContainer()
+assert(#filtered.itemslist == 1, "filter rejected resolved category")
+filtered._bcCategoryFilterApplied.map = {Communications=true}
+filtered:refreshContainer()
+assert(#filtered.itemslist == 0, "filter accepted overwritten category")
+local refreshed = 0
+ISInventoryPage = {dirtyUI = function() refreshed = refreshed + 1 end}
+local playerRefreshes, lootRefreshes = 0, 0
+local playerPane = {inventory = {}, refreshContainer = function(self)
+    playerRefreshes = playerRefreshes + 1
+    self.itemslist = {{items = {radio}, cat = realCategory.get(radio)}}
+end}
+local lootPane = {inventory = {}, refreshContainer = function(self)
+    lootRefreshes = lootRefreshes + 1
+    self.itemslist = {{items = {radio}, cat = realCategory.get(radio)}}
+end}
+getNumActivePlayers = function() return 1 end
+getPlayerInventory = function() return {inventoryPane = playerPane} end
+getPlayerLoot = function() return {inventoryPane = lootPane} end
+assert(session.module.applySingleCategoryChange("Base.WalkieTalkie4", false))
+assert(refreshed == 1)
+assert(playerRefreshes == 1 and lootRefreshes == 1, "live panes were not refreshed")
+assert(playerPane.itemslist[1].cat == "ClothingFeet" and lootPane.itemslist[1].cat == "ClothingFeet")
+store.setOverride("Base.WalkieTalkie4", "ClothingLegs")
+session.module.applySingleCategoryChange("Base.WalkieTalkie4", false)
+assert(lootPane.itemslist[1].cat == "ClothingLegs", "loot row retained old assignment")
+store.resetOverride("Base.WalkieTalkie4")
+session.module.applySingleCategoryChange("Base.WalkieTalkie4", false)
+assert(lootPane.itemslist[1].cat == "Communications")
+assert(realCategory.get(radio) == "Communications")
+options.showAdvancedDisplayCategories = false
+session.update()
+store.setOverride("Base.WalkieTalkie4", "ClothingFeet")
+assert(realCategory.get(radio) == "Communications", "disabled option ignored")
+options.showAdvancedDisplayCategories = true
+session.update()
+assert(realCategory.get(radio) == "ClothingFeet", "re-enable lost assignment")
+require = previousRequire
+modules["BetterContainers/Categorize/InventoryCategory"] = category
+getNumActivePlayers = nil
+getPlayerInventory = nil
+getPlayerLoot = nil
+
 local nested = loadNested()
 nested._ignoredInventoryPredicates = {}
 local inventory = {getType = function() return "bag" end}

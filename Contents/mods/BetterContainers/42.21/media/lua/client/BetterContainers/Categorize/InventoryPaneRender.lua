@@ -1,12 +1,33 @@
 require("ISUI/ISInventoryPane")
 
 -- Full override copied from Build 42.20's ISInventoryPane:renderdetails().
--- The only rendering change is that category labels use the transient row.cat
--- populated by Better Containers instead of InventoryItem.DisplayCategory.
+-- Category labels resolve from the item at draw time; row.cat is only a
+-- compatibility value for other mods, never our presentation authority.
 local InventoryCategory = require("BetterContainers/Categorize/InventoryCategory")
 local Helpers = require("BetterContainers/Helpers")
 
 local rowCategoryWrappers = {}
+local categorySortWrappers = {}
+
+local function categoryView(row)
+    return setmetatable({cat = InventoryCategory.getRow(row)}, {__index = row})
+end
+
+local function installCategoryComparators(paneClass)
+    if not paneClass then return end
+    for _, name in ipairs({"itemSortByCatInc", "itemSortByCatDesc"}) do
+        local original = paneClass[name]
+        if type(original) == "function" and not categorySortWrappers[original] then
+            local wrapped = function(a, b)
+                -- Preserve the host's equipped/separator rules and tie breakers.
+                -- Views expose resolved categories without mutating shared rows.
+                return original(categoryView(a), categoryView(b))
+            end
+            categorySortWrappers[wrapped] = true
+            paneClass[name] = wrapped
+        end
+    end
+end
 
 local function finishRowCategoryRefresh(self, revision, ...)
     if (self._bcCategoryRefreshRevision or 0) ~= revision then return ... end
@@ -41,6 +62,7 @@ end
 
 local function installRowCategoryDecorator(paneClass)
     if not paneClass then return end
+    installCategoryComparators(paneClass)
     local hostRefreshContainer = paneClass.refreshContainer
     if type(hostRefreshContainer) ~= "function" or rowCategoryWrappers[hostRefreshContainer] then return end
 
@@ -75,8 +97,8 @@ if Helpers.isCleanUIActive() then
 end
 
 -- CleanUI owns its inventory renderer. Its current renderer reads the item's
--- original category, so custom labels require upstream support for row.cat
--- and InventoryCategory.getDisplayName(). The decorator only changes row data.
+-- original category, so custom labels require upstream use of our optional
+-- BetterContainersInventoryCategory.getItemDisplayName(item) API.
 if Helpers.isCleanUIActive() then return true end
 
 local favoriteRecipeInputStarSize = 16
@@ -424,10 +446,8 @@ function ISInventoryPane:renderdetails(doDragged)
                     if count == 1 then
 						if doDragged then
 							-- Don't draw the category when dragging
-						elseif v.cat then
-							self:drawText(InventoryCategory.getDisplayName(v.cat), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
-                        else
-                            self:drawText(InventoryCategory.getDisplayName(item:getCategory()), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
+						else
+							self:drawText(InventoryCategory.getItemDisplayName(item), self.column3+8+xoff, (y*self.itemHgt)+self.headerHgt+textDY+yoff, 0.6, 0.6, 0.8, 1.0, self.font);
                         end
                     else
                         local redDetail = false;

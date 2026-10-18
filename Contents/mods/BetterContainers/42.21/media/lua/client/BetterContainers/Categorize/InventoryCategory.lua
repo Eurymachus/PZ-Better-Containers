@@ -43,4 +43,18 @@ function InventoryCategory.getDisplayName(categoryID)
     return CategoryStore.getCategoryDisplayName(categoryID)
 end
 
+function InventoryCategory.getRow(row)
+    if not row then return nil end
+    if row._bcEquippedAttachedSeparator or row.type == "separator" then return row.cat end
+    local item = row.items and row.items[1]
+    return (item and InventoryCategory.get(item)) or row.cat
+end
+
+function InventoryCategory.getItemDisplayName(item)
+    return InventoryCategory.getDisplayName(InventoryCategory.get(item))
+end
+
+-- Optional integrations look this up when rendering, so either load order works.
+BetterContainersInventoryCategory = InventoryCategory
+
 return InventoryCategory

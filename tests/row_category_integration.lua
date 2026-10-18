@@ -5,6 +5,10 @@ local category = { get = function(item)
     categoryReads = categoryReads + 1
     return item.category
 end }
+category.getRow = function(row)
+    if row._bcEquippedAttachedSeparator or row.type == "separator" then return row.cat end
+    return row.items and category.get(row.items[1]) or row.cat
+end
 require = function(name)
     if name == "BetterContainers/Helpers" then return helpers end
     if name == "BetterContainers/Categorize/InventoryCategory" then return category end
@@ -183,7 +187,7 @@ for _, clean in ipairs({false, true}) do
                     local p = setmetatable({parent = {onCharacter = true},
                         inventoryPage = {onCharacter = true}, inventory = inventory,
                         player = 0, collapsed = {}, selected = {},
-                        itemSortFunc = sortKey == "name" and byName or sortKey == "category" and byCat or byWeight,
+                        itemSortFunc = sortKey == "name" and byName or sortKey == "category" and ISInventoryPane.itemSortByCatInc or byWeight,
                         saveSelection = function() return {} end,
                         restoreSelection = function() end, updateScrollbars = function() end},
                         {__index = ISInventoryPane})
@@ -221,3 +225,38 @@ for _, clean in ipairs({false, true}) do
     end
 end
 assert(scenarios == 48)
+
+-- A later filter may overwrite cat, retain rows, and sort again. Category
+-- comparisons must resolve the items without writing back into those rows.
+local aRow = makeStack(normal)
+local bRow = makeStack(pinned)
+aRow.cat = "AAA"
+bRow.cat = "ZZZ"
+assert(not ISInventoryPane.itemSortByCatInc(aRow, bRow), "stale row categories controlled sort")
+assert(ISInventoryPane.itemSortByCatInc(bRow, aRow))
+assert(aRow.cat == "AAA" and bRow.cat == "ZZZ", "comparison mutated shared rows")
+
+for _, clean in ipairs({false, true}) do
+    active = clean
+    Events = {OnGameStart=event(), OnTick=event()}
+    ISInventoryPane = {refreshContainer=host}
+    CleanUI_Clean_ISInventoryPane = nil
+    CleanUI_Vanilla_ISInventoryPane = nil
+    if clean then loadCleanUIComparators() else loadVanillaComparators() end
+    loadMod()
+    assert(ISInventoryPane.itemSortByCatInc(bRow, aRow))
+    assert(ISInventoryPane.itemSortByCatDesc(aRow, bRow))
+    aRow.equipped = true
+    assert(not ISInventoryPane.itemSortByCatInc(aRow, bRow))
+    assert(not ISInventoryPane.itemSortByCatDesc(aRow, bRow))
+    aRow.equipped = nil
+    if clean then
+        local separator = {type="separator", cat="AAA", name="separator"}
+        assert(not ISInventoryPane.itemSortByCatInc(separator, bRow))
+        assert(ISInventoryPane.itemSortByCatDesc(bRow, separator))
+    end
+    local stableComparator = ISInventoryPane.itemSortByCatInc
+    Events.OnGameStart.fire()
+    Events.OnTick.fire()
+    assert(stableComparator == ISInventoryPane.itemSortByCatInc, "comparator identity churn")
+end

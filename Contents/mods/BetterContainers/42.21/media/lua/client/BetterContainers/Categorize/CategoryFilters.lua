@@ -2,6 +2,7 @@ require("ISUI/ISInventoryPane")
 
 local FiltersUI = require("BetterContainers/Categorize/ui/FiltersUI")
 local Categorize = require("BetterContainers/Categorize")
+local InventoryCategory = require("BetterContainers/Categorize/InventoryCategory")
 
 local MOD = "BetterContainers"
 local DEBUG = getCore():getDebug()
@@ -62,7 +63,7 @@ local function _buildCategoryEntries(pane, showAll)
     local list = pane._bcItemslistUnfiltered or pane.itemslist or {}
     for i = 1, #list do
         local row = list[i]
-        local cat = row and row.cat
+        local cat = InventoryCategory.getRow(row)
         local norm = _normalizeCat(cat)
 
         -- pane.itemslist rows are "stacks"; row.count is (real items + 1) due to vanilla stacking.
@@ -247,7 +248,7 @@ function CategoryFilters.installInventoryPaneFilteringPatch()
         local out = {}
         for i = 1, #src do
             local row = src[i]
-            local cat = row and row.cat
+            local cat = InventoryCategory.getRow(row)
             local key = _normalizeCat(cat)
             if applied.map[key] then
                 out[#out + 1] = row
