@@ -322,21 +322,27 @@ SwitchSides.install = function()
                 return false
             end
 
-            -- Vanilla expects the strip on the right. Temporarily fake the
-            -- mouse X so the existing handler accepts the event.
-            local oldGetMouseX = self.getMouseX
-            self.getMouseX = function(page)
-                return page:getWidth()
+            -- Use vanilla's container-cycle behavior with the left-strip hit test
+            -- above. Never replace getMouseX on the live page, even temporarily.
+            local currentIndex = self:getCurrentBackpackIndex()
+            local ms = getTimestampMs()
+            local wrap = (self.containerButtonPanel.height > self.containerButtonPanel:getScrollHeight())
+                or (ms - (self.lastMouseWheelMS or 0) > 750)
+            self.lastMouseWheelMS = ms
+            local unlockedIndex
+            if del < 0 then
+                unlockedIndex = self:prevUnlockedContainer(currentIndex, wrap)
+            else
+                unlockedIndex = self:nextUnlockedContainer(currentIndex, wrap)
             end
-
-            local ok, ret = pcall(_old_onMouseWheel, self, del)
-
-            self.getMouseX = oldGetMouseX
-
-            if ok then
-                return ret
+            if unlockedIndex ~= -1 then
+                local playerObj = getSpecificPlayer(self.player)
+                if playerObj and playerObj:getJoypadBind() ~= -1 then
+                    self.backpackChoice = unlockedIndex
+                end
+                self:selectContainer(self.backpacks[unlockedIndex])
             end
-            error(ret)
+            return true
         end
 
         ISInventoryPage._BetterContainers_SwitchSides_installed = true

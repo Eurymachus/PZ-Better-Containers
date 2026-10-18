@@ -365,7 +365,7 @@ local function getPlainItemTexture(item)
     return item and item:getTex() or nil
 end
 
-local function renderPlainItemTexture(drawTarget, item, x, y, alpha, width, height)
+local function renderPlainItemTexture(drawTarget, item, x, y, alpha, width, height, drawTextureScaled)
     local texture = getPlainItemTexture(item)
     if not texture then return false end
     if type(texture) == "string" then
@@ -373,9 +373,7 @@ local function renderPlainItemTexture(drawTarget, item, x, y, alpha, width, heig
         if not texture then return false end
     end
 
-    drawTarget._bcEquippedAttachedDrawingPreview = true
-    drawTarget:drawTextureScaled(texture, x, y, width, height, alpha, 1, 1, 1)
-    drawTarget._bcEquippedAttachedDrawingPreview = nil
+    drawTextureScaled(drawTarget, texture, x, y, width, height, alpha, 1, 1, 1)
     return true
 end
 
@@ -419,6 +417,21 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     local oldDrawTexture = pane.drawTexture
     local oldDrawTextureScaled = pane.drawTextureScaled
     local oldRenderItemIcon = ISInventoryItem.renderItemIcon
+    -- Rendering overrides live only on this disposable view. Other methods run
+    -- on the real pane, and normal renderer state writes still reach that pane.
+    -- An exception discards the view without any live methods to restore.
+    local view = setmetatable({}, {
+        __index = function(_, key)
+            local value = pane[key]
+            -- The comparator is function-valued data, not a method. CleanUI
+            -- compares its identity when drawing the active sort indicator.
+            if type(value) == "function" and key ~= "itemSortFunc" then
+                return function(_, ...) return value(pane, ...) end
+            end
+            return value
+        end,
+        __newindex = function(_, key, value) pane[key] = value end,
+    })
     local replacedHeader = false
     local replacedCategory = false
     local renderedHeaderIcon = false
@@ -432,7 +445,6 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
     end
 
     local function isHeaderIconDecorationDraw(self, x, y)
-        if self._bcEquippedAttachedDrawingPreview then return false end
         if not sectionRow or not x or not y then return false end
 
         local rowTop = (sectionRow * self.itemHgt) + self.headerHgt
@@ -442,7 +454,7 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
         return x <= (self.column2 + self.itemHgt)
     end
 
-    pane.drawText = function(self, text, x, y, r, g, b, a, font, ...)
+    rawset(view, "drawText", function(self, text, x, y, r, g, b, a, font, ...)
         if not replacedHeader and isSectionRowY(y) and text == headerText and x < self.column3 then
             replacedHeader = true
             text = label
@@ -452,26 +464,26 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
             text = ""
         end
 
-        return oldDrawText(self, text, x, y, r, g, b, a, font, ...)
-    end
+        return oldDrawText(pane, text, x, y, r, g, b, a, font, ...)
+    end)
 
-    pane.drawTexture = function(self, texture, x, y, ...)
+    rawset(view, "drawTexture", function(self, texture, x, y, ...)
         if isHeaderIconDecorationDraw(self, x, y) then
             return
         end
 
-        return oldDrawTexture(self, texture, x, y, ...)
-    end
+        return oldDrawTexture(pane, texture, x, y, ...)
+    end)
 
-    pane.drawTextureScaled = function(self, texture, x, y, ...)
+    rawset(view, "drawTextureScaled", function(self, texture, x, y, ...)
         if isHeaderIconDecorationDraw(self, x, y) then
             return
         end
 
-        return oldDrawTextureScaled(self, texture, x, y, ...)
-    end
+        return oldDrawTextureScaled(pane, texture, x, y, ...)
+    end)
 
-    ISInventoryItem.renderItemIcon = function(self, item, ...)
+    rawset(view, "_bcSectionRenderItemIcon", function(self, item, ...)
         local args = { ... }
         local x = args[1] or 0
         local y = args[2] or 0
@@ -487,39 +499,30 @@ local function renderDetailsWithSectionLabels(oldRenderDetails, pane, doDragged)
             local firstSize = math.min(width, height) * (secondItem and 0.78 or 0.86)
             local firstX = x + ((width - firstSize) / 2) - (secondItem and 2 or 0)
             local firstY = y + ((height - firstSize) / 2) - (secondItem and 2 or 0)
-            if not renderPlainItemTexture(self, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize) then
-                oldRenderItemIcon(self, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize)
+            if not renderPlainItemTexture(pane, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize, oldDrawTextureScaled) then
+                oldRenderItemIcon(pane, firstItem, firstX, firstY, alpha * 0.9, firstSize, firstSize)
             end
 
             if secondItem then
                 local secondSize = math.min(width, height) * 0.58
                 local secondX = x + width - secondSize - 1
                 local secondY = y + height - secondSize - 1
-                if not renderPlainItemTexture(self, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize) then
-                    oldRenderItemIcon(self, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize)
+                if not renderPlainItemTexture(pane, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize, oldDrawTextureScaled) then
+                    oldRenderItemIcon(pane, secondItem, secondX, secondY, alpha * 0.85, secondSize, secondSize)
                 end
             end
             return
         end
 
-        return oldRenderItemIcon(self, item, ...)
-    end
+        return oldRenderItemIcon(pane, item, ...)
+    end)
 
     local separatorHovered = not doDragged and sectionRow and isSeparatorRowAtPointer(pane, sectionRow)
-    local oldMouseOverOption = pane.mouseOverOption
     if separatorHovered then
-        pane.mouseOverOption = 0
+        rawset(view, "mouseOverOption", 0)
     end
 
-    local ok, ret = pcall(oldRenderDetails, pane, doDragged)
-    pane.drawText = oldDrawText
-    pane.drawTexture = oldDrawTexture
-    pane.drawTextureScaled = oldDrawTextureScaled
-    ISInventoryItem.renderItemIcon = oldRenderItemIcon
-    pane.mouseOverOption = oldMouseOverOption
-    pane._bcEquippedAttachedDrawingPreview = nil
-
-    if not ok then error(ret) end
+    local ret = oldRenderDetails(view, doDragged)
 
     if separatorHovered then
         local y = (sectionRow * pane.itemHgt) + pane.headerHgt
@@ -589,6 +592,15 @@ end
 function EquippedAttachedSection.install()
     if EquippedAttachedSection._installed then return end
     EquippedAttachedSection._installed = true
+
+    -- A permanent, stateless dispatcher replaces the old per-frame global swap.
+    -- Only a disposable rendering view carries this raw handler field.
+    local oldRenderItemIcon = ISInventoryItem.renderItemIcon
+    ISInventoryItem.renderItemIcon = function(self, item, ...)
+        local renderSectionIcon = rawget(self, "_bcSectionRenderItemIcon")
+        if renderSectionIcon then return renderSectionIcon(self, item, ...) end
+        return oldRenderItemIcon(self, item, ...)
+    end
 
     local oldRefreshContainer = ISInventoryPane.refreshContainer
     ISInventoryPane.refreshContainer = function(self, ...)

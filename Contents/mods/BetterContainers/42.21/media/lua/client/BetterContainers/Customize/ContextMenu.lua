@@ -33,8 +33,8 @@ end
 
 local function _t(key, fallback)
     if key and getText then
-        local ok, txt = pcall(getText, key)
-        if ok and txt and txt ~= key then
+        local txt = getText(key)
+        if txt and txt ~= key then
             return txt
         end
     end

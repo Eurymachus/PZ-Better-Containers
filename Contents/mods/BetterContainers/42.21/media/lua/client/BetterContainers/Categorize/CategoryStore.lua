@@ -193,14 +193,12 @@ function Store.injectCustomTranslations()
     Store.ensureLoaded()
     if not (Translator and Translator.BY_NAME) then return false end
 
-    local ok = pcall(function()
-        local igui = Translator.BY_NAME:get("IG_UI")
-        if not igui then return end
-        for categoryID, definition in pairs(Store.definitions) do
-            igui:put("IGUI_ItemCat_" .. categoryID, definition.displayName)
-        end
-    end)
-    return ok
+    local igui = Translator.BY_NAME:get("IG_UI")
+    if not igui then return false end
+    for categoryID, definition in pairs(Store.definitions) do
+        igui:put("IGUI_ItemCat_" .. categoryID, definition.displayName)
+    end
+    return true
 end
 
 function Store.installTextResolver()

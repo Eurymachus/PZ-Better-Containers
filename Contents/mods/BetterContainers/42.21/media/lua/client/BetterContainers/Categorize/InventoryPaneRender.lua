@@ -7,11 +7,9 @@ local InventoryCategory = require("BetterContainers/Categorize/InventoryCategory
 local Helpers = require("BetterContainers/Helpers")
 
 local rowCategoryWrappers = {}
-local refreshingPanes = {}
 
-local function finishRowCategoryRefresh(self, ok, ...)
-    refreshingPanes[self] = nil
-    if not ok then error((...), 0) end
+local function finishRowCategoryRefresh(self, revision, ...)
+    if (self._bcCategoryRefreshRevision or 0) ~= revision then return ... end
     if self.itemslist then
         for _, row in ipairs(self.itemslist) do
             local item = row and row.items and row.items[1] or nil
@@ -37,6 +35,7 @@ local function finishRowCategoryRefresh(self, ok, ...)
             table.sort(self.itemslist, sortFunc)
         end
     end
+    self._bcCategoryRefreshRevision = revision + 1
     return ...
 end
 
@@ -46,11 +45,13 @@ local function installRowCategoryDecorator(paneClass)
     if type(hostRefreshContainer) ~= "function" or rowCategoryWrappers[hostRefreshContainer] then return end
 
     local function refreshContainer(self, ...)
-        -- A later mod may wrap an older copy of our wrapper. Only the outermost
-        -- invocation decorates rows, after the entire host refresh has finished.
-        if refreshingPanes[self] then return hostRefreshContainer(self, ...) end
-        refreshingPanes[self] = true
-        return finishRowCategoryRefresh(self, pcall(hostRefreshContainer, self, ...))
+        -- Keep the original decoration point inside existing feature wrappers.
+        -- Pinning restores its comparator and equipped sections append rows after
+        -- that point. A repaired outer wrapper must not sort their finished work.
+        -- Count completed passes instead of marking a refresh in progress. Errors
+        -- propagate directly without leaving state that blocks the next refresh.
+        local revision = self._bcCategoryRefreshRevision or 0
+        return finishRowCategoryRefresh(self, revision, hostRefreshContainer(self, ...))
     end
 
     rowCategoryWrappers[refreshContainer] = true

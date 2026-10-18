@@ -171,7 +171,7 @@ function EURY_CONTAINERS.getIconTexture(iconRef)
     local tex = nil
     local resolvedIconId = nil
 
-    local ok, result = pcall(function()
+    local function resolveScriptTexture()
         local sm = ScriptManager and ScriptManager.instance
         if not (sm and sm.getItem) then
             return nil
@@ -220,13 +220,9 @@ function EURY_CONTAINERS.getIconTexture(iconRef)
         end
 
         return nil
-    end)
-
-    if ok then
-        tex = result
-    else
-        tex = nil
     end
+
+    tex = resolveScriptTexture()
 
     if not tex then
         local item = instanceItem(fullType)

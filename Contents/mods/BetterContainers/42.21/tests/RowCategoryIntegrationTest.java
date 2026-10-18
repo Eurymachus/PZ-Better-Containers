@@ -20,8 +20,19 @@ class RowCategoryIntegrationTest {
         thread.call(LuaCompiler.loadstring(Files.readString(Path.of(args[0], "stdlib.lua")),
             "stdlib", environment), new Object[0]);
         var root = Path.of("Contents/mods/BetterContainers/42.21");
+        int compiled = 0;
+        try (var files = Files.walk(root.resolve("media/lua"))) {
+            for (Path file : files.filter(p -> p.toString().endsWith(".lua")).toList()) {
+                LuaCompiler.loadstring(Files.readString(file), file.toString(), environment);
+                compiled++;
+            }
+        }
         environment.rawset("loadMod", LuaCompiler.loadstring(Files.readString(root.resolve(
             "media/lua/client/BetterContainers/Categorize/InventoryPaneRender.lua")), "InventoryPaneRender", environment));
+        for (String name : new String[]{"PinnedItems", "EquippedAttachedSection"}) {
+            environment.rawset("load" + name, LuaCompiler.loadstring(Files.readString(root.resolve(
+                "media/lua/client/BetterContainers/Upgrades/" + name + ".lua")), name, environment));
+        }
         var test = LuaCompiler.loadstring(Files.readString(root.resolve(
             "tests/row_category_integration.lua")), "row_category_integration", environment);
         var result = thread.pcall(test, new Object[0]);
@@ -29,5 +40,39 @@ class RowCategoryIntegrationTest {
             throw new AssertionError(java.util.Arrays.toString(result));
         }
         System.out.println("PASS row category integration");
+        String[][] fixtures = {
+            {"loadHelpers", "shared/BetterContainers/Helpers.lua", ""},
+            {"loadSwitchSides", "client/BetterContainers/Upgrades/SwitchSides.lua", ""},
+            {"loadCategoryStore", "client/BetterContainers/Categorize/CategoryStore.lua", ""},
+            {"loadNested", "client/BetterContainers/Nested.lua", ""},
+            {"loadCategorize", "client/BetterContainers/Categorize.lua", "{module=Categorize, blacklist=_bcIsDisplayCategoryBlacklisted, load=loadCategories}"},
+            {"loadCategoryUI", "client/BetterContainers/Categorize/ui/CategoryManagerUI.lua", "{name=scriptItemName, hidden=isScriptItemHidden}"},
+            {"loadContextMenu", "client/BetterContainers/Customize/ContextMenu.lua", "{text=_t}"},
+            {"loadSmartDeposit", "client/BetterContainers/Proximity/Proximity_SmartDeposit.lua",
+                "{module=ProximitySmartDeposit, type=getContainerType, fullType=getItemFullType, weight=getItemWeight, locked=isLockedForPlayer, room=hasRoomForPlannedItem, plan=getSmartDepositPlan}"}
+        };
+        for (String[] fixture : fixtures) {
+            String source = Files.readString(root.resolve("media/lua/" + fixture[1]));
+            if (!fixture[2].isEmpty()) {
+                // Expose local functions only in the test copy, never in shipped Lua.
+                source = source.substring(0, source.lastIndexOf("\nreturn ")) + "\nreturn " + fixture[2];
+            }
+            environment.rawset(fixture[0], LuaCompiler.loadstring(source, fixture[1], environment));
+        }
+        var categoryLoaders = platform.newTable();
+        var categoryRoot = root.resolve("media/lua/client/BetterContainers/Categorize/Categories");
+        try (var files = Files.walk(categoryRoot)) {
+            for (Path file : files.filter(p -> p.toString().endsWith(".lua")).toList()) {
+                String name = "BetterContainers/Categorize/Categories/" + categoryRoot.relativize(file)
+                    .toString().replace('\\', '/').replaceAll("\\.lua$", "");
+                categoryLoaders.rawset(name, LuaCompiler.loadstring(Files.readString(file), name, environment));
+            }
+        }
+        environment.rawset("categoryLoaders", categoryLoaders);
+        var cleanupTests = LuaCompiler.loadstring(Files.readString(root.resolve(
+            "tests/direct_calls.lua")), "direct_calls", environment);
+        result = thread.pcall(cleanupTests, new Object[0]);
+        if (!Boolean.TRUE.equals(result[0])) throw new AssertionError(java.util.Arrays.toString(result));
+        System.out.println("PASS direct calls and UI isolation; compiled " + compiled + " shipped Lua files");
     }
 }

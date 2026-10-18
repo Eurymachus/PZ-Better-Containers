@@ -210,10 +210,9 @@ function Nested.isIgnoredInventory(inventoryPage, inventory)
         return true
     end
 
-    -- External predicates are sandboxed so bad compatibility code cannot break refresh.
+    -- Predicate errors must surface so compatibility failures can be diagnosed.
     for _, predicate in pairs(Nested._ignoredInventoryPredicates) do
-        local ok, shouldIgnore = pcall(predicate, inventoryPage, inventory)
-        if ok and shouldIgnore then
+        if predicate(inventoryPage, inventory) then
             return true
         end
     end

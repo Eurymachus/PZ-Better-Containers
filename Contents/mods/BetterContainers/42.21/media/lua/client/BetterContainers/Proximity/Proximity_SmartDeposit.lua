@@ -31,10 +31,8 @@ local SKIP_CONTAINER_TYPES = {
 
 local function getContainerType(container)
     if not (container and container.getType) then return nil end
-    local ok, value = pcall(function()
-        return container:getType()
-    end)
-    if ok and value then
+    local value = container:getType()
+    if value then
         return tostring(value)
     end
     return nil
@@ -58,10 +56,8 @@ end
 
 local function getItemFullType(item)
     if not (item and item.getFullType) then return nil end
-    local ok, value = pcall(function()
-        return item:getFullType()
-    end)
-    if ok and value and value ~= "" then
+    local value = item:getFullType()
+    if value and value ~= "" then
         return tostring(value)
     end
     return nil
@@ -79,19 +75,15 @@ local function getItemWeight(item)
     if not item then return 0 end
 
     if item.getUnequippedWeight then
-        local ok, value = pcall(function()
-            return item:getUnequippedWeight()
-        end)
-        if ok and type(value) == "number" then
+        local value = item:getUnequippedWeight()
+        if type(value) == "number" then
             return value
         end
     end
 
     if item.getActualWeight then
-        local ok, value = pcall(function()
-            return item:getActualWeight()
-        end)
-        if ok and type(value) == "number" then
+        local value = item:getActualWeight()
+        if type(value) == "number" then
             return value
         end
     end
@@ -104,10 +96,8 @@ local function isLockedForPlayer(container, playerObj)
     if not (parent and playerObj) then return false end
 
     if instanceof(parent, "IsoThumpable") and parent.isLockedToCharacter then
-        local ok, locked = pcall(function()
-            return parent:isLockedToCharacter(playerObj)
-        end)
-        return ok and locked == true
+        local locked = parent:isLockedToCharacter(playerObj)
+        return locked == true
     end
 
     return false
@@ -176,22 +166,12 @@ local function hasRoomForPlannedItem(container, playerObj, item, reservedWeight)
 
     reservedWeight = reservedWeight or 0
     if reservedWeight <= 0 then
-        local ok, value = pcall(function()
-            return container:hasRoomFor(playerObj, item)
-        end)
-        if ok then return value == true end
+        return container:hasRoomFor(playerObj, item) == true
     end
 
+    -- Build 42 exposes this weight overload and uses it in vanilla transfers.
     local plannedWeight = reservedWeight + getItemWeight(item)
-    local ok, value = pcall(function()
-        return container:hasRoomFor(playerObj, plannedWeight, plannedWeight)
-    end)
-    if ok then return value == true end
-
-    ok, value = pcall(function()
-        return container:hasRoomFor(playerObj, item)
-    end)
-    return ok and value == true
+    return container:hasRoomFor(playerObj, plannedWeight, plannedWeight) == true
 end
 
 local function isMovableDepositItem(item, targetContainer, playerObj)
@@ -370,10 +350,7 @@ function ProximitySmartDeposit.install()
     local oldTransferItemsByWeight = ISInventoryPane.transferItemsByWeight
     function ISInventoryPane:transferItemsByWeight(items, container, ...)
         if isSmartDepositTarget(container) then
-            local ok, err = pcall(runSmartDeposit, self, items, container)
-            if not ok then
-                Helpers.dlog("Proximity SmartDeposit " .. tostring(err))
-            end
+            runSmartDeposit(self, items, container)
             return
         end
 

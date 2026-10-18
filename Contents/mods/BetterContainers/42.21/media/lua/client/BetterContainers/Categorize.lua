@@ -49,8 +49,8 @@ end
 
 local function _bcIsDisplayCategoryBlacklisted(scriptItem, blacklist)
     if not (scriptItem and blacklist) then return false end
-    local ok, category = pcall(function() return scriptItem:getDisplayCategory() end)
-    if not (ok and category and category ~= "") then return false end
+    local category = scriptItem:getDisplayCategory()
+    if not (category and category ~= "") then return false end
     return blacklist[string.lower(_bcTrim(tostring(category)))] == true
 end
 
@@ -62,8 +62,8 @@ local function loadCategories()
 
     local function loadCategoryFile(path)
         local path = CATEGORIES_ROOT .. path
-        local ok, data = pcall(require, path)
-        if not ok or type(data) ~= "table" then
+        local data = require(path)
+        if type(data) ~= "table" then
             dlog("Failed loading category file " .. tostring(path))
             return
         end
@@ -93,8 +93,8 @@ local function loadCategories()
     loadCategoryFile("vanilla/vehicle")
     loadCategoryFile("vanilla/farming")
 
-    local okApplyMods, applyMods = pcall(require, CATEGORIES_ROOT .. "_applyMods")
-    if okApplyMods and type(applyMods) == "function" then
+    local applyMods = require(CATEGORIES_ROOT .. "_applyMods")
+    if type(applyMods) == "function" then
         applyMods(loadCategoryFile, dlog)
     end
 
@@ -369,8 +369,8 @@ local function loadCategories()
     end
     for fullType, scriptItem in pairs(SCRIPTITEM_BY_FULLTYPE) do
         if not resolvedDefaults[fullType] and scriptItem.getDisplayCategory then
-            local ok, category = pcall(function() return scriptItem:getDisplayCategory() end)
-            if ok and category and category ~= "" then
+            local category = scriptItem:getDisplayCategory()
+            if category and category ~= "" then
                 resolvedDefaults[fullType] = category
             end
         end
@@ -433,8 +433,8 @@ function Categorize.getAllDisplayCategories()
             for i = 0, items:size() - 1 do
                 local it = items:get(i)
                 if it and it.getDisplayCategory then
-                    local ok, dc = pcall(function() return it:getDisplayCategory() end)
-                    if ok and dc and dc ~= "" and not set[dc] then
+                    local dc = it:getDisplayCategory()
+                    if dc and dc ~= "" and not set[dc] then
                         set[dc] = true
                         out[#out + 1] = dc
                     end
@@ -515,8 +515,7 @@ local function _addCategoryManagerContextOption(playerNum, context, items, test)
     local scriptItem = ScriptManager.instance and ScriptManager.instance:getItem(fullType) or nil
     if not scriptItem then return end
     if scriptItem.isHidden then
-        local ok, hidden = pcall(function() return scriptItem:isHidden() end)
-        if ok and hidden then return end
+        if scriptItem:isHidden() then return end
     end
 
     context:addOption(getTextOrNull("ContextMenu_BetterContainers_ChangeCategory") or "Change Category",

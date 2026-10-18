@@ -27,16 +27,15 @@ end
 
 local function scriptItemName(scriptItem, fullType)
     if scriptItem and scriptItem.getDisplayName then
-        local ok, name = pcall(function() return scriptItem:getDisplayName() end)
-        if ok and name and name ~= "" then return tostring(name) end
+        local name = scriptItem:getDisplayName()
+        if name and name ~= "" then return tostring(name) end
     end
     return fullType
 end
 
 local function isScriptItemHidden(scriptItem)
     if not (scriptItem and scriptItem.isHidden) then return false end
-    local ok, hidden = pcall(function() return scriptItem:isHidden() end)
-    return ok and hidden == true
+    return scriptItem:isHidden() == true
 end
 
 function CategoryManagerUI:new(x, y, playerNum)
