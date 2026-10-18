@@ -97,8 +97,8 @@ if Helpers.isCleanUIActive() then
 end
 
 -- CleanUI owns its inventory renderer. Its current renderer reads the item's
--- original category, so custom labels require upstream use of our optional
--- BetterContainersInventoryCategory.getItemDisplayName(item) API.
+-- original category, so custom labels require upstream use of this module's
+-- InventoryCategory.getItemDisplayName(item), loaded through require.
 if Helpers.isCleanUIActive() then return true end
 
 local favoriteRecipeInputStarSize = 16

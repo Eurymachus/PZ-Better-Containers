@@ -198,7 +198,7 @@ radio.getName = function() return "Tactical Walkie Talkie" end
 radio.getJobDelta = function() return 0 end
 local stale = {items = {radio, radio}, cat = "Communications", count = 2}
 assert(realCategory.getRow(stale) == "ClothingFeet")
-assert(BetterContainersInventoryCategory == realCategory, "optional API missing")
+assert(require("BetterContainers/Categorize/InventoryCategory") == realCategory, "resolver module unavailable")
 local drawn
 loadCategoryDraw()(realCategory, {column3=0, itemHgt=20, headerHgt=0,
     drawText=function(_, text) drawn=text end}, radio, stale)

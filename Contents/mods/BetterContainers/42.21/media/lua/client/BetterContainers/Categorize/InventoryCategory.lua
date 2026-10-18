@@ -54,7 +54,4 @@ function InventoryCategory.getItemDisplayName(item)
     return InventoryCategory.getDisplayName(InventoryCategory.get(item))
 end
 
--- Optional integrations look this up when rendering, so either load order works.
-BetterContainersInventoryCategory = InventoryCategory
-
 return InventoryCategory
