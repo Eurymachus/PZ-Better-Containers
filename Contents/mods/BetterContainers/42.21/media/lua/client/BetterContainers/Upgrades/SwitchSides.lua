@@ -320,27 +320,30 @@ SwitchSides.install = function()
                 return false
             end
 
-            -- Use vanilla's container-cycle behavior with the left-strip hit test
-            -- above. Never replace getMouseX on the live page, even temporarily.
-            local currentIndex = self:getCurrentBackpackIndex()
-            local ms = getTimestampMs()
-            local wrap = (self.containerButtonPanel.height > self.containerButtonPanel:getScrollHeight())
-                or (ms - (self.lastMouseWheelMS or 0) > 750)
-            self.lastMouseWheelMS = ms
-            local unlockedIndex
-            if del < 0 then
-                unlockedIndex = self:prevUnlockedContainer(currentIndex, wrap)
-            else
-                unlockedIndex = self:nextUnlockedContainer(currentIndex, wrap)
-            end
-            if unlockedIndex ~= -1 then
-                local playerObj = getSpecificPlayer(self.player)
-                if playerObj and playerObj:getJoypadBind() ~= -1 then
-                    self.backpackChoice = unlockedIndex
+            local function cycleLeft(self, del)
+                -- Use vanilla's container-cycle behavior with the left-strip hit test
+                -- above. Never replace getMouseX on the live page, even temporarily.
+                local currentIndex = self:getCurrentBackpackIndex()
+                local ms = getTimestampMs()
+                local wrap = (self.containerButtonPanel.height > self.containerButtonPanel:getScrollHeight())
+                    or (ms - (self.lastMouseWheelMS or 0) > 750)
+                self.lastMouseWheelMS = ms
+                local unlockedIndex
+                if del < 0 then
+                    unlockedIndex = self:prevUnlockedContainer(currentIndex, wrap)
+                else
+                    unlockedIndex = self:nextUnlockedContainer(currentIndex, wrap)
                 end
-                self:selectContainer(self.backpacks[unlockedIndex])
+                if unlockedIndex ~= -1 then
+                    local playerObj = getSpecificPlayer(self.player)
+                    if playerObj and playerObj:getJoypadBind() ~= -1 then
+                        self.backpackChoice = unlockedIndex
+                    end
+                    self:selectContainer(self.backpacks[unlockedIndex])
+                end
+                return true
             end
-            return true
+            return self:bcWithVisualContainerOrder(cycleLeft, del)
         end
 
         ISInventoryPage._BetterContainers_SwitchSides_installed = true

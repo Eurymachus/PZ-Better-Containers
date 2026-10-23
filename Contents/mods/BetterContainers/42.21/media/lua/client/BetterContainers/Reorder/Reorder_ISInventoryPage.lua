@@ -245,19 +245,8 @@ Reorder_ISInventoryPage.install = function()
         self.pendingReorder = false
     end
 
-    local _old_onMouseWheel = ISInventoryPage.onMouseWheel
-    ISInventoryPage.onMouseWheel = function(self, del)
-        local inContainerArea = false
-        if Helpers.isPageLeft(self) then
-            inContainerArea = self:getMouseX() < self.containerButtonPanel.width
-        else
-            inContainerArea = self:getMouseX() >= (self:getWidth() - self.containerButtonPanel.width)
-        end
-
-        if not inContainerArea and not self:isCycleContainerKeyDown() then
-            --return false
-        end
-
+    -- Share visual ordering with alternate wheel hit tests such as SwitchSides.
+    ISInventoryPage.bcWithVisualContainerOrder = function(self, handler, del)
         local originalOrder = {}
         for index, button in ipairs(self.backpacks) do
             originalOrder[button] = index
@@ -269,7 +258,7 @@ Reorder_ISInventoryPage.install = function()
 
         self.pendingReorder = true
 
-        local retVal = _old_onMouseWheel(self, del)
+        local retVal = handler(self, del)
 
         if self.pendingReorder then
             table.sort(self.backpacks, function(a, b)
@@ -279,6 +268,11 @@ Reorder_ISInventoryPage.install = function()
         end
 
         return retVal
+    end
+
+    local _old_onMouseWheel = ISInventoryPage.onMouseWheel
+    ISInventoryPage.onMouseWheel = function(self, del)
+        return self:bcWithVisualContainerOrder(_old_onMouseWheel, del)
     end
 
     local _old_onJoypadDown = ISInventoryPage.onJoypadDown

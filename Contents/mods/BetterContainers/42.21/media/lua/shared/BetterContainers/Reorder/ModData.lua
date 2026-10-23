@@ -392,6 +392,11 @@ ModData.getDefaultSortPriority = function(inventory, inventoryPage)
     end
 
     local isFake = not inventory:getContainingItem() and not inventory:getParent()
+    -- Virtual Proximity buttons must not change the floor's fallback position.
+    -- Saved priorities are resolved by getSortPriority before this fallback.
+    if isFake and invType == "floor" then
+        return 0
+    end
     if isFake and invType ~= "floor" then
         return -5
     end

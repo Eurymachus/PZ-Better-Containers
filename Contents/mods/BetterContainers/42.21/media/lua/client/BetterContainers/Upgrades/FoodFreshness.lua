@@ -42,13 +42,34 @@ local function getLeastFreshItem(items)
     return leastFreshItem
 end
 
+local function isRowVisible(pane, row)
+    local top = pane.headerHgt + row * pane.itemHgt + pane:getYScroll()
+    return top + pane.itemHgt >= pane.headerHgt and top <= pane.height
+end
+
+-- Vanilla groups by name, so a stack may contain both food and non-food.
+-- Cache membership on the disposable stack, never freshness values. Refreshes
+-- rebuild stacks; also invalidate when another mod replaces or resizes items.
+local function getFoodItems(stack)
+    local items = stack.items
+    if stack._bcFreshnessItems ~= items or stack._bcFreshnessCount ~= #items then
+        local food = {}
+        for _, item in ipairs(items) do
+            if instanceof(item, "Food") then food[#food + 1] = item end
+        end
+        stack._bcFreshnessItems = items
+        stack._bcFreshnessCount = #items
+        stack._bcFreshnessFood = food
+    end
+    return stack._bcFreshnessFood
+end
+
 local function drawIndicator(pane, item, row, permanentPercentage)
+    if not isRowVisible(pane, row) then return end
     local freshness, stalePoint = getFreshness(item)
     if freshness == nil then return end
 
     local rowTop = pane.headerHgt + row * pane.itemHgt
-    local visibleTop = rowTop + pane:getYScroll()
-    if visibleTop + pane.itemHgt < pane.headerHgt or visibleTop > pane.height then return end
 
     local font = pane.font or UIFont.Medium
     local showPercentage = Options.showFoodFreshnessPercentage
@@ -106,7 +127,9 @@ local function drawIndicators(pane)
     local row = 0
     for _, stack in ipairs(pane.itemslist) do
         local items = stack and stack.items
-        drawIndicator(pane, getLeastFreshItem(items), row, false)
+        if items and isRowVisible(pane, row) then
+            drawIndicator(pane, getLeastFreshItem(getFoodItems(stack)), row, false)
+        end
 
         local collapsed = pane.collapsed and stack.name and pane.collapsed[stack.name]
         if not collapsed and items then

@@ -34,6 +34,8 @@ local time = 1000
 getTimestampMs = function() return time end
 local fallback = 0
 ISInventoryPage = {onMouseWheel = function() fallback = fallback + 1; return "right" end}
+-- Ordering is covered with real button objects in proximity_lifecycle.lua.
+ISInventoryPage.bcWithVisualContainerOrder = function(self, handler, del) return handler(self, del) end
 loadSwitchSides().install()
 local page = setmetatable({onCharacter = true, buttonSize = 20, player = 0,
     backpacks = {"first", "second"}, containerButtonPanel = {height = 20, getScrollHeight = function() return 40 end},
