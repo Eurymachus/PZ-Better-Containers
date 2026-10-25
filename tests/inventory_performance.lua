@@ -7,6 +7,8 @@ local function zero() return 0 end
 local function one() return 1 end
 local options = {showFoodFreshnessBar=true, showFoodFreshnessPercentage=true}
 local category = {get=function() return "Material" end,
+    getRevision=function() return 0, true end,
+    getRow=function() return "Material" end,
     getItemDisplayName=function() return "Material" end}
 require = function(name)
     if name == "BetterContainers/_Options" then return options end
@@ -202,12 +204,22 @@ local diagnosticContainer={getItems=function() return {size=function() return 40
 local diagnosticList={size=function() return 2 end,get=function() return diagnosticContainer end}
 ISInventoryPaneContextMenu.getContainers=function() return diagnosticList,nil,'tail' end
 loadProbe()
+local dispatched=0
+triggerEvent=function(event) dispatched=dispatched+1 return event,nil,'event-tail' end
+local originalTrigger=triggerEvent
 BCInventoryProbe.install()
 local a,b,c=ISInventoryPane.renderdetails({},false)
 assert(a==false and b==nil and c=='tail', 'probe changed return values')
 assert(BCInventoryProbe.stats[1].entered==1 and BCInventoryProbe.stats[1].completed==1)
 local containers,empty,tail=ISInventoryPaneContextMenu.getContainers({})
 assert(containers==diagnosticList and empty==nil and tail=='tail', 'container observer changed results')
+local eventStat=BCInventoryProbe.stats[#BCInventoryProbe.stats]
+triggerEvent('OnTick')
+assert(eventStat.entered==0,'unrelated event was timed')
+local eventName,eventNil,eventTail=triggerEvent('OnFillInventoryObjectContextMenu')
+assert(eventName=='OnFillInventoryObjectContextMenu' and eventNil==nil and eventTail=='event-tail')
+assert(eventStat.entered==1 and eventStat.completed==1 and dispatched==2,'event dispatch changed')
 BCInventoryProbe.stop()
+assert(triggerEvent==originalTrigger,'event hook was not restored')
 assert(ISInventoryPane.renderdetails==originalRender, 'probe failed to restore hook')
 print('PASS optional live probe return values and hook restoration')

@@ -1,0 +1,23 @@
+variant,stacks,items,sort,median_ms_per_refresh,sorts,comparisons,category_lookups,proxy_views
+vanilla,1,400,name,2.496,1,0,0,0
+vanilla,1,400,category,3.037,1,0,0,0
+current,1,400,name,0.744,1,0,1,1
+current,1,400,category,0.706,1,0,1,1
+vanilla,100,400,name,2.420,1,1156,0,0
+vanilla,100,400,category,0.982,1,659,0,0
+current,100,400,name,2.473,1,1156,100,100
+current,100,400,category,2.998,1,659,100,100
+vanilla,400,400,name,5.142,1,6394,0,0
+vanilla,400,400,category,3.068,1,3907,0,0
+current,400,400,name,5.646,1,6394,400,400
+current,400,400,category,7.883,1,3907,400,400
+vanilla,400,4000,name,7.663,1,6394,0,0
+vanilla,400,4000,category,6.172,1,3907,0,0
+current,400,4000,name,8.433,1,6394,400,400
+current,400,4000,category,11.647,1,3907,400,400
+vanilla,1000,1000,name,14.319,1,18831,0,0
+vanilla,1000,1000,category,7.834,1,11244,0,0
+current,1000,1000,name,13.930,1,18831,1000,1000
+current,1000,1000,category,22.600,1,11244,1000,1000
+PASS varied-stack refresh benchmarks and resulting sort order
+PASS custom assignment, rename, deletion, reset, reload, defaults, enable/disable and retained-row sorting

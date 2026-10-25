@@ -16,13 +16,14 @@ local function finish(stat, started, verbose, observe, ...)
     return ...
 end
 
-local function hook(target, key, name, verbose, observe)
+local function hook(target, key, name, verbose, observe, accepts)
     if not target or type(target[key]) ~= 'function' then return end
     local original = target[key]
     local stat = {name=name, entered=0, completed=0, total=0, maximum=0}
     probe.stats[#probe.stats+1] = stat
     local wrapped = function(...)
         if not probe.active then return original(...) end
+        if accepts and not accepts(...) then return original(...) end
         stat.entered = stat.entered + 1
         local started = getTimestampMs()
         if verbose then print('[BC perf] begin ' .. name) end
@@ -65,6 +66,9 @@ function probe.install()
     hook(ISInventoryPaneContextMenu, 'createMenu', 'createMenu', true)
     hook(ISInventoryPaneContextMenu, 'getContainers', 'getContainers', true, describeContainers)
     hook(ISInventoryPaneContextMenu, 'addNewCraftingDynamicalContextMenu', 'crafting submenu', true)
+    hook(_G, 'triggerEvent', 'inventory context callbacks', true, nil, function(event)
+        return event == 'OnPreFillInventoryObjectContextMenu' or event == 'OnFillInventoryObjectContextMenu'
+    end)
     print('[BC perf] installed; use report() after reproducing, then stop()')
 end
 

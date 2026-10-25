@@ -1,0 +1,32 @@
+Category sorting fix validation, 2026-10-24
+
+Production changes are limited to 42.21 Categorize modules:
+- Removed the decorator's second sort. Host search and pinning comparators
+  now determine ordering once, before post-refresh equipped sections.
+- Cache one resolved category view per row per refresh. Assignment revisions,
+  enable state, item replacement and row category changes invalidate the view.
+- Category store revisions change on load, defaults and override mutations.
+
+category_sort_fixed_results.txt contains the same five stack shapes and
+repeated-refresh timing protocol as category_sort_results.txt, with added
+assertions for exactly one sort and one lookup/view per row.
+400 distinct rows: category 236.115 -> 7.883 ms; name 39.332 -> 5.646 ms.
+1,000 distinct rows: category 1490.955 -> 22.600 ms; name 230.164 -> 13.930 ms.
+Timings use actual Kahlua/game functions with mocked items/UI and instrumentation.
+They are not live-game FPS or vehicle measurements.
+
+Custom-category tests pass for assignment, rename, deletion, reset, reload,
+default changes, enable/disable, retained rows and refresh ordering.
+RowCategoryIntegrationTest passes 64 feature combinations: CleanUI off/on,
+pinning off/on, equipped sections off/on, collapsed/expanded, and name,
+category ascending/descending or weight sorting. Uses actual feature wrappers
+and the installed CleanUI refresh sorting block, with mocked search predicates
+and item/UI APIs. Actual vanilla and CleanUI comparators are also exercised.
+Checks include search priority, alternate classes, late wrapper replacement,
+host-error recovery, return values, separator/equipped rules and stale row.cat.
+All 126 shipped Lua files compile with Kahlua; direct-call/UI isolation tests pass.
+Existing renderer, freshness, right-click input and Proximity lifecycle suites
+pass, including 400-plate inputs with Proximity off/on.
+
+No live game session or five-minute freeze was reproduced by these tests.
+All diagnostic files and output remain outside Contents, under tests/.

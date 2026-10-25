@@ -47,6 +47,11 @@ local function list()
     function l:size() return #self.data end
     function l:get(i) return self.data[i+1] end
     function l:clear() self.data={} end
+    function l:add(value) self.data[#self.data+1]=value end
+    function l:remove(value)
+        for i,v in ipairs(self.data) do if v==value then table.remove(self.data,i) return true end end
+        return false
+    end
     function l:addAll(other)
         for _,item in ipairs(other.data) do self.data[#self.data+1]=item copies=copies+1 end
     end
@@ -197,4 +202,44 @@ for _,kind in ipairs({'crate','floor'}) do
     for i=1,600 do visible(handler) end
     assert(reads==(kind=='crate' and 600 or 240000))
     print('PASS Proximity drop visibility, 400 plates sourced from ' .. kind .. ': item checks over 600 calls=' .. reads)
+end
+
+-- Actual vanilla context gathering plus BC's synthetic-container removal.
+-- This compares the input to Java crafting, not Java recipe execution time.
+ArrayList={new=list}
+function player:getPlayerNum() return 0 end
+local playerPage={backpacks={}}
+getPlayerInventory=function() return {inventoryPane={inventoryPage=playerPage}} end
+ISInventoryPaneContextMenu={}
+ISCraftingUI={getContainers=noop}
+Events={OnRefreshInventoryWindowContainers={Add=noop}}
+loadContextContainers()
+loadActualItems()
+helpers.isCleanUIActive=function() return true end -- Skip unrelated controls UI installation only.
+loadProximityControls().install()
+helpers.isCleanUIActive=no
+local baseline
+for _,enabled in ipairs({false,true}) do
+    eff.proximityActive=enabled
+    page:refreshBackpacks()
+    local containers=ISInventoryPaneContextMenu.getContainers(player)
+    assert(containers:size()==2,'synthetic container leaked into crafting list')
+    local entries=0
+    for i=0,containers:size()-1 do
+        assert(containers:get(i)~=aggregate)
+        entries=entries+containers:get(i):getItems():size()
+    end
+    assert(entries==400,'crafting received duplicate or missing plates')
+    local selectedSource=enabled and aggregate or crate
+    local stack={items={selectedSource.items:get(0)}}
+    for _,item in ipairs(selectedSource.items.data) do
+        item.isItem=true
+        stack.items[#stack.items+1]=item
+    end
+    local actual=ISInventoryPane.getActualItems({stack})
+    assert(#actual==400,'selected stack expanded incorrectly')
+    if baseline then
+        for i=1,400 do assert(actual[i]==baseline[i],'Proximity changed selected item identity') end
+    else baseline=actual end
+    print('PASS right-click inputs proximity=' .. tostring(enabled) .. ': physical containers=2 itemEntries=400 selectedItems=400')
 end

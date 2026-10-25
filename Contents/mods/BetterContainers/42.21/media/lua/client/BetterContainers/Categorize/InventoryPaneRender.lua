@@ -9,8 +9,24 @@ local Helpers = require("BetterContainers/Helpers")
 local rowCategoryWrappers = {}
 local categorySortWrappers = {}
 
+-- Rows own their cached views, so discarded stacks retain no global references.
+-- A new refresh also invalidates retained rows and recovers after host errors.
+local categoryRefresh = 0
+
 local function categoryView(row)
-    return setmetatable({cat = InventoryCategory.getRow(row)}, {__index = row})
+    local revision, enabled = InventoryCategory.getRevision()
+    local item = row.items and row.items[1]
+    local cached = row._bcCategorySortView
+    if not cached or cached.refresh ~= categoryRefresh or cached.revision ~= revision
+        or cached.enabled ~= enabled or cached.item ~= item or cached.sourceCategory ~= row.cat then
+        cached = {
+            refresh = categoryRefresh, revision = revision, enabled = enabled,
+            item = item, sourceCategory = row.cat,
+            view = setmetatable({cat = InventoryCategory.getRow(row)}, {__index = row}),
+        }
+        row._bcCategorySortView = cached
+    end
+    return cached.view
 end
 
 local function installCategoryComparators(paneClass)
@@ -20,7 +36,7 @@ local function installCategoryComparators(paneClass)
         if type(original) == "function" and not categorySortWrappers[original] then
             local wrapped = function(a, b)
                 -- Preserve the host's equipped/separator rules and tie breakers.
-                -- Views expose resolved categories without mutating shared rows.
+                -- Views expose resolved categories without replacing row.cat.
                 return original(categoryView(a), categoryView(b))
             end
             categorySortWrappers[wrapped] = true
@@ -35,26 +51,14 @@ local function finishRowCategoryRefresh(self, revision, ...)
         for _, row in ipairs(self.itemslist) do
             local item = row and row.items and row.items[1] or nil
             if item then
-                row.cat = InventoryCategory.get(item) or row.cat
+                row.cat = categoryView(row).cat or row.cat
+                row._bcCategorySortView.sourceCategory = row.cat
             end
         end
 
-        local sortFunc = self.itemSortFunc
-        local hasCleanUISearch = Helpers.isCleanUIActive()
-            and ((self.searchText and self.searchText ~= "")
-                or (self.searchCategoryText and self.searchCategoryText ~= ""))
-        if hasCleanUISearch then
-            -- CleanUI computes matchesSearch during refresh. Keep that priority
-            -- while sorting each group using the updated presentation categories.
-            table.sort(self.itemslist, function(a, b)
-                local aMatches = a.matchesSearch == true
-                local bMatches = b.matchesSearch == true
-                if aMatches ~= bMatches then return aMatches end
-                return sortFunc(a, b)
-            end)
-        else
-            table.sort(self.itemslist, sortFunc)
-        end
+        -- The host already sorted with our resolved category comparators, including
+        -- its search priority and any temporary pinning comparator. Do not sort
+        -- the ordered rows again or disturb post-refresh sections.
     end
     self._bcCategoryRefreshRevision = revision + 1
     return ...
@@ -72,6 +76,7 @@ local function installRowCategoryDecorator(paneClass)
         -- that point. A repaired outer wrapper must not sort their finished work.
         -- Count completed passes instead of marking a refresh in progress. Errors
         -- propagate directly without leaving state that blocks the next refresh.
+        categoryRefresh = categoryRefresh + 1
         local revision = self._bcCategoryRefreshRevision or 0
         return finishRowCategoryRefresh(self, revision, hostRefreshContainer(self, ...))
     end

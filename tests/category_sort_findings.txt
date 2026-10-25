@@ -1,0 +1,46 @@
+Category refresh investigation, 2026-10-24
+
+Run from workspace root:
+java -cp "C:/Games/Steam/steamapps/common/ProjectZomboid/projectzomboid.jar" tests/InventoryPerformanceTest.java "C:/Games/Steam/steamapps/common/ProjectZomboid" category
+
+Results: category_sort_results.txt
+Fixture: category_sort_benchmark.lua
+
+Uses installed Kahlua, stdlib.lua table.sort, native string.sort, actual vanilla
+refreshContainer/comparators and current category resolver/store/decorator.
+Item and UI APIs are mocked. Both vanilla and mapped categories use the same
+17-category distribution. Names are deterministically varied. CleanUI is off.
+Timings include instrumentation overhead, are not live-game frame timings,
+and are median per-refresh durations from three batches of five refreshes,
+after five warmup refreshes. Forced refreshes model repeated refresh work,
+not a vehicle simulation or measurement of actual driving refresh frequency.
+All resulting stack counts and ascending sort orders passed assertions.
+
+Cause reproduced:
+The decorator sorts again after vanilla refresh has already sorted. Installed
+stdlib.lua chooses the leftmost quicksort pivot. Sorting the ordered result
+requires n*(n-1)/2 additional comparisons: 79,800 for 400 rows and 499,500
+for 1,000 rows. This occurs for name sorting too.
+Category comparators additionally resolve both categories on every comparison
+and create two proxy rows plus two metatables. At 1,000 rows the current
+category path makes 1,022,488 category lookups and 1,021,488 proxy views
+(2,042,976 tables including metatables) in a single refresh.
+
+Test-only ablations modify module text in memory, never shipped files:
+row-only-experiment removes category comparator wrapping while retaining
+decoration and second sort. At 1,000 rows category refresh drops from
+1,490.955 ms to 233.248 ms, but quadratic second sorting remains.
+single-sort-experiment retains wrapped comparators and row decoration but
+omits the second sort. It takes 38.876 ms at 1,000 rows, compared with
+7.872 ms vanilla. These experiments isolate contributors, not finished fixes.
+Compatibility with search, pinning, equipped sections and custom category
+changes requires separate verification before a production change.
+
+One stack containing 400 items has zero sort comparisons. 400 distinct rows
+with 400 versus 4,000 items have identical comparison/lookup counts. This
+explains why the original identical-metal-plate case missed this regression.
+Repeated refreshes repeat the expensive work even when contents are unchanged.
+This demonstrates a sorting regression without Proximity. It does not prove
+the reported five-minute right-click freeze or reproduce driving in game.
+
+No production files changed during this investigation.

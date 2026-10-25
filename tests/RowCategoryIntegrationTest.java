@@ -37,6 +37,13 @@ class RowCategoryIntegrationTest {
             "return function(InventoryCategory, self, item, v) local count=1 local doDragged=false " +
             "local xoff,yoff,y,textDY=0,0,0,0 " + categoryDraw + " end", "categoryDraw", environment));
         Path cleanPane = Path.of(args[0]).resolve("../../workshop/content/108600/3437629766/mods/CleanUI/42.19/media/lua/client/ISUI/ISInventoryPane.lua").normalize();
+        String cleanSource = Files.readString(cleanPane);
+        int cleanSortStart = cleanSource.indexOf("    local searchMode =", cleanSource.indexOf("function ISInventoryPane:refreshContainer()"));
+        int cleanSortEnd = cleanSource.indexOf("    -- Add the first item", cleanSortStart);
+        environment.rawset("loadCleanSort", LuaCompiler.loadstring(
+            "return function(self, CleanUI_itemMatchesNameSearch, CleanUI_itemMatchesCategorySearch) " +
+            "local CleanUI_shouldSuppressEquippedItemsHeader=function() return true end\n" +
+            cleanSource.substring(cleanSortStart, cleanSortEnd) + "\nend", "CleanUISort", environment));
         for (String host : new String[]{"Vanilla", "CleanUI"}) {
             String source = Files.readString(host.equals("Vanilla")
                 ? Path.of(args[0], "media/lua/client/ISUI/ISInventoryPane.lua") : cleanPane);

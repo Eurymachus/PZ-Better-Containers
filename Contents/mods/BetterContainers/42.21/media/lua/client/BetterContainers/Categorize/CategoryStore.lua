@@ -4,6 +4,7 @@ local OverrideIni = IniWriter.makeFeature("CategoryOverrides", false)
 local DefinitionIni = IniWriter.makeFeature("CustomCategories", false)
 
 local Store = {
+    revision = 0,
     defaults = {},
     overrides = {},
     definitions = {},
@@ -47,6 +48,7 @@ local function loadRows()
         end
     end
 
+    Store.revision = Store.revision + 1
     Store.loaded = true
     Store.overridesDirty = false
     Store.definitionsDirty = false
@@ -65,6 +67,7 @@ end
 function Store.setDefaults(defaults)
     Store.ensureLoaded()
     Store.defaults = copyMap(defaults)
+    Store.revision = Store.revision + 1
 end
 
 function Store.getDefault(fullType)
@@ -99,6 +102,7 @@ function Store.setOverride(fullType, categoryID)
 
     if Store.overrides[fullType] == nextValue then return false end
     Store.overrides[fullType] = nextValue
+    Store.revision = Store.revision + 1
     Store.overridesDirty = true
     return true
 end
@@ -107,6 +111,7 @@ function Store.resetOverride(fullType)
     Store.ensureLoaded()
     if Store.overrides[fullType] == nil then return false end
     Store.overrides[fullType] = nil
+    Store.revision = Store.revision + 1
     Store.overridesDirty = true
     return true
 end
@@ -173,6 +178,7 @@ function Store.deleteCustomCategory(categoryID)
     for fullType, assignedID in pairs(Store.overrides) do
         if assignedID == categoryID then
             Store.overrides[fullType] = nil
+            Store.revision = Store.revision + 1
             Store.overridesDirty = true
         end
     end

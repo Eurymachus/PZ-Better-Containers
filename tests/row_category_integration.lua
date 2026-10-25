@@ -5,6 +5,7 @@ local category = { get = function(item)
     categoryReads = categoryReads + 1
     return item.category
 end }
+category.getRevision = function() return 0, true end
 category.getRow = function(row)
     if row._bcEquippedAttachedSeparator or row.type == "separator" then return row.cat end
     return row.items and category.get(row.items[1]) or row.cat
@@ -20,12 +21,19 @@ local function event()
         handlers = handlers }
 end
 Events = { OnGameStart = event(), OnTick = event() }
+local cleanSort = loadCleanSort()
+local function matches(row) return row.matchesSearch end
+getSpecificPlayer = function() return {} end
 local calls = 0
 local function host(self, value)
     calls = calls + 1
+    if active then cleanSort(self, matches, matches)
+    else table.sort(self.itemslist, self.itemSortFunc) end
     return value, nil, "tail"
 end
-ISInventoryPane = { refreshContainer = host }
+ISInventoryPane = { refreshContainer = host,
+    itemSortByCatInc = function(a,b) return a.cat < b.cat end,
+    itemSortByCatDesc = function(a,b) return a.cat > b.cat end }
 local original = ISInventoryPane
 loadMod()
 local function row(name, cat, match)
@@ -35,7 +43,7 @@ local function pane(class)
     return setmetatable({itemslist = {
         row("A", "Zulu", true), row("B", "Alpha", false),
         row("C", "Beta", true), row("D", "Gamma", false)},
-        itemSortFunc = function(a, b) return a.cat < b.cat end}, {__index = class})
+        parent = {onCharacter=false}, itemSortFunc = class.itemSortByCatInc}, {__index = class})
 end
 local function checkOrder(p, expected)
     local ids = ""
@@ -47,12 +55,13 @@ p.searchText = "x"
 local a, b, c = p:refreshContainer("value")
 assert(a == "value" and b == nil and c == "tail", "host returns lost")
 checkOrder(p, "CABD")
-p.itemSortFunc = function(a, b) return a.cat > b.cat end
+p.itemSortFunc = original.itemSortByCatDesc
 p:refreshContainer()
 checkOrder(p, "ACDB")
-p.itemSortFunc = function(a, b) return a.cat < b.cat end
+p.itemSortFunc = original.itemSortByCatInc
 p.searchText = ""
 p.searchCategoryText = "x"
+p.searchMode = "category"
 p:refreshContainer()
 checkOrder(p, "CABD")
 p.searchCategoryText = ""
@@ -85,7 +94,7 @@ assert(p.itemslist[1].items[1].category == "Aardvark", "host postprocessing lost
 
 -- Alternate classes may appear after startup and later become the active class.
 CleanUI_Clean_ISInventoryPane = original
-CleanUI_Vanilla_ISInventoryPane = {refreshContainer = host}
+CleanUI_Vanilla_ISInventoryPane = {refreshContainer = host, itemSortByCatInc = function(a,b) return a.cat < b.cat end}
 ISInventoryPane = CleanUI_Vanilla_ISInventoryPane
 Events.OnTick.fire()
 p = pane(ISInventoryPane)
@@ -110,7 +119,7 @@ assert(categoryReads == 4, "refresh guard leaked after error")
 -- Standalone mode keeps ordinary sorting and adds no tick monitor.
 active = false
 Events = { OnGameStart = event(), OnTick = event() }
-ISInventoryPane = {refreshContainer = host}
+ISInventoryPane = {refreshContainer = host, itemSortByCatInc = function(a,b) return a.cat < b.cat end}
 CleanUI_Clean_ISInventoryPane = nil
 CleanUI_Vanilla_ISInventoryPane = nil
 loadMod()
@@ -162,7 +171,7 @@ for _, clean in ipairs({false, true}) do
     for _, collapsed in ipairs({false, true}) do
         for _, pinEnabled in ipairs({false, true}) do
             for _, sectionEnabled in ipairs({false, true}) do
-                for _, sortKey in ipairs({"name", "category", "weight"}) do
+                for _, sortKey in ipairs({"name", "category", "categoryDesc", "weight"}) do
                     active = clean
                     options.showFavouritesOnPlayerInventories = pinEnabled
                     options.showEquippedAttachedSection = sectionEnabled
@@ -172,12 +181,14 @@ for _, clean in ipairs({false, true}) do
                     CleanUI_Vanilla_ISInventoryPane = nil
                     local byName = function(a, b) return a.name < b.name end
                     local byCat = function(a, b) return a.cat < b.cat end
+                    local byCatDesc = function(a, b) return a.cat > b.cat end
                     local byWeight = function(a, b) return a.weight < b.weight end
-                    ISInventoryPane = {itemSortByCatInc = byCat, itemSortByWeightAsc = byWeight,
+                    ISInventoryPane = {itemSortByCatInc = byCat, itemSortByCatDesc = byCatDesc, itemSortByWeightAsc = byWeight,
                         refreshContainer = function(self)
                             self.itemslist = {makeStack(normal), makeStack(pinned),
                                 makeStack(equippedA), makeStack(equippedB)}
-                            table.sort(self.itemslist, self.itemSortFunc)
+                            if active then cleanSort(self, matches, matches)
+                            else table.sort(self.itemslist, self.itemSortFunc) end
                         end}
                     loadMod()
                     loadEquippedAttachedSection().install()
@@ -187,7 +198,7 @@ for _, clean in ipairs({false, true}) do
                     local p = setmetatable({parent = {onCharacter = true},
                         inventoryPage = {onCharacter = true}, inventory = inventory,
                         player = 0, collapsed = {}, selected = {},
-                        itemSortFunc = sortKey == "name" and byName or sortKey == "category" and ISInventoryPane.itemSortByCatInc or byWeight,
+                        itemSortFunc = sortKey == "name" and byName or sortKey == "category" and ISInventoryPane.itemSortByCatInc or sortKey == "categoryDesc" and ISInventoryPane.itemSortByCatDesc or byWeight,
                         saveSelection = function() return {} end,
                         restoreSelection = function() end, updateScrollbars = function() end},
                         {__index = ISInventoryPane})
@@ -224,7 +235,7 @@ for _, clean in ipairs({false, true}) do
         end
     end
 end
-assert(scenarios == 48)
+assert(scenarios == 64)
 
 -- A later filter may overwrite cat, retain rows, and sort again. Category
 -- comparisons must resolve the items without writing back into those rows.

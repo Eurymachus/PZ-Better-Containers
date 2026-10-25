@@ -33,10 +33,23 @@ class InventoryPerformanceTest {
         env.rawset("loadRightClick", LuaCompiler.loadstring(vanilla.substring(vanilla.indexOf("function ISInventoryPane:onRightMouseUp(x, y)"), vanilla.indexOf("function ISInventoryPane:onMouseDown(x, y)")), "rightClick", env));
         String context = Files.readString(game.resolve("media/lua/client/ISUI/ISInventoryPaneContextMenu.lua"));
         env.rawset("loadCraftingSubmenu", LuaCompiler.loadstring(context.substring(context.indexOf("ISInventoryPaneContextMenu.addNewCraftingDynamicalContextMenu = function"), context.indexOf("ISInventoryPaneContextMenu.addToolTip = function")), "craftingSubmenu", env));
+        env.rawset("loadContextContainers", LuaCompiler.loadstring(context.substring(context.indexOf("ISInventoryPaneContextMenu.getContainers = function"), context.indexOf("ISInventoryPaneContextMenu.addFixerSubOption = function")), "contextContainers", env));
+        env.rawset("loadActualItems", LuaCompiler.loadstring(vanilla.substring(vanilla.indexOf("function ISInventoryPane.getActualItems(items)"), vanilla.indexOf("function ISInventoryPane.getActualUniqueItems(items)")), "actualItems", env));
         for (String name : new String[]{"Categorize/InventoryPaneRender", "Upgrades/FoodFreshness"}) {
             env.rawset(name.contains("Food") ? "loadFreshness" : "loadCategories", LuaCompiler.loadstring(Files.readString(root.resolve("media/lua/client/BetterContainers/" + name + ".lua")), name, env));
         }
         env.rawset("loadProbe", LuaCompiler.loadstring(Files.readString(testRoot.resolve("live_inventory_probe.lua")), "probe", env));
+        if (args.length > 1 && args[1].equals("category")) {
+            env.rawset("loadComparators", LuaCompiler.loadstring(vanilla.substring(vanilla.indexOf("ISInventoryPane.itemSortByNameInc ="), vanilla.indexOf("function ISInventoryPane:sortByName")), "comparators", env));
+            for (String name : new String[]{"InventoryCategory", "CategoryStore"}) {
+                env.rawset("load" + name, LuaCompiler.loadstring(Files.readString(root.resolve("media/lua/client/BetterContainers/Categorize/" + name + ".lua")), name, env));
+            }
+            String setup = Files.readString(testRoot.resolve("inventory_performance.lua"));
+            setup = setup.substring(0, setup.indexOf("for _, variant in ipairs"));
+            var benchmark = thread.pcall(LuaCompiler.loadstring(setup + Files.readString(testRoot.resolve("category_sort_benchmark.lua")), "categoryBenchmark", env), new Object[0]);
+            if (!Boolean.TRUE.equals(benchmark[0])) throw new AssertionError(java.util.Arrays.toString(benchmark));
+            return;
+        }
         var result = thread.pcall(LuaCompiler.loadstring(Files.readString(testRoot.resolve("inventory_performance.lua")), "fixture", env), new Object[0]);
         if (!Boolean.TRUE.equals(result[0])) throw new AssertionError(java.util.Arrays.toString(result));
         for (String name : new String[]{"Proximity", "Proximity/Proximity_ISInventoryPage", "Reorder/Reorder_ISInventoryPage"}) {
@@ -45,6 +58,7 @@ class InventoryPerformanceTest {
         env.rawset("loadSortData", LuaCompiler.loadstring(Files.readString(root.resolve("media/lua/shared/BetterContainers/Reorder/ModData.lua")), "sortData", env));
         String controls = Files.readString(root.resolve("media/lua/client/BetterContainers/Proximity/Proximity_ISLootWindowContainerControls.lua"));
         env.rawset("loadDropVisibility", LuaCompiler.loadstring("return function(Proximity, BlacklistCompat) local MoveToFloor={}\n" + controls.substring(controls.indexOf("local function canMoveItemToFloor"), controls.indexOf("function MoveToFloor:perform()")) + "\nreturn MoveToFloor.shouldBeVisible end", "dropVisibility", env));
+        env.rawset("loadProximityControls", LuaCompiler.loadstring(controls, "proximityControls", env));
         String page = Files.readString(game.resolve("media/lua/client/ISUI/ISInventoryPage.lua"));
         env.rawset("loadWheel", LuaCompiler.loadstring(page.substring(page.indexOf("function ISInventoryPage:onMouseWheel(del)"), page.indexOf("ISInventoryPage.dirtyUI = function")), "wheel", env));
         String sides = Files.readString(root.resolve("media/lua/client/BetterContainers/Upgrades/SwitchSides.lua"));

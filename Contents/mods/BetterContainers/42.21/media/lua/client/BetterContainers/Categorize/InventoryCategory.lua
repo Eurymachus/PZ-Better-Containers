@@ -7,6 +7,12 @@ function InventoryCategory.setEnabled(value)
     enabled = value == true
 end
 
+-- Sort caches also invalidate when assignments change without rebuilding rows.
+function InventoryCategory.getRevision()
+    CategoryStore.ensureLoaded()
+    return CategoryStore.revision, enabled
+end
+
 function InventoryCategory.get(itemOrFullType)
     local fullType = itemOrFullType
     local item = nil

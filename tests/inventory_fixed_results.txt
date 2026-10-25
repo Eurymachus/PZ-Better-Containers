@@ -1,0 +1,44 @@
+vanilla n=1 expanded=false ms/100frames=11.640399999916553 instanceof=600 ageUpdates=100 refreshes=0
+vanilla n=1 expanded=true ms/100frames=7.337200000882149 instanceof=800 ageUpdates=200 refreshes=0
+vanilla n=400 expanded=false ms/100frames=3.636199999600649 instanceof=600 ageUpdates=100 refreshes=0
+vanilla n=400 expanded=true ms/100frames=28.894999999552965 instanceof=13400 ageUpdates=5100 refreshes=0
+vanilla n=4000 expanded=false ms/100frames=3.0687999986112118 instanceof=600 ageUpdates=100 refreshes=0
+vanilla n=4000 expanded=true ms/100frames=97.07400000095367 instanceof=13400 ageUpdates=5100 refreshes=0
+categories n=1 expanded=false ms/100frames=9.679299999028444 instanceof=600 ageUpdates=100 refreshes=0
+categories n=1 expanded=true ms/100frames=10.983600001782179 instanceof=800 ageUpdates=200 refreshes=0
+categories n=400 expanded=false ms/100frames=9.850600000470877 instanceof=600 ageUpdates=100 refreshes=0
+categories n=400 expanded=true ms/100frames=34.5777000002563 instanceof=13400 ageUpdates=5100 refreshes=0
+categories n=4000 expanded=false ms/100frames=1.2159000001847744 instanceof=600 ageUpdates=100 refreshes=0
+categories n=4000 expanded=true ms/100frames=10.455699998885393 instanceof=13400 ageUpdates=5100 refreshes=0
+categories+freshness n=1 expanded=false ms/100frames=9.507399998605251 instanceof=600 ageUpdates=100 refreshes=0
+categories+freshness n=1 expanded=true ms/100frames=2.858399998396635 instanceof=900 ageUpdates=200 refreshes=0
+categories+freshness n=400 expanded=false ms/100frames=2.517699997872114 instanceof=600 ageUpdates=100 refreshes=0
+categories+freshness n=400 expanded=true ms/100frames=26.057599999010563 instanceof=14800 ageUpdates=5100 refreshes=0
+categories+freshness n=4000 expanded=false ms/100frames=2.605799999088049 instanceof=600 ageUpdates=100 refreshes=0
+categories+freshness n=4000 expanded=true ms/100frames=36.287399999797344 instanceof=14800 ageUpdates=5100 refreshes=0
+PASS renderer stack limits and dirty refresh settlement
+PASS off-screen A/B: zero additional freshness checks
+PASS 100 right clicks: 100 menu dispatches, zero renders or refreshes
+PASS cached non-food, mixed stacks, changing age, resized cache, and visible food children
+PASS crafting submenu recipes=1 fresh Java logic instances=1 container scans=1 recipe selections=1
+PASS crafting submenu recipes=20 fresh Java logic instances=20 container scans=20 recipe selections=20
+PASS crafting submenu recipes=100 fresh Java logic instances=100 container scans=100 recipe selections=100
+[BC perf] installed; use report() after reproducing, then stop()
+[BC perf] begin getContainers
+[BC perf] end getContainers ms=0.007000003010034561
+[BC perf] crafting containers=2 itemEntries=800 repeatedContainers=1
+[BC perf] begin inventory context callbacks
+[BC perf] end inventory context callbacks ms=0.011300001293420792
+PASS optional live probe return values and hook restoration
+PASS proximity=false 600 stationary updates: rebuilds=0 aggregation=0 paneRefresh=0
+PASS proximity=false 10 turns: rebuilds=10 paneRefresh=10 copiedItems=0
+PASS proximity=true 600 stationary updates: rebuilds=0 aggregation=0 paneRefresh=0
+PASS proximity=true 10 turns: rebuilds=10 paneRefresh=10 copiedItems=4000
+PASS auto-lock enabled: 600 stationary updates without rebuilds
+Floor default priority: proximity off=0 on=0
+PASS 20 Shift+Scroll switches preserve explicit floor priority
+PASS left/right wheel selects visual neighbour with Proximity off/on
+PASS Proximity drop visibility, 400 plates sourced from crate: item checks over 600 calls=600
+PASS Proximity drop visibility, 400 plates sourced from floor: item checks over 600 calls=240000
+PASS right-click inputs proximity=false: physical containers=2 itemEntries=400 selectedItems=400
+PASS right-click inputs proximity=true: physical containers=2 itemEntries=400 selectedItems=400
