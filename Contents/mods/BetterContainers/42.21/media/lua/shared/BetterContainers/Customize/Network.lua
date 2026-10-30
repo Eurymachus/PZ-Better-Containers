@@ -1,5 +1,6 @@
 local Helpers = require("BetterContainers/Helpers")
 local ModData = require("BetterContainers/Customize/ModData")
+local ItemTarget = require("BetterContainers/Customize/ItemTarget")
 
 local Network = {}
 
@@ -7,7 +8,16 @@ Network.syncModData = function(player, parent, payload)
     if parent.transmitModData then
         parent:transmitModData()
     elseif instanceof(parent, "InventoryItem") then
-        -- TODO Send ModData to Server for Items
+        if isClient() then
+            local target = ItemTarget.describe(player, parent)
+            if target then
+                sendClientCommand(player, "BetterContainers", "CustomizeItem", {
+                    target = target,
+                    action = payload.kind or "apply",
+                    payload = payload.kind == nil and ModData.sanitize(payload) or nil,
+                })
+            end
+        end
     end
 end
 
